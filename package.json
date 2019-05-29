@@ -1,7 +1,7 @@
 {
-  "name": "zhengqianbao frontend",
+  "name": "zhengqianbao_frontend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Hello, react",
   "private": false,
   "main": "dist/index.js",
   "dependencies": {
@@ -34,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/software-system-analysis-and-design/zhengqiangbao_frontend"
+    "url": "https://github.com/software-system-analysis-and-design/zhengqiangbao_frontend"
   },
   "keywords": [],
   "author": "system analysis and design",
