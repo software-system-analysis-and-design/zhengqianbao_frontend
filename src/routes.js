@@ -39,7 +39,7 @@ const dashboardRoutes = [
   {
     path: "/checktask",
     name: "监控任务",
-    icon: TableList,
+    icon: "content_paste",
     component: CheckTask,
     layout: ""
   },
