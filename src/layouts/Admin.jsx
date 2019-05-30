@@ -17,8 +17,8 @@ import routes from "routes.js";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboardStyle.jsx";
 
-import image from "assets/img/sidebar-2.jpg";
-import logo from "assets/img/reactlogo.png";
+import image from "assets/img/sidebar-2.jpg";  // 边界栏背景图片
+import logo from "assets/img/reactlogo.png";  // 应用图标
 
 const switchRoutes = (
   <Switch>
@@ -48,7 +48,7 @@ class Dashboard extends React.Component {
     };
   }
   getRoute() {
-    return this.props.location.pathname !== "/admin/maps";
+    return this.props.location.pathname !== "/maps";
   }
   resizeFunction = () => {
     if (window.innerWidth >= 960) {
@@ -78,7 +78,7 @@ class Dashboard extends React.Component {
       <div className={classes.wrapper}>
         <Sidebar
           routes={routes}
-          logoText={"Creative Tim"}
+          logoText={"挣钱宝"}
           logo={logo}
           image={this.state.image}
           handleDrawerToggle={this.handleDrawerToggle}

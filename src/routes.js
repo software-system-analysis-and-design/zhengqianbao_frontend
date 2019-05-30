@@ -39,8 +39,15 @@ const dashboardRoutes = [
   {
     path: "/checktask",
     name: "监控任务",
-    icon: Assignment,
+    icon: TableList,
     component: CheckTask,
+    layout: ""
+  },
+  {
+    path: "/notifications",
+    name: "消息通知",
+    icon: Notifications,
+    component: NotificationsPage,
     layout: ""
   },
   {
@@ -83,13 +90,6 @@ const dashboardRoutes = [
     name: "Maps",
     icon: LocationOn,
     component: Maps,
-    layout: ""
-  },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    icon: Notifications,
-    component: NotificationsPage,
     layout: ""
   }
 ];
