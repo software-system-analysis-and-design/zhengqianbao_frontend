@@ -5,8 +5,9 @@ import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import BubbleChart from "@material-ui/icons/BubbleChart";
 import LocationOn from "@material-ui/icons/LocationOn";
 import Notifications from "@material-ui/icons/Notifications";
-import Unarchive from "@material-ui/icons/Unarchive";
-import Language from "@material-ui/icons/Language";
+import AssignmentTurnedIn from "@material-ui/icons/AssignmentTurnedIn";
+import Assignment from "@material-ui/icons/Assignment";
+
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.jsx";
 import UserProfile from "views/UserProfile/UserProfile.jsx";
@@ -15,82 +16,81 @@ import Typography from "views/Typography/Typography.jsx";
 import Icons from "views/Icons/Icons.jsx";
 import Maps from "views/Maps/Maps.jsx";
 import NotificationsPage from "views/Notifications/Notifications.jsx";
-import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.jsx";
-// core components/views for RTL layout
-import RTLPage from "views/RTLPage/RTLPage.jsx";
+import TaskSquare from "views/TaskSquare/TaskSquare.jsx";
+import NewTask from "views/NewTask/NewTask.jsx";
+import CheckTask from "views/CheckTask/CheckTask";
 
 const dashboardRoutes = [
+  // 增加新的sidebar 导航按钮
   {
-    path: "/dashboard",
-    name: "Dashboard",
-    rtlName: "لوحة القيادة",
-    icon: Dashboard,
-    component: DashboardPage,
-    layout: "/admin"
+    path: "/tasksquare",
+    name: "任务广场",
+    icon: Assignment,
+    component: TaskSquare,
+    layout: ""
+  },
+  {
+    path: "/newtask",
+    name: "发布任务",
+    icon: AssignmentTurnedIn,
+    component: NewTask,
+    layout: ""
+  },
+  {
+    path: "/checktask",
+    name: "监控任务",
+    icon: Assignment,
+    component: CheckTask,
+    layout: ""
   },
   {
     path: "/user",
-    name: "User Profile",
-    rtlName: "ملف تعريفي للمستخدم",
+    name: "个人信息",
     icon: Person,
     component: UserProfile,
-    layout: "/admin"
+    layout: ""
+  },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    icon: Dashboard,
+    component: DashboardPage,
+    layout: ""
   },
   {
     path: "/table",
     name: "Table List",
-    rtlName: "قائمة الجدول",
     icon: "content_paste",
     component: TableList,
-    layout: "/admin"
+    layout: ""
   },
   {
     path: "/typography",
     name: "Typography",
-    rtlName: "طباعة",
     icon: LibraryBooks,
     component: Typography,
-    layout: "/admin"
+    layout: ""
   },
   {
     path: "/icons",
     name: "Icons",
-    rtlName: "الرموز",
     icon: BubbleChart,
     component: Icons,
-    layout: "/admin"
+    layout: ""
   },
   {
     path: "/maps",
     name: "Maps",
-    rtlName: "خرائط",
     icon: LocationOn,
     component: Maps,
-    layout: "/admin"
+    layout: ""
   },
   {
     path: "/notifications",
     name: "Notifications",
-    rtlName: "إخطارات",
     icon: Notifications,
     component: NotificationsPage,
-    layout: "/admin"
-  },
-  {
-    path: "/upgrade-to-pro",
-    name: "Upgrade To PRO",
-    rtlName: "التطور للاحترافية",
-    icon: Unarchive,
-    component: UpgradeToPro,
-    layout: "/admin"
-  },
-  {
-    path: "/rtl-page",
-    name: "RTL Support",
-    rtlName: "پشتیبانی از راست به چپ",
-    icon: Language,
-    component: RTLPage,
-    layout: "/rtl"
+    layout: ""
   }
 ];
 
