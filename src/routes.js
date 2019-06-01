@@ -19,6 +19,7 @@ import NotificationsPage from "views/Notifications/Notifications.jsx";
 import TaskSquare from "views/TaskSquare/TaskSquare.jsx";
 import NewTask from "views/NewTask/NewTask.jsx";
 import CheckTask from "views/CheckTask/CheckTask";
+import TaskBoard from "views/TaskBoard/TaskBoard"
 
 const dashboardRoutes = [
   // 增加新的sidebar 导航按钮
@@ -27,6 +28,13 @@ const dashboardRoutes = [
     name: "任务广场",
     icon: Assignment,
     component: TaskSquare,
+    layout: ""
+  },
+  {
+    path: "/taskboard",
+    name: "任务面板",
+    icon: AssignmentTurnedIn,
+    component: TaskBoard,
     layout: ""
   },
   {
