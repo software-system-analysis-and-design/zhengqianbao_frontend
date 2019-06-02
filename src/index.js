@@ -7,7 +7,7 @@ import RegisterPage from "views/RegisterPage/RegisterPage.jsx"
 
 // core components
 import Admin from "layouts/Admin.jsx";
-import NotMatch from "layouts/NotMatch.jsx";
+//import NotMatch from "layouts/NotMatch.jsx";
 import "assets/css/material-dashboard-react.css?v=1.6.0";
 
 const hist = createBrowserHistory();
@@ -18,7 +18,6 @@ ReactDOM.render(
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />
       <Route path="/" component={Admin} />
-      <Route component={NotMatch} />
     </Switch>
   </Router>,
   document.getElementById("root")

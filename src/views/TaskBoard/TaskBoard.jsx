@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import { Route, Link, Router, Switch } from "react-router-dom";
+import { Route, Link } from "react-router-dom";
 // components
 import AddIcon from "@material-ui/icons/Add";
 import Button from "@material-ui/core/Button";
@@ -13,7 +13,8 @@ import CreateTask from "../CreatTask/CreateTask";
 import TaskList from "../TaskList/TaskList";
 import RecycleBin from "../RecycleBin/RecycleBin";
 
-const styles = theme => ({
+
+const styles = {
   contentWrapper: {
     top: "1rem"
   },
@@ -22,7 +23,7 @@ const styles = theme => ({
     margin: "auto",
     overflow: "hidden"
   }
-});
+};
 
 function TaskBoard(props) {
   // eslint-disable-next-line react/prop-types
