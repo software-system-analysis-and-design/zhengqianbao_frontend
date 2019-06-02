@@ -12,6 +12,7 @@ import Navbar from "components/Navbars/Navbar.jsx";
 import Footer from "components/Footer/Footer.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
 import FixedPlugin from "components/FixedPlugin/FixedPlugin.jsx";
+import LoginPage from "views/LoginPage/LoginPage.jsx";
 
 import routes from "routes.js";
 
