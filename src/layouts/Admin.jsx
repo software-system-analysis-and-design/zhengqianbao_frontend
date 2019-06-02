@@ -11,7 +11,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import Navbar from "components/Navbars/Navbar.jsx";
 import Footer from "components/Footer/Footer.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
-import FixedPlugin from "components/FixedPlugin/FixedPlugin.jsx";
+
 
 import routes from "routes.js";
 
@@ -48,7 +48,7 @@ class Dashboard extends React.Component {
     };
   }
   getRoute() {
-    return this.props.location.pathname !== "/maps";
+    return this.props.location.pathname !== "/map";
   }
   resizeFunction = () => {
     if (window.innerWidth >= 960) {
@@ -100,7 +100,6 @@ class Dashboard extends React.Component {
           ) : (
             <div className={classes.map}>{switchRoutes}</div>
           )}
-          {this.getRoute() ? <Footer /> : null}
         </div>
       </div>
     );
