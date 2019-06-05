@@ -9,7 +9,6 @@ import UserProfile from "views/UserProfile/UserProfile.jsx";
 import NotificationsPage from "views/Notifications/Notifications.jsx";
 import TaskSquare from "views/TaskSquare/TaskSquare.jsx";
 import TaskBoard from "views/TaskBoard/TaskBoard.jsx";
-import NotMatch from "layouts/NotMatch.jsx";
 
 const dashboardRoutes = [
   // 增加新的sidebar 导航按钮

@@ -4,10 +4,12 @@
 
 var user={
 	name: "",
+	phone:"",
 	age: 0,
 	agenda: "",
 	university: "",
-	company: ""
+	company: "",
+	token:""
 };
 
 module.exports = {

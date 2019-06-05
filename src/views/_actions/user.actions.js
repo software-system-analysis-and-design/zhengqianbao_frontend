@@ -11,22 +11,22 @@ export const userActions = {
     delete: _delete
 };
 
-function login(username, password) {
-    return dispatch => {
-        dispatch(request({ username }));
-
-        userService.login(username, password)
+function login(userphone, password) {
+    //console.log(userphone, password);
+    //return dispatch => {
+        //dispatch(request({ userphone }));
+    userService.login(userphone, password);/*
             .then(
                 user => { 
-                    dispatch(success(user));
+                    //dispatch(success(user));
                     history.push('/');
                 },
                 error => {
-                    dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
+                    //dispatch(failure(error.toString()));
+                    //dispatch(alertActions.error(error.toString()));
                 }
             );
-    };
+    //};*/
 
     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
     function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
@@ -39,22 +39,18 @@ function logout() {
 }
 
 function register(user) {
-    return dispatch => {
-        dispatch(request(user));
-
         userService.register(user)
             .then(
                 user => { 
-                    dispatch(success());
-                    history.push('/login');
-                    dispatch(alertActions.success('Registration successful'));
+                    //dispatch(success());
+                    history.push('/');
+                    //dispatch(alertActions.success('Registration successful'));
                 },
                 error => {
-                    dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
+                    //dispatch(failure(error.toString()));
+                    //dispatch(alertActions.error(error.toString()));
                 }
             );
-    };
 
     function request(user) { return { type: userConstants.REGISTER_REQUEST, user } }
     function success(user) { return { type: userConstants.REGISTER_SUCCESS, user } }

@@ -1,6 +1,8 @@
 
 import { authHeader } from '../_helpers';
+//import $ from 'jquery';
 
+const apiUrl = 'https://littlefish33.cn:8080/user';
 export const userService = {
     login,
     logout,
@@ -11,15 +13,20 @@ export const userService = {
     delete: _delete
 };
 
-function login(username, password) {
-    /*
+function login(userphone, password) {
+    console.log(userphone, password);
+    //header("Access-Control-Allow-Origin£ºhttp://localhost:3000");
+    //$.get(apiUrl, function(res){console.log(res);});
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        headers:{
+            'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json'
+        },body: JSON.stringify({ userphone, password })
     };
 
-    return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
+    console.log(requestOptions);
+    //const url = apiUrl;
+    return fetch(apiUrl + '/login', requestOptions)
         .then(handleResponse)
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
@@ -27,7 +34,7 @@ function login(username, password) {
 
             return user;
         });
-        */
+        
 }
 
 function logout() {
@@ -58,15 +65,33 @@ function getById(id) {
 }
 
 function register(user) {
-    /*
+    console.log(user);
+    const inputInfo = {
+        phone: user.userphone,
+        iscow: (user.role == 1)?0:1,
+        name: user.username,
+        password: user.password,
+        gender: (user.gender == 1)?"male":"female",
+        age: user.age,
+        university: user.university,
+        company: user.company,
+        description: "",
+        class: user.class
+    }
+    console.log(inputInfo);
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user)
+        headers: { 'Content-Type': 'application/json', 
+            'Access-Control-Allow-Origin': '*', 
+            'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token', 
+            'Access-Control-Allow-Methods': 'OPTIONS,GET,POST,PUT,PATCH,DELETE', 
+            'Access-Control-Allow-Credentials': true 
+        },
+        body: JSON.stringify(inputInfo)
     };
 
-    return fetch(`${config.apiUrl}/users/register`, requestOptions).then(handleResponse);
-*/
+    return fetch(apiUrl+`/register`, requestOptions).then(handleResponse);
+    
 }
 
 function update(user) {
@@ -94,6 +119,7 @@ function _delete(id) {
 
 function handleResponse(response) {
     return response.text().then(text => {
+        console.log(text);
         const data = text && JSON.parse(text);
         if (!response.ok) {
             if (response.status === 401) {
@@ -105,7 +131,7 @@ function handleResponse(response) {
             const error = (data && data.message) || response.statusText;
             return Promise.reject(error);
         }
-
+        
         return data;
     });
 }

@@ -4,7 +4,7 @@ import GridContainer from "components/Grid/GridContainer.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
 import TextField from '@material-ui/core/TextField';
 import Button from "components/CustomButtons/Button.jsx";
-//import { userActions } from '../_actions';
+import { userActions } from '../_actions';
 
 class LoginPage extends React.Component {
     constructor(props) {
@@ -14,8 +14,8 @@ class LoginPage extends React.Component {
         //this.props.dispatch(userActions.logout());
 
         this.state = {
-            username: '',
-            password: '',
+            userphone: null,
+            password: null,
             submitted: false,
         };
 
@@ -31,35 +31,38 @@ class LoginPage extends React.Component {
         e.preventDefault();
 
         this.setState({ submitted: true });
-        const { username, password } = this.state;
+        const { userphone, password } = this.state;
         const { dispatch } = this.props;
-        if (username && password) {
-            //dispatch(userActions.login(username, password));
+        if (userphone && password) {
+            userActions.login(userphone, password);
         }
     }
 
     render() {
         const { loggingIn } = this.props;
-        const { username, password, submitted } = this.state;
+        const { userphone, password, submitted } = this.state;
         return (
 		<div>
 			<GridContainer justify="center" direction="column" alignItems="center">
             <div className="col-md-6 col-md-offset-3" style={{width:"400px"}}>
-					<h2>Login</h2>
-
+				<h2>Login</h2>
                 <form name="form" onSubmit={this.handleSubmit}>
-                    <div className={'form-group' + (submitted && !username ? ' has-error' : '')}>
+                    <div className={'form-group' + (submitted && !userphone ? ' has-error' : '')}>
 						<TextField
-							id="username"
-							label="Name"
+							id="phone"
+							label="Phone"
+							type="text"
 							className="form-control"
-							value={username}
+							value={userphone}
 							onChange={this.handleChange}
 							margin="normal"
+							inputProps={{
+							name: 'userphone',
+							}}
 							fullWidth
 						  />
-                        {submitted && !username &&
-                            <div className="help-block">Username is required</div>
+                        {submitted && !userphone &&
+                            <div className="help-block">Phone is required</div>
                         }
                     </div>
                     <div className={'form-group' + (submitted && !password ? ' has-error' : '')}>
@@ -68,18 +71,27 @@ class LoginPage extends React.Component {
 							label="Password"
 							className="form-control"
 							type="password"
+							value={password}
 							autoComplete="current-password"
 							onChange={this.handleChange}
 							margin="normal"
+							inputProps={{
+							name: 'password',
+							}}
 							fullWidth
 						  />
+						  {submitted && !password &&
+                            <div className="help-block">Password is required</div>
+						  }
                     </div>
                     <div className="form-group">
-                        <Button className="btn btn-primary" color="primary">Login</Button>
+                        <Button className="btn btn-primary" color="primary" type="submit">Login</Button>
                         {loggingIn &&
                             <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
                         }
-                        <Link to="/register" justify="center">Register</Link>
+                        <Link to="/register" >
+							<Button color="primary">Register</Button>
+						</Link>
                     </div>
                 </form>
             </div>
