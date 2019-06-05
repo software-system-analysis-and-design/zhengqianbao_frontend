@@ -9,9 +9,11 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 import withStyles from "@material-ui/core/styles/withStyles";
 // core components
 import Navbar from "components/Navbars/Navbar.jsx";
-import Footer from "components/Footer/Footer.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
+<<<<<<< HEAD
 import FixedPlugin from "components/FixedPlugin/FixedPlugin.jsx";
+=======
+>>>>>>> 615bae0e0e3837d6476282fdfdd12c0faa58b139
 
 import routes from "routes.js";
 
