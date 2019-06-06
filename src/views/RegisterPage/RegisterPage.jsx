@@ -1,15 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import GridContainer from "components/Grid/GridContainer.jsx";
-import GridItem from "components/Grid/GridItem.jsx";
 import TextField from '@material-ui/core/TextField';
 import Button from "components/CustomButtons/Button.jsx";
-import { userActions } from '../_actions';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import {handleResponse, parseParams, apiUrl} from "variables/serverFunc.jsx"
 
-const classes = ["2015", "2016", "2017", "2018"];
+const classes = ["none","2015", "2016", "2017", "2018"];
 
 class RegisterPage extends React.Component {
     constructor(props) {
@@ -28,21 +27,25 @@ class RegisterPage extends React.Component {
 				gender: null
             },
             submitted: false,
-			confirm_password:null
-			
+			confirm_password:null,
+			error_msg:" ",
         };
 
         this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+		
     }
 
     handleChange(event) {
         const { name, value } = event.target;
-        const { user } = this.state;
+		const { user } = this.state;
 		var input_value = value;
-		if(name == "confirm_password"){
+		if(name === "confirm_password"){
 			this.setState({[name]:input_value});
 		}else{
+			if(name === "userphone"){
+				this.setState({error_msg: ""});
+			}
 			this.setState({
 				user: {
 					...user,
@@ -50,43 +53,77 @@ class RegisterPage extends React.Component {
 				},
 			});
 		}
-    }
+	}
+	
+	register(user){
+		const inputInfo = {
+			phone: user.userphone,
+			iscow: (user.role === 1)?0:1,
+			name: user.username,
+			password: user.password,
+			gender: (user.gender === 1)?"男":"女",
+			age: user.age,
+			university: user.university,
+			company: user.company,
+			description: "",
+			class: classes[user.class]
+		}
+		console.log(inputInfo);
+		console.log(parseParams(inputInfo));
+		const requestOptions = {
+			method: 'POST',
+			headers: { 
+                'Accept': 'application/json',
+                'content-type': 'application/x-www-form-urlencoded'
+            },
+			body: parseParams(inputInfo)
+        };
+        fetch(apiUrl+"/register",requestOptions)
+        .then(handleResponse)
+        .then(response => {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+			console.log(response);
+			if(response.code === 200){
+				localStorage.setItem('user', inputInfo);
+				this.props.history.push('/login');
+			}else{
+				const msg = response.msg;
+				this.setState({error_msg: msg});
+			}
+        });
+	}
 
     handleSubmit(event) {
         event.preventDefault();
         this.setState({ submitted: true });
         const { user } = this.state;
-        const { dispatch } = this.props;
-		if(user.role && user.role == 1){
+		if(user.role && user.role === 1){
 			user.company = " ";
-			user.class = classes[user.class-1];
-		}else if(user.role && user.role == 2){
+		}else if(user.role && user.role === 2){
 			user.gender = " ";
 			user.university = " ";
-			user.class = -1;
+			user.class = 0;
 			user.age = -1;
 		}
         if (user.username && user.password && user.userphone && 
-			this.state.confirm_password && user.role && user.class && user.university && user.company) {
-            console.log("register");
-			userActions.register(user);
-			//this.props.history.push('/');
+			this.state.confirm_password && user.role && (user.class != null) && user.university && user.company) {
+			this.register(user);
         }
     }
 
     render() {
         const { registering  } = this.props;
-        const { user, submitted } = this.state;
+        const { user, submitted, error_msg } = this.state;
         return (
 		<div>
 			<GridContainer justify="center" direction="column" alignItems="center" >
             <div className="col-md-6 col-md-offset-3" style={{width:"400px"}}>
-                <h2>Register</h2>
+                <h2>注册</h2>
                 <form name="form" onSubmit={this.handleSubmit}>
                     <div className={'form-group' + (submitted && !user.firstName ? ' has-error' : '')}>
 						<TextField
 							id="username"
-							label="Name"
+							label="昵称"
 							className="form-control"
 							value={user.username}
 							onChange={this.handleChange}
@@ -97,13 +134,13 @@ class RegisterPage extends React.Component {
 							fullWidth
 						  />
                         {submitted && !user.username &&
-                            <div className="help-block">UserName is required</div>
+                            <div className="help-block" style={{color: "red"}}>昵称不可为空</div>
                         }
                     </div>
 					<div className={'form-group' + (submitted && !user.firstName ? ' has-error' : '')}>
 						<TextField
 							id="userphone"
-							label="Phone"
+							label="手机号"
 							className="form-control"
 							value={user.userphone}
 							onChange={this.handleChange}
@@ -114,13 +151,16 @@ class RegisterPage extends React.Component {
 							fullWidth
 						  />
                         {submitted && !user.userphone &&
-                            <div className="help-block">Phone is required</div>
+                            <div className="help-block" style={{color: "red"}}>手机号不可为空</div>
+						}
+						{submitted && user.userphone && 
+                            <div className="help-block" style={{color: "red"}}>{error_msg}</div>
                         }
                     </div>
                     <div className={'form-group' + (submitted && !user.password ? ' has-error' : '')}>
 						<TextField
 							id="password"
-							label="Password"
+							label="密码"
 							className="form-control"
 							type="password"
 							value={user.password}
@@ -133,13 +173,13 @@ class RegisterPage extends React.Component {
 							fullWidth
 						  />
                         {submitted && !user.password &&
-                            <div className="help-block">Password is required</div>
+                            <div className="help-block" style={{color: "red"}}>密码不可为空</div>
                         }
                     </div>
 					<div className={'form-group' + (submitted && !user.password ? ' has-error' : '')}>
 						<TextField
 							id="confirm-password"
-							label="confirm Password"
+							label="确认密码"
 							className="form-control"
 							type="password"
 							value={this.state.confirm_password}
@@ -152,13 +192,13 @@ class RegisterPage extends React.Component {
 							fullWidth
 						  />
                         {submitted && !this.state.confirm_password &&
-                            <div className="help-block">Confirming password is required</div>
+                            <div className="help-block" style={{color: "red"}}>确认密码不可为空</div>
                         }
-						{submitted && this.state.confirm_password && user.password && (this.state.confirm_password != user.password) &&
-							<div className="help-block">Confirm password is not the same</div>
+						{submitted && this.state.confirm_password && user.password && (this.state.confirm_password !== user.password) &&
+							<div className="help-block" style={{color: "red"}}>密码不同</div>
 						}
                     </div>
-					<InputLabel htmlFor="user-role" fullWidth>Role</InputLabel>
+					<InputLabel htmlFor="user-role" fullWidth>角色</InputLabel>
 					<Select
 						value={user.role}
 						onChange={this.handleChange}
@@ -168,14 +208,14 @@ class RegisterPage extends React.Component {
 						}}
 						fullWidth
 					>
-						<MenuItem value={1}>Student</MenuItem>
-						<MenuItem value={2}>Cow</MenuItem>
+						<MenuItem value={1}>学生</MenuItem>
+						<MenuItem value={2}>奶牛</MenuItem>
 					</Select>
 					{submitted && !user.role &&
-						<div className="help-block">Role is required</div>
+						<div className="help-block" style={{color: "red"}}>角色不可为空</div>
 					}
-					<div style={{display: (user.role == 1)? "block":"none"}}>
-						<InputLabel htmlFor="user-gender" fullWidth>Gender</InputLabel>
+					<div style={{display: (user.role === 1)? "block":"none"}}>
+						<InputLabel htmlFor="user-gender" fullWidth>性别</InputLabel>
 						<Select
 							value={user.gender}
 							onChange={this.handleChange}
@@ -185,16 +225,16 @@ class RegisterPage extends React.Component {
 							}}
 							fullWidth
 						>
-							<MenuItem value={1}>Male</MenuItem>
-							<MenuItem value={2}>Female</MenuItem>
+							<MenuItem value={1}>男</MenuItem>
+							<MenuItem value={2}>女</MenuItem>
 						</Select>
 						{submitted && !user.gender &&
-							<div className="help-block">Gender is required</div>
+							<div className="help-block" style={{color: "red"}}>性别不可为空</div>
 						}
 						<div className={'form-group' + (submitted && !user.age ? ' has-error' : '')}>
 							<TextField
 								id="age"
-								label="Age"
+								label="年龄"
 								className="form-control"
 								type="number"
 								value={user.age}
@@ -206,10 +246,10 @@ class RegisterPage extends React.Component {
 								fullWidth
 							  />
 							{submitted && !user.age &&
-								<div className="help-block">Age is required</div>
+								<div className="help-block" style={{color: "red"}}>年龄不可为空</div>
 							}
 						</div>
-						<InputLabel htmlFor="class-simple" fullWidth>Class</InputLabel>
+						<InputLabel htmlFor="class-simple" fullWidth>年级</InputLabel>
 						<Select
 							value={user.class}
 							onChange={this.handleChange}
@@ -225,12 +265,12 @@ class RegisterPage extends React.Component {
 							<MenuItem value={4}>2018</MenuItem>
 						</Select>
 						{submitted && !user.class &&
-								<div className="help-block">Class is required</div>
+								<div className="help-block" style={{color: "red"}}>年级不可为空</div>
 							}
 						<div className={'form-group' + (submitted && !user.university ? ' has-error' : '')}>
 							<TextField
 								id="university"
-								label="university"
+								label="学校"
 								className="form-control"
 								value={user.university}
 								onChange={this.handleChange}
@@ -240,16 +280,16 @@ class RegisterPage extends React.Component {
 								}}
 								fullWidth
 							  />
-							{submitted && !user.firstName &&
-								<div className="help-block">University is required</div>
+							{submitted && !user.university &&
+								<div className="help-block" style={{color: "red"}}>大学不可为空</div>
 							}
 						</div>
 					</div>
-					<div style={{display: (user.role == 2)? "block":"none"}}>
+					<div style={{display: (user.role === 2)? "block":"none"}}>
 						<div className={'form-group' + (submitted && !user.company ? ' has-error' : '')}>
 							<TextField
 								id="company"
-								label="Company"
+								label="企业"
 								className="form-control"
 								value={user.company}
 								onChange={this.handleChange}
@@ -260,17 +300,17 @@ class RegisterPage extends React.Component {
 								fullWidth
 							  />
 							{submitted && !user.company &&
-								<div className="help-block">Company is required</div>
+								<div className="help-block" style={{color: "red"}}>“企业不可为空”</div>
 							}
 						</div>
 					</div>
 					<div className="form-group">
-						<Button className="btn btn-primary" color="primary" type="submit">Register</Button>
+						<Button className="btn btn-primary" color="primary" type="submit">注册</Button>
 						{registering && 
 							<img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
 						}
 						<Link to="/login">
-						<Button color="primary">Cancel</Button>
+							<Button color="primary">取消</Button>
 						</Link>
 					</div>
 					
