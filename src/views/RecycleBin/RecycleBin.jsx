@@ -45,7 +45,7 @@ function RecycleBin(props) {
   const { classes } = props;
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {

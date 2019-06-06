@@ -87,7 +87,7 @@ function Content(props) {
           elevation={0}
         >
           <Toolbar>
-            <Grid container spacing={2} alignItems="center">
+            <Grid container alignItems="center">
               <Grid item xs={8}>
                 <Typography variant="h5" display="block" gutterBottom>
                   {taskName}
@@ -135,7 +135,7 @@ function Content(props) {
           </Toolbar>
         </AppBar>
         <div className={classes.contentWrapper}>
-          <Grid container spacing={3}>
+          <Grid container>
             <Grid item xs={8}>
               <Typography variant="subtitle1" gutterBottom>
                 类型：{taskType}
