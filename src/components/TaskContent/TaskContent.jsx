@@ -42,6 +42,9 @@ const styles = theme => ({
   },
   iconWrapper: {
     marginRight: "2px"
+  },
+  button: {
+    margin: "0px 8px"
   }
 });
 
@@ -49,6 +52,7 @@ function Content(props) {
   // 使用use state 声明全局变量
   const [open_delete, setOpen_delete] = React.useState(false);
   const [open_refresh, setOpen_refresh] = React.useState(false);
+  const [open_stop, setOpen_stop] = React.useState(false);
 
   function handleClickOpen_delete() {
     setOpen_delete(true);
@@ -64,15 +68,22 @@ function Content(props) {
     setOpen_refresh(false);
   }
 
+  function handleClickOpen_stop() {
+    setOpen_stop(true);
+  }
+
+  function handleClose_stop() {
+    setOpen_stop(false);
+  }
+
   const {
     classes,
     taskName,
     taskState,
+    taskID,
     taskType,
     taskReward,
-    taskStartTime,
     taskEndTime,
-    taskSpentTime,
     numOfFinishedTasks,
     numOfAllTasks
   } = props;
@@ -93,7 +104,7 @@ function Content(props) {
                   {taskName}
                 </Typography>
                 <Typography variant="caption" display="block" gutterBottom>
-                  {taskState}
+                  任务ID: {taskID} | 状态：{taskState}
                 </Typography>
               </Grid>
               <Grid item xs={4} sm={1}>
@@ -121,7 +132,7 @@ function Content(props) {
                 </Tooltip>
               </Grid>
               <Grid item xs={4} sm={1}>
-                <Tooltip title="刷新">
+                <Tooltip title="重启任务">
                   <IconButton>
                     <RefreshIcon
                       color="inherit"
@@ -144,18 +155,23 @@ function Content(props) {
                 报酬：{taskReward} 金币/个
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                任务时间：from {taskStartTime} to {taskEndTime}
+                任务截止时间：{taskEndTime}
               </Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography variant="subtitle1" gutterBottom>
-                预计花费时间：{taskSpentTime}
-              </Typography>
               <Typography variant="subtitle1" gutterBottom>
                 完成个数：{numOfFinishedTasks}/{numOfAllTasks}
               </Typography>
               <Button variant="contained" color="secondary">
                 下载任务数据
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={handleClickOpen_stop}
+              >
+                终止任务
               </Button>
             </Grid>
           </Grid>
@@ -192,12 +208,35 @@ function Content(props) {
           <DialogTitle id="alert-dialog-title" />
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              任务数据已刷新
+              任务已重启
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose_refresh} color="primary">
               确定
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={open_stop}
+          onClose={handleClose_stop}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"确定要终止该任务吗？"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              你想好了没？
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose_stop} color="primary">
+              嗯嗯
+            </Button>
+            <Button onClick={handleClose_stop} color="primary" autoFocus>
+              容我三思
             </Button>
           </DialogActions>
         </Dialog>
