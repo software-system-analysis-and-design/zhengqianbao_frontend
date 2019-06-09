@@ -42,13 +42,19 @@ const style = theme => ({
 问卷字段设计：
 
 state = {
-  choose_data:[
+  title: "问卷名"
+  description: "问卷描述" 
+  money: 100, // 问卷字段
+  number: 100, //  问卷设置的份数, 默认 -1 则视为份数不限
+  publishTime: "发布时间"  // 年月日时分 ，如果不设置，则需要手动发布
+  endTime: "截止时间"    // 年月日时分 ， 如果不设置，则需要手动截止
+  choose_data:[  // 问卷题目字段
     {  // 问答题的字段格式
       title_num: 1,   // 题目的编号
-      id: 1           // 题目的 id 
+      id: 1           // 题目的 id, 在进行map渲染时，作为唯一的key标识
       title: "这是问答题的问题"  
-      data_type: 1 （1 表示是问答题)
-      required: 1    (1 表示是必选题目， 0 非必选题)
+      data_type: 1  （1 表示是问答题)
+      required: 1    (1 表示是必选题目， 0非必选题)
       data_content: "这是回答的数据，默认为空"
     }
     { // 单选题的字段格式
@@ -59,7 +65,7 @@ state = {
       required: 0
       data_content:[
         {
-          id: 1 // 选项的id
+          id: 1 //  选项的id
           content: "选项的内容"
         }
         {
@@ -118,6 +124,7 @@ function QuestionaireContent(props) {
 
   // 存放选择题定义过程中的选项变量
   const [questionChoice, setQuestionChoice] = React.useState({
+    maxID: 1, // 随着每一次增加选项 + 1， 保证每一个选项都有唯一的ID，不管其是否被删除。
     chooseData: [
       {
         id: 1,
@@ -139,15 +146,23 @@ function QuestionaireContent(props) {
   const handleTitlechange = name => event => {
     setQuestionTitle(event.target.value);
     setLoad(0);
-  }
+  };
 
   // 控制选择题选项内容的实时写入state
   const handelChoiceItemChange = id => event => {
     let tmpChoiceItem = questionChoice.chooseData;
-    tmpChoiceItem[id].content = event.target.value;
-    setQuestionChoice({ chooseData: tmpChoiceItem });
+    for (let i = 0; i < tmpChoiceItem.length; i++) {
+      if (id == tmpChoiceItem[i].id) {
+        tmpChoiceItem[i].content = event.target.value;
+        break;
+      }
+    }
+    setQuestionChoice({
+      maxID: questionChoice.maxID,
+      chooseData: tmpChoiceItem
+    });
     setLoad(0);
-  }
+  };
 
   // 显示问答题编辑栏
   const showEssayQuestion = () => {
@@ -161,7 +176,7 @@ function QuestionaireContent(props) {
 
   //  添加问答题
   const addEssayQuestion = () => {
-    if (questionTitle === ""){
+    if (questionTitle === "") {
       alert("标题不能为空");
     }
     let titleNum = Content.chooseData.length + 1;
@@ -193,16 +208,37 @@ function QuestionaireContent(props) {
   // 添加选项
   const addChoiceItem = () => {
     let tmpQuestionChoice = questionChoice.chooseData;
+    let id = questionChoice.maxID + 1;
     tmpQuestionChoice.push({
-      id: questionChoice.chooseData.length + 1,
+      id: id,
       content: ""
     });
-    setQuestionChoice({ chooseData: tmpQuestionChoice });
+    setQuestionChoice({ maxID: id, chooseData: tmpQuestionChoice });
     setLoad(0);
   };
 
   // 删除选项
-  const deleteChoiceItem = () => {};
+  const deleteChoiceItem = id => event => {
+    if (questionChoice.chooseData.length == 0) {
+      alert("至少保留一个选项！");
+      return null;
+    }
+    let tmpQuestionChoice = questionChoice.chooseData;
+
+    let index = 0;
+    for (let i = 0; i < tmpQuestionChoice.length; i++) {
+      if (tmpQuestionChoice[i].id === id) {
+        index = i;
+        break;
+      }
+    }
+    tmpQuestionChoice.splice(index, 1);
+    setQuestionChoice({
+      maxID: questionChoice.maxID,
+      chooseData: tmpQuestionChoice
+    });
+    setLoad(0);
+  };
 
   // 添加选择题
   const addChoice = () => {
@@ -363,7 +399,7 @@ function QuestionaireContent(props) {
                 <Grid item xs={2}>
                   <IconButton
                     aria-label="Delete"
-                    onClick={deleteChoiceItem}
+                    onClick={deleteChoiceItem(item.id)}
                     value={item.id}
                   >
                     <DeleteIcon />

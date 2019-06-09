@@ -26,6 +26,23 @@ const styles = {
   }
 };
 
+/*
+任务预览字段：
+{
+  [
+    taskName: "任务名"
+    taskID: "任务ID"
+    taskState: "运行中 / 待发布 / 终止"
+    taskType: "问卷"
+    number: 100         // 任务要求个数 
+    finishedNumber: 30 // 已完成的个数
+    publishTime: ""    // 任务发布时间
+    endTime: ""       // 任务截止时间
+  ]
+}
+*/
+
+
 function TaskBoard(props) {
   // eslint-disable-next-line react/prop-types
   const { classes, match } = props;
