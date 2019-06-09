@@ -36,7 +36,7 @@ function TaskBoard(props) {
   // 用于与子组件进行通信，解析来自子组件的操作
   function transferMsg(msg) {
     // eslint-disable-next-line no-console
-    console.log("transfer the msg: " + msg);
+    // console.log("transfer the msg: " + msg);
     if (msg === "2Q") {
       setToTask(1);
     } else if (msg === "2C") {
@@ -48,7 +48,7 @@ function TaskBoard(props) {
 
   return (
     <div>
-      {ToTask == 0 && (
+      {ToTask === 0 && (
         <div>
           <Grid container className={classes.buttonWrapper}>
             <Grid item xs={4}>

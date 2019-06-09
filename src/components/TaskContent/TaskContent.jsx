@@ -83,6 +83,7 @@ function Content(props) {
     taskID,
     taskType,
     taskReward,
+    taskStartTime,
     taskEndTime,
     numOfFinishedTasks,
     numOfAllTasks
@@ -132,7 +133,7 @@ function Content(props) {
                 </Tooltip>
               </Grid>
               <Grid item xs={4} sm={1}>
-                <Tooltip title="重启任务">
+                <Tooltip title="启动任务">
                   <IconButton>
                     <RefreshIcon
                       color="inherit"
@@ -155,12 +156,15 @@ function Content(props) {
                 报酬：{taskReward} 金币/个
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                任务截止时间：{taskEndTime}
+                完成个数：{numOfFinishedTasks}/{numOfAllTasks}
               </Typography>
             </Grid>
             <Grid item xs={4}>
               <Typography variant="subtitle1" gutterBottom>
-                完成个数：{numOfFinishedTasks}/{numOfAllTasks}
+                任务发布时间：{taskStartTime}
+              </Typography>
+              <Typography variant="subtitle1" gutterBottom>
+                任务截止时间：{taskEndTime}
               </Typography>
               <Button variant="contained" color="secondary">
                 下载任务数据
@@ -208,7 +212,7 @@ function Content(props) {
           <DialogTitle id="alert-dialog-title" />
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              任务已重启
+              任务已启动
             </DialogContentText>
           </DialogContent>
           <DialogActions>

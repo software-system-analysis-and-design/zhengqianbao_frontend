@@ -103,9 +103,20 @@ function Questionaire(props) {
           <form className={classes.container} noValidate>
             <TextField
               id="datetime-local"
+              label="设置问卷发布时间"
+              type="datetime-local"
+              fullWidth="true"
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true
+              }}
+            />
+          </form>
+          <form className={classes.container} noValidate>
+            <TextField
+              id="datetime-local"
               label="设置问卷截止时间"
               type="datetime-local"
-              defaultValue="2017-05-24T10:30"
               fullWidth="true"
               className={classes.textField}
               InputLabelProps={{

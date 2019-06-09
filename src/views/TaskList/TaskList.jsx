@@ -10,6 +10,7 @@ function TaskList(props) {
       taskState="进行中"
       taskType="问卷"
       taskReward="100"
+      taskStartTime="2019-06-02"
       taskEndTime="2019-06-02"
       numOfFinishedTasks="12"
       numOfAllTasks="300"

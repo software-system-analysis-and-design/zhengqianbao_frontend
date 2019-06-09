@@ -45,7 +45,7 @@ function Commission(props) {
               <Typography className={classes.task}>任务名：</Typography>
             </div>
           </Grid>
-          <Grid xs={12} sm={10} className={classes.grid}> 
+          <Grid xs={12} sm={10} className={classes.grid}>
             <TextField
               id="outlined-bare"
               className={classes.textField}
@@ -131,6 +131,7 @@ function Commission(props) {
             创建
           </Button>
         </Link>
+        
       </Paper>
     </div>
   );
