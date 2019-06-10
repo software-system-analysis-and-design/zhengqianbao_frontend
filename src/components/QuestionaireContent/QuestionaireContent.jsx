@@ -8,21 +8,19 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import TextField from "@material-ui/core/TextField";
 import Switch from "@material-ui/core/Switch";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import Icon from "@material-ui/core/Icon";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import EditIcon from "@material-ui/icons/Edit";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const style = theme => ({
   paper: {
@@ -30,11 +28,16 @@ const style = theme => ({
     maxWidth: "760px",
     padding: "20px"
   },
-  essayQuesstion: {
+  essayQuestion: {
     margin: "15px"
   },
   button: {
     margin: "10px 0px 0px 5px"
+  },
+  list: {
+    maxHeight: "400px",
+    position: "relative",
+    overflow: "auto"
   }
 });
 
@@ -50,20 +53,20 @@ state = {
   endTime: "截止时间"    // 年月日时分 ， 如果不设置，则需要手动截止
   choose_data:[  // 问卷题目字段
     {  // 问答题的字段格式
-      title_num: 1,   // 题目的编号
+      titleNum: 1,   // 题目的编号
       id: 1           // 题目的 id, 在进行map渲染时，作为唯一的key标识
       title: "这是问答题的问题"  
-      data_type: 1  （1 表示是问答题)
+      dataType: 1  （1 表示是问答题)
       required: 1    (1 表示是必选题目， 0非必选题)
-      data_content: "这是回答的数据，默认为空"
+      dataContent: "这是回答的数据，默认为空"
     }
     { // 单选题的字段格式
-      title_num: 2
+      titleNum: 2
       id: 2
       title: "这是一道单选题"
-      data_type: 2  (2表示是单选题)
+      dataType: 2  (2表示是单选题)
       required: 0
-      data_content:[
+      dataContent:[
         {
           id: 1 //  选项的id
           content: "选项的内容"
@@ -75,11 +78,11 @@ state = {
       ]
     }  // 多选题的字段格式
     {
-      title_num: 3
+      titleNum: 3
       id: 3
       title: "多选题目"
-      data_type: 3
-      data_content:[
+      dataType: 3
+      dataContent:[
         {
           id: 1
           content: "asdasd"
@@ -95,8 +98,9 @@ function QuestionaireContent(props) {
   /***************************************************
    *  定义 本组件使用的状态变量
    *****************************************************/
-
+  // 这里存放问卷题目的数据
   const [Content, setContent] = React.useState({
+    maxID: 0,
     chooseData: []
   }); // 存放页面数据
 
@@ -106,8 +110,9 @@ function QuestionaireContent(props) {
   // 我们需要设置一个问卷题目编辑器的显示信号  1 显示问答题  2 显示选择题  0 not show
   const [show, setShow] = React.useState(0);
 
+  // 设置问卷类型
   const [questionType, setQuestionType] = React.useState({
-    essayQuesstion: 1,
+    essayQuestion: 1,
     singleChoice: 2,
     multiChoice: 3
   });
@@ -133,10 +138,15 @@ function QuestionaireContent(props) {
     ]
   });
 
+  // 如果问卷题目再次编辑，则update为true，此外点击，确定/取消/添加问答题/添加选择题/等按钮会触发update=false
+  const [update, setUpdate] = React.useState(false);
+  // 记录再次编辑的问卷题目在Content中的索引。
+  const [updateIndex, setUpdateIndex] = React.useState(-1);
+
   /***************************************************
    *  定义 本组件使用的事件处理逻辑
    *****************************************************/
-  // 控制复选框的正负值
+  // 控制复选框的正负值,实时记录是否必选
   const handleChange = name => event => {
     setRequired({ ...required, [name]: event.target.checked });
     setLoad(0);
@@ -166,43 +176,84 @@ function QuestionaireContent(props) {
 
   // 显示问答题编辑栏
   const showEssayQuestion = () => {
+    setQuestionTitle(""); // 重新置空
+    setUpdate(false);
+    setRequired({
+      essayQuestion: false, // 判断是否问答题为必答
+      choice: false, // 选择题是否为必答
+      singleOrMulti: false // 选择题是单选还是多选
+    });
     setShow(1);
   };
 
   // 不显示编辑栏
   const notShow = () => {
+    setUpdate(false);
     setShow(0);
+  };
+
+  // 显示选择题编辑栏, 重置内容
+  const showChoice = () => {
+    setQuestionChoice({
+      maxID: 1,
+      chooseData: [
+        {
+          id: 1,
+          content: "" // 第一个默认选项
+        }
+      ]
+    });
+    setRequired({
+      essayQuestion: false, // 判断是否问答题为必答
+      choice: false, // 选择题是否为必答
+      singleOrMulti: false // 选择题是单选还是多选
+    });
+    setUpdate(false);
+    setQuestionTitle(""); // 重新置空
+    setShow(2);
   };
 
   //  添加问答题
   const addEssayQuestion = () => {
     if (questionTitle === "") {
       alert("标题不能为空");
+      return null;
     }
-    let titleNum = Content.chooseData.length + 1;
-    let id = titleNum;
-    let tmpChooseData = Content.chooseData;
-    tmpChooseData.push({
-      titleNum: titleNum,
-      id: id,
-      title: questionTitle, // 全局state 问题的题目
-      dataType: questionType.essayQuesstion,
-      required: required.essayQuestion === true ? 1 : 0, // 获取必选或者非必选
-      dataContent: ""
-    });
-    setContent({ chooseData: tmpChooseData });
-    setQuestionTitle("0"); // 重新置空
+    if (update) {
+      // 更新题目
+      let tmpChooseData = Content.chooseData;
+      tmpChooseData[updateIndex] = {
+        titleNum: tmpChooseData[updateIndex].titleNum,
+        title: questionTitle,
+        id: tmpChooseData[updateIndex].id,
+        dataType: questionType.essayQuestion,
+        required: required.essayQuestion === true ? 1 : 0, // 获取必选或者非必选
+        dataContent: ""
+      };
+      setContent({ maxID: Content.maxID, chooseData: tmpChooseData });
+    } else {
+      let titleNum = Content.chooseData.length + 1;
+      let id = Content.maxID + 1;
+      let tmpChooseData = Content.chooseData;
+      // 添加问答题
+      tmpChooseData.push({
+        titleNum: titleNum,
+        id: id,
+        title: questionTitle, // 全局state 问题的题目
+        dataType: questionType.essayQuestion,
+        required: required.essayQuestion === true ? 1 : 0, // 获取必选或者非必选
+        dataContent: ""
+      });
+      setContent({ maxID: id, chooseData: tmpChooseData });
+    }
+    setQuestionTitle(""); // 重新置空
     setRequired({
       essayQuestion: false, // 判断是否问答题为必答
       choice: false, // 选择题是否为必答
       singleOrMulti: false // 选择题是单选还是多选
     });
     setLoad(0);
-  };
-
-  // 显示选择题编辑栏
-  const showSingleChoice = () => {
-    setShow(2);
+    setUpdate(false);
   };
 
   // 添加选项
@@ -219,8 +270,8 @@ function QuestionaireContent(props) {
 
   // 删除选项
   const deleteChoiceItem = id => event => {
-    if (questionChoice.chooseData.length == 0) {
-      alert("至少保留一个选项！");
+    if (questionChoice.chooseData.length == 1) {
+      alert("不能删除，至少保留一个选项！");
       return null;
     }
     let tmpQuestionChoice = questionChoice.chooseData;
@@ -242,26 +293,63 @@ function QuestionaireContent(props) {
 
   // 添加选择题
   const addChoice = () => {
-    let titleNum = Content.chooseData.length;
-    let id = titleNum;
+    if (questionTitle === "") {
+      alert("标题不能为空");
+      return null;
+    }
+    if (questionChoice.chooseData.length <= 1) {
+      alert("选项不能少于一个");
+      return null;
+    }
+    for (let i = 0; i < questionChoice.chooseData.length; i++) {
+      if (questionChoice.chooseData[i].content === "") {
+        alert("选项不能为空！");
+        return null;
+      }
+    }
     let tmpChooseData = Content.chooseData;
-    let dataType =
-      required.singleOrMulti === true
-        ? questionType.multiChoice
-        : questionType.singleChoice;
-    tmpChooseData.push({
-      titleNum: titleNum,
-      id: id,
-      title: questionTitle,
-      dataType: dataType,
-      required: required.choice === true ? 1 : 0,
-      dataContent: questionChoice.chooseData
-    });
-    setContent({ chooseData: tmpChooseData });
-
+    if (update) {
+      let dataType =
+        required.singleOrMulti === true
+          ? questionType.multiChoice
+          : questionType.singleChoice;
+      tmpChooseData[updateIndex] = {
+        titleNum: tmpChooseData[updateIndex].titleNum,
+        id: tmpChooseData[updateIndex].id,
+        title: questionTitle,
+        dataType: dataType,
+        required: required.choice === true ? 1 : 0,
+        dataContent: questionChoice.chooseData
+      };
+      setContent({ maxID: Content.maxID, chooseData: tmpChooseData });
+    } else {
+      // 添加选择题
+      let titleNum = Content.chooseData.length + 1;
+      let id = Content.maxID + 1;
+      let dataType =
+        required.singleOrMulti === true
+          ? questionType.multiChoice
+          : questionType.singleChoice;
+      tmpChooseData.push({
+        titleNum: titleNum,
+        id: id,
+        title: questionTitle,
+        dataType: dataType,
+        required: required.choice === true ? 1 : 0,
+        dataContent: questionChoice.chooseData
+      });
+      setContent({ maxID: id, chooseData: tmpChooseData });
+    }
     // 重置选项
     setLoad(0);
+    setQuestionTitle(""); // 重新置空
+    setRequired({
+      essayQuestion: false, // 判断是否问答题为必答
+      choice: false, // 选择题是否为必答
+      singleOrMulti: false // 选择题是单选还是多选
+    });
     setQuestionChoice({
+      maxID: 1,
       chooseData: [
         {
           id: 1,
@@ -269,27 +357,161 @@ function QuestionaireContent(props) {
         }
       ]
     });
+    setUpdate(false);
+  };
+
+  // 删除已添加的问卷题目
+  const deleteQuestion = id => event => {
+    //todo
+    let tmpChooseData = Content.chooseData;
+    let index = 0;
+    for (let i = 0; i < tmpChooseData.length; i++) {
+      if (id === tmpChooseData.id) {
+        index = i;
+        break;
+      }
+    }
+    tmpChooseData.splice(index, 1); // 删除该题目
+    // 变动后续题目的titleNum依次-1
+    for (let i = 0; i < tmpChooseData.length; i++) {
+      if (i >= index) {
+        tmpChooseData[i].titleNum = tmpChooseData[i].titleNum - 1;
+      }
+    }
+    setContent({ maxID: Content.maxID, chooseData: Content.chooseData });
+  };
+
+  // 编辑已添加的问卷题目
+  const editQuestion = id => event => {
+    // 获取问卷问题数据
+    let tmpChooseData = Content.chooseData;
+    // 获取当前编辑标题数据
+    let tmpQuestionTitle = questionTitle;
+    // 获取当前编辑的选项数据
+    let tmpQuestionChoice = questionChoice.chooseData;
+    // 目标问题的索引
+    let index = 0;
+    for (var i = 0; i < tmpChooseData.length; i++) {
+      if (tmpChooseData[i].id === id) {
+        index = i;
+        break;
+      }
+    }
+    // 记录正在编辑的题目在content中的索引
+    setUpdateIndex(index);
+    if (tmpChooseData[index].dataType === 1) {
+      // 显示问答题编辑栏
+      showEssayQuestion();
+    } else {
+      // 显示单选题或者多选题编辑栏
+      showChoice();
+      // 获取选项数据,并设置选项数据
+      tmpQuestionChoice = tmpChooseData[index].dataContent;
+      setQuestionChoice({
+        maxID: questionChoice.maxID,
+        chooseData: tmpQuestionChoice
+      });
+    }
+
+    // 显示编辑栏的标题
+    tmpQuestionTitle = tmpChooseData[index].title;
+    setQuestionTitle(tmpQuestionTitle);
+    // 当存在必选时，确定是问答题还是选择题
+    if (tmpChooseData[index].required === 1) {
+      if (tmpChooseData[index].dataType === 1) {
+        setRequired({
+          essayQuestion: true,
+          choice: false,
+          singleOrMulti: false
+        });
+      } else if (tmpChooseData[index].dataType === 2) {
+        setRequired({
+          essayQuestion: false,
+          choice: true,
+          singleOrMulti: false
+        });
+      } else if (tmpChooseData[index].dataType === 3) {
+        setRequired({
+          essayQuestion: false,
+          choice: true,
+          singleOrMulti: true
+        });
+      }
+    }
+    setUpdate(true);
   };
 
   return (
     <Paper className={classes.paper}>
       {!title && (
         <Typography variant="h5" gutterBottom align="center">
-          这里是问卷内容
+          这里是问卷内容,请从输入问卷题目和描述开始~
         </Typography>
       )}
       <Typography variant="h5" gutterBottom align="center">
         {title}
       </Typography>
       <Typography gutterBottom>{description}</Typography>
-      <List subheader={<li />}>
-        {Content.chooseData.map(item => (
-          <ListItem key={item.id}>
-            <ul>
-              <ListSubheader>{item.title}</ListSubheader>
-            </ul>
-          </ListItem>
-        ))}
+      <List subheader={<li />} className={classes.list}>
+        {Content.chooseData.map(item => {
+          let required = "";
+          if (item.required === 1) {
+            required = "【必答】";
+          }
+          let multiChoice = "";
+          if (item.dataType === 3) {
+            multiChoice = "【多选】";
+          }
+
+          return (
+            <ListItem button key={item.id}>
+              <li>
+                <Typography variant="h6">
+                  {item.titleNum}
+                  {"."}
+                  {item.title}
+                  {required}
+                  {multiChoice}
+                </Typography>
+                {item.dataType === 1 && (
+                  <TextField
+                    id="standard-bare"
+                    className={classes.textField}
+                    fullWidth="true"
+                    margin="normal"
+                    inputProps={{ "aria-label": "bare" }}
+                  />
+                )}
+                {(item.dataType === 2 || item.dataType === 3) && (
+                  <FormControl>
+                    <RadioGroup>
+                      {item.dataContent.map(_item => (
+                        <div key={_item.id}>
+                          <FormControlLabel
+                            control={<Radio />}
+                            label={_item.content}
+                          />
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                )}
+              </li>
+              <ListItemSecondaryAction>
+                <Tooltip title="编辑">
+                  <IconButton onClick={editQuestion(item.id)}>
+                    <EditIcon color="inherit" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="删除">
+                  <IconButton onClick={deleteQuestion(item.id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              </ListItemSecondaryAction>
+            </ListItem>
+          );
+        })}
       </List>
       <Grid container align="center">
         <Grid item xs={12} sm={6}>
@@ -302,17 +524,13 @@ function QuestionaireContent(props) {
           </Button>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={showSingleChoice}
-          >
+          <Button variant="contained" color="secondary" onClick={showChoice}>
             添加选择题
           </Button>
         </Grid>
       </Grid>
       {show === 1 && (
-        <div className={classes.essayQuesstion}>
+        <div className={classes.essayQuestion}>
           <Typography gutterBottom>
             题目：
             <TextField
@@ -320,6 +538,7 @@ function QuestionaireContent(props) {
               className={classes.textField}
               placeholder="写下你的问题"
               onChange={handleTitlechange("title")}
+              value={questionTitle}
               fullWidth="true"
               margin="normal"
               inputProps={{ "aria-label": "bare" }}
@@ -338,9 +557,9 @@ function QuestionaireContent(props) {
             />
           </Typography>
           <Typography>
-            是否必选：
+            是否必答：
             <Switch
-              checked={required.essayQuesstion}
+              checked={required.essayQuestion}
               onChange={handleChange("essayQuestion")}
               value="essayQuestion"
               inputProps={{ "aria-label": "secondary checkbox" }}
@@ -365,14 +584,16 @@ function QuestionaireContent(props) {
         </div>
       )}
       {show === 2 && (
-        <div className={classes.essayQuesstion}>
+        <div className={classes.essayQuestion}>
           <Typography gutterBottom>
             题目：
             <TextField
               id="standard-bare"
               className={classes.textField}
               placeholder="写下你的问题"
+              value={questionTitle}
               fullWidth="true"
+              onChange={handleTitlechange("title")}
               margin="normal"
               inputProps={{ "aria-label": "bare" }}
             />
@@ -421,7 +642,7 @@ function QuestionaireContent(props) {
             </Fab>
           </Typography>
           <Typography>
-            是否必选：
+            是否必答：
             <Switch
               checked={required.choice}
               onChange={handleChange("choice")}
