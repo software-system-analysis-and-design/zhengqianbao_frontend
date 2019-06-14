@@ -58,7 +58,7 @@ state = {
       title: "这是问答题的问题"  
       dataType: 1  （1 表示是问答题)
       required: 1    (1 表示是必选题目， 0非必选题)
-      dataContent: "这是回答的数据，默认为空"
+      dataContent: [] 为空
     }
     { // 单选题的字段格式
       titleNum: 2
@@ -94,15 +94,17 @@ state = {
 */
 
 function QuestionaireContent(props) {
-  const { classes, title, description } = props;
+  const { classes, title, description, Content, setContent } = props;
   /***************************************************
    *  定义 本组件使用的状态变量
    *****************************************************/
   // 这里存放问卷题目的数据
+  /*
   const [Content, setContent] = React.useState({
     maxID: 0,
     chooseData: []
   }); // 存放页面数据
+  */
 
   // 由于在map 中的state变量无法触发更新组件，我们需要使用一个额外的变量来进行触发
   const [load, setLoad] = React.useState(0);
@@ -110,7 +112,7 @@ function QuestionaireContent(props) {
   // 我们需要设置一个问卷题目编辑器的显示信号  1 显示问答题  2 显示选择题  0 not show
   const [show, setShow] = React.useState(0);
 
-  // 设置问卷类型
+  // 设置问卷类型，相当于常量吧。。
   const [questionType, setQuestionType] = React.useState({
     essayQuestion: 1,
     singleChoice: 2,
@@ -227,8 +229,8 @@ function QuestionaireContent(props) {
         title: questionTitle,
         id: tmpChooseData[updateIndex].id,
         dataType: questionType.essayQuestion,
-        required: required.essayQuestion === true ? 1 : 0, // 获取必选或者非必选
-        dataContent: ""
+        required: required.essayQuestion,
+        dataContent: [{ id: 0, content: "" }]
       };
       setContent({ maxID: Content.maxID, chooseData: tmpChooseData });
     } else {
@@ -241,8 +243,8 @@ function QuestionaireContent(props) {
         id: id,
         title: questionTitle, // 全局state 问题的题目
         dataType: questionType.essayQuestion,
-        required: required.essayQuestion === true ? 1 : 0, // 获取必选或者非必选
-        dataContent: ""
+        required: required.essayQuestion,
+        dataContent: [{ id: 0, content: "" }]
       });
       setContent({ maxID: id, chooseData: tmpChooseData });
     }

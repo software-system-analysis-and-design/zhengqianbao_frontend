@@ -13,7 +13,7 @@ import CreateTask from "../CreatTask/CreateTask";
 import TaskList from "../TaskList/TaskList";
 import RecycleBin from "../RecycleBin/RecycleBin";
 import Commission from "../Commission/Commission.jsx";
-import Questionaire from "../Questionaire/Questionaire.jsx";
+import Questionnaire from "../Questionnaire/Questionnaire.jsx";
 
 const styles = {
   contentWrapper: {
@@ -32,7 +32,7 @@ const styles = {
   [
     taskName: "任务名"
     taskID: "任务ID"
-    taskState: "运行中 / 待发布 / 终止"
+    taskState: "进行中 / 待发布 / 已终止"
     taskType: "问卷"
     number: 100         // 任务要求个数 
     finishedNumber: 30 // 已完成的个数
@@ -41,8 +41,6 @@ const styles = {
   ]
 }
 */
-
-
 function TaskBoard(props) {
   // eslint-disable-next-line react/prop-types
   const { classes, match } = props;
@@ -94,7 +92,7 @@ function TaskBoard(props) {
           </Grid>
         </div>
       )}
-      <Route exact path={`${match.path}`} component={TaskList} />
+      <Route exact path={`${match.path}`} component={() => <TaskList  />} />
       <Route
         path={`${match.path}/createtask`}
         component={() => (
@@ -107,9 +105,9 @@ function TaskBoard(props) {
       />
       <Route path={`${match.path}/recyclebin`} component={RecycleBin} />
       <Route
-        path={`${match.path}/createtask/questionaire`}
+        path={`${match.path}/createtask/Questionnaire`}
         component={() => (
-          <Questionaire transferMsg={transferMsg} path={match.url} />
+          <Questionnaire transferMsg={transferMsg} path={match.url} />
         )}
       />
       <Route

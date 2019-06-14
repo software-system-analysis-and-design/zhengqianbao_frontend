@@ -2,12 +2,15 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
-import Paper from "@material-ui/core/Paper";
-import QuestionaireContent from "components/QuestionaireContent/QuestionaireContent";
+import QuestionnaireContent from "components/QuestionnaireContent/QuestionnaireContent";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import { handleResponse, parseParams } from "variables/serverFunc.jsx";
+import user from "variables/global.jsx";
+
+const apiUrl = "https://littlefish33.cn:8080";
 
 const styles = theme => ({
   root: {
@@ -26,24 +29,99 @@ const styles = theme => ({
   }
 });
 
-function Questionaire(props) {
+function Questionnaire(props) {
   const { classes, transferMsg, path } = props;
 
+  // 存放问卷基本字段
   const [values, setValues] = React.useState({
     title: "",
-    description: ""
+    description: "",
+    money: 0,
+    number: 0,
+    publishTime: "",
+    endTime: ""
   });
+
+  const [Content, setContent] = React.useState({
+    maxID: 0,
+    chooseData: []
+  }); // 存放问卷页面数据
+
+  const [test, setTest] = React.useState("test");
+
+  const submitQuestionnaire = () => {
+    if (values.title === "") {
+      alert("问卷标题不能为空");
+      return null;
+    }
+
+    if (values.money < 0) {
+      alert("金币不能小于0");
+      return null;
+    }
+
+    if (Content.chooseData.length === 0) {
+      alert("问卷不能为空");
+      return null;
+    }
+
+    if (values.number <= 0) {
+      alert("发布的问卷数必须为正数");
+      return null;
+    }
+
+    let allData = {
+      taskName: values.title,
+      taskID: "",
+      inTrash: 0,
+      taskType: "问卷",
+      creator: localStorage.getItem("userID"),
+      description: values.description,
+      money: parseInt(values.money),
+      number: parseInt(values.number),
+      finishedNumber: 0,
+      publishTime: values.publishTime,
+      endTime: values.endTime,
+      chooseData: Content.chooseData
+    };
+
+    // eslint-disable-next-line no-console
+    console.log(JSON.stringify(allData));
+
+    let data = new FormData();
+    data.append("data", JSON.stringify(allData));
+
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user-token")
+      },
+      body: data
+    };
+
+    console.log(requestOptions);
+
+    fetch(apiUrl + "/questionnaire/create", requestOptions)
+      .then(handleResponse)
+      .then(response => {
+        if (response.code === 200) {
+          alert("创建任务成功");
+        } else {
+          alert("创建任务失败");
+        }
+      });
+  };
 
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
   };
 
   useEffect(() => {
-    transferMsg("2Q"); // 进入问卷组件
+    transferMsg("2Q"); // 更新组件
     return () => {
       transferMsg("Return"); // 离开问卷组件
     };
-  });
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -84,6 +162,7 @@ function Questionaire(props) {
             className={classes.textField}
             placeholder="合理设置报酬哦！"
             fullWidth="true"
+            onChange={handleChange("money")}
             InputLabelProps={{
               shrink: true
             }}
@@ -94,6 +173,7 @@ function Questionaire(props) {
             type="number"
             className={classes.textField}
             placeholder="设置问卷份数，否则默认份数不限！"
+            onChange={handleChange("number")}
             fullWidth="true"
             InputLabelProps={{
               shrink: true
@@ -103,9 +183,10 @@ function Questionaire(props) {
           <form className={classes.container} noValidate>
             <TextField
               id="datetime-local"
-              label="设置问卷发布时间"
+              label="设置问卷发布时间（不设置则可手动发布）"
               type="datetime-local"
               fullWidth="true"
+              onChange={handleChange("publishTime")}
               className={classes.textField}
               InputLabelProps={{
                 shrink: true
@@ -115,8 +196,10 @@ function Questionaire(props) {
           <form className={classes.container} noValidate>
             <TextField
               id="datetime-local"
-              label="设置问卷截止时间"
+              label="设置问卷截止时间（不设置则可手动停止）"
               type="datetime-local"
+              placeholder="若不设置，则可选择手动停止"
+              onChange={handleChange("endTime")}
               fullWidth="true"
               className={classes.textField}
               InputLabelProps={{
@@ -124,20 +207,21 @@ function Questionaire(props) {
               }}
             />
           </form>
-          <Link to={path}>
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-            >
-              创建
-            </Button>
-          </Link>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={submitQuestionnaire}
+          >
+            创建
+          </Button>
         </Grid>
         <Grid item xs={12} sm={8}>
-          <QuestionaireContent
+          <QuestionnaireContent
             title={values.title}
             description={values.description}
+            Content={Content}
+            setContent={setContent}
           />
         </Grid>
       </Grid>
@@ -145,8 +229,8 @@ function Questionaire(props) {
   );
 }
 
-Questionaire.propTypes = {
+Questionnaire.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Questionaire);
+export default withStyles(styles)(Questionnaire);

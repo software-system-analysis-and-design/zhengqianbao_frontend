@@ -82,12 +82,23 @@ function Content(props) {
     taskState,
     taskID,
     taskType,
-    taskReward,
-    taskStartTime,
-    taskEndTime,
-    numOfFinishedTasks,
-    numOfAllTasks
+    money,
+    publishTime,
+    endTime,
+    finishedNumber,
+    number
   } = props;
+
+  const [taskButtonState, setTaskButtonState] = React.useState("");
+
+  React.useEffect(() => {
+    if (taskState === "进行中") {
+      setTaskButtonState("终止任务");
+    }
+    if (taskState === "待发布" || taskState === "已终止") {
+      setTaskButtonState("发布任务");
+    }
+  });
 
   return (
     <div>
@@ -153,18 +164,18 @@ function Content(props) {
                 类型：{taskType}
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                报酬：{taskReward} 金币/个
+                报酬：{money} 金币/个
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                完成个数：{numOfFinishedTasks}/{numOfAllTasks}
+                完成个数：{finishedNumber}/{number}
               </Typography>
             </Grid>
             <Grid item xs={4}>
               <Typography variant="subtitle1" gutterBottom>
-                任务发布时间：{taskStartTime}
+                任务发布时间：{publishTime}
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                任务截止时间：{taskEndTime}
+                任务截止时间：{endTime}
               </Typography>
               <Button variant="contained" color="secondary">
                 下载任务数据
@@ -175,7 +186,7 @@ function Content(props) {
                 className={classes.button}
                 onClick={handleClickOpen_stop}
               >
-                终止任务
+                {taskButtonState}
               </Button>
             </Grid>
           </Grid>
@@ -228,7 +239,7 @@ function Content(props) {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {"确定要终止该任务吗？"}
+            {`确定要 ${taskButtonState} 吗？`}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">

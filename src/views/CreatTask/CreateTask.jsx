@@ -28,7 +28,7 @@ const styles = theme => ({
 function CreateTask(props) {
   const { classes, transferMsg, path, display } = props;
 
-  const toQuestionairePath = path + "/createTask/questionaire";
+  const toQuestionnairePath = path + "/createTask/Questionnaire";
   const toCommissionPath = path + "/createTask/commission";
 
   // const [display, setDisplay] = useState(true);
@@ -58,7 +58,7 @@ function CreateTask(props) {
                     创建问卷任务
                   </Typography>
                   <div align="center">
-                    <Link to={toQuestionairePath}>
+                    <Link to={toQuestionnairePath}>
                       <Button
                         color="secondary"
                         variant="contained"
