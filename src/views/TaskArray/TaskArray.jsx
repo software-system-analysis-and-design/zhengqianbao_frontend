@@ -3,6 +3,9 @@ import Grid from "@material-ui/core/Grid";
 import { handleResponse } from "variables/serverFunc.jsx";
 import { withStyles } from "@material-ui/core/styles";
 import TaskCard from "../../components/TaskCard/TaskCard.jsx";
+import SingleChoiceCard from "../../components/SingleChoiceCard/SingleChoiceCard";
+import MultiChoiceCard from "../../components/MultiChoiceCard/MultiChoiceCard";
+import ShortAnswerCard from "../../components/ShortAnswerCard/ShortAnswerCard";
 
 const style = {
   container: {
@@ -17,8 +20,8 @@ function TaskArray(props) {
   const { classes, match } = props;
 
   const [tasks, setTasks] = useState([]);
-  // 需要仅在更新或渲染时调用异步请求数据，使用useEffect会一直请求，不知为何
-  const [test, setTest] = useState(fetchTaskList);
+
+  React.useEffect(fetchTaskList, []);
 
   function fetchTaskList() {
     const apiUrl = "https://littlefish33.cn:8080/questionnaire/previews";
@@ -54,9 +57,11 @@ function TaskArray(props) {
       });
   }
   return (
-    <Grid className={classes.container} container spacing={2}>
-      {tasks}
-    </Grid>
+    <div>
+      <Grid className={classes.container} container spacing={2}>
+        {tasks}
+      </Grid>
+    </div>
   );
 }
 
