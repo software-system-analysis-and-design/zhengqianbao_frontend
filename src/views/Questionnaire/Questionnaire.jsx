@@ -7,7 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import { handleResponse } from "variables/serverFunc.jsx";
+import { handleResponse, parseParams } from "variables/serverFunc.jsx";
 
 const apiUrl = "https://littlefish33.cn:8080";
 
@@ -70,48 +70,73 @@ function Questionnaire(props) {
       return null;
     }
 
-    let allData = {
-      taskName: values.title,
-      taskID: "",
-      inTrash: 0,
-      taskType: "问卷",
-      creator: localStorage.getItem("userID"),
-      description: values.description,
-      money: parseInt(values.money),
-      number: parseInt(values.number),
-      finishedNumber: 0,
-      publishTime: values.publishTime,
-      endTime: values.endTime,
-      chooseData: Content.chooseData
-    };
-
-    // eslint-disable-next-line no-console
-    // console.log(JSON.stringify(allData));
-
-    let data = new FormData();
-    data.append("data", JSON.stringify(allData));
-
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("user-token")
-      },
-      body: data
-    };
-
     // console.log(requestOptions);
     if (taskID.length === 14) {
+      let allData = {
+        taskName: values.title,
+        taskID: taskID,
+        inTrash: 0,
+        taskType: "问卷",
+        creator: localStorage.getItem("userID"),
+        description: values.description,
+        money: parseInt(values.money),
+        number: parseInt(values.number),
+        finishedNumber: 0,
+        publishTime: values.publishTime,
+        endTime: values.endTime,
+        chooseData: Content.chooseData
+      };
+      // eslint-disable-next-line no-console
+      // console.log(JSON.stringify(allData));
+      let data = new FormData();
+      data.append("data", JSON.stringify(allData));
+      data.append("id", taskID);
+      // console.log(taskID)
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("user-token")
+        },
+        body: data
+      };
+
       // 更新
       fetch(apiUrl + "/questionnaire/update", requestOptions)
         .then(handleResponse)
         .then(response => {
+          console.log(response);
           if (response.code === 200) {
-            alert("更新任务成功");
+            alert(response.msg);
           } else {
-            alert("创建任务失败");
+            alert(response.msg);
           }
         });
     } else {
+      let allData = {
+        taskName: values.title,
+        taskID: "",
+        inTrash: 0,
+        taskType: "问卷",
+        creator: localStorage.getItem("userID"),
+        description: values.description,
+        money: parseInt(values.money),
+        number: parseInt(values.number),
+        finishedNumber: 0,
+        publishTime: values.publishTime,
+        endTime: values.endTime,
+        chooseData: Content.chooseData
+      };
+      // eslint-disable-next-line no-console
+      console.log(JSON.stringify(allData));
+      let data = new FormData();
+      data.append("data", JSON.stringify(allData));
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("user-token")
+        },
+        body: data
+      };
       fetch(apiUrl + "/questionnaire/create", requestOptions)
         .then(handleResponse)
         .then(response => {
@@ -134,22 +159,32 @@ function Questionnaire(props) {
       // 传入了将要更新的任务的taskID
       setQState("更新");
       // 根据taskID，获取问卷数据
-      let data = new FormData();
-      data.append("id", taskID);
       const requestOptions = {
-        method: "GET",
+        method: "POST",
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("user-token")
+          //Authorization: "Bearer " + localStorage.getItem("user-token"),
+          Accept: "application/json",
+          "content-type": "application/x-www-form-urlencoded"
         },
-        body: {
-          id: taskID
-        }
+        body: parseParams({ id: taskID })
       };
       console.log(requestOptions);
-      fetch(apiUrl + "/questionnaire/select")
+      fetch(apiUrl + "/questionnaire/select", requestOptions)
         .then(handleResponse)
         .then(response => {
-          console.log(response); // TODO
+          console.log(response);
+          setValues({
+            title: response.taskName,
+            description: response.description,
+            money: response.money + "",
+            number: response.number + "",
+            publishTime: response.publishTime,
+            endTime: response.endTime
+          });
+          setContent({
+            maxID: 100,
+            chooseData: response.chooseData
+          });
         });
     }
     return () => {
@@ -197,6 +232,7 @@ function Questionnaire(props) {
             placeholder="合理设置报酬哦！"
             fullWidth="true"
             onChange={handleChange("money")}
+            value={values.money}
             InputLabelProps={{
               shrink: true
             }}
@@ -208,6 +244,7 @@ function Questionnaire(props) {
             className={classes.textField}
             placeholder="设置问卷份数，否则默认份数不限！"
             onChange={handleChange("number")}
+            value={values.number}
             fullWidth="true"
             InputLabelProps={{
               shrink: true
@@ -221,6 +258,7 @@ function Questionnaire(props) {
               type="datetime-local"
               fullWidth="true"
               onChange={handleChange("publishTime")}
+              value={values.publishTime}
               className={classes.textField}
               InputLabelProps={{
                 shrink: true
@@ -234,6 +272,7 @@ function Questionnaire(props) {
               type="datetime-local"
               placeholder="若不设置，则可选择手动停止"
               onChange={handleChange("endTime")}
+              value={values.endTime}
               fullWidth="true"
               className={classes.textField}
               InputLabelProps={{

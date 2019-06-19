@@ -11,7 +11,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 
-import { handleResponse } from "variables/serverFunc.jsx";
+import { handleResponse, parseParams } from "variables/serverFunc.jsx";
 const apiUrl = "https://littlefish33.cn:8080";
 
 const styles = {
@@ -75,20 +75,22 @@ function RecycleBin(props) {
   // 恢复任务
   function recoverTask() {
     for (let i = 0; i < selected.length; i++) {
-      let data = new FormData();
-      data.append("id", selected[i]);
-      data.append("inTrash", 1); // 移出回收站
+      // let data = new FormData();
+      // data.append("id", selected[i]);
+      // data.append("inTrash", 1); // 移出回收站
       const requestOptions = {
         method: "POST",
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("user-token")
+          Authorization: "Bearer " + localStorage.getItem("user-token"),
+          Accept: "application/json",
+          "content-type": "application/x-www-form-urlencoded"
         },
-        body: data
+        body: parseParams({ id: selected[i], inTrash: 0 })
       };
-      fetch(apiUrl + "/questionaire/trash", requestOptions)
+      fetch(apiUrl + "/questionnaire/trash", requestOptions)
         .then(handleResponse)
         .then(response => {
-          console.log(response); //TODO
+          alert(response.msg);
         });
     }
     removeData(selected); // 选中项的row数据删除
@@ -103,14 +105,16 @@ function RecycleBin(props) {
       const requestOptions = {
         method: "POST",
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("user-token")
+          Authorization: "Bearer " + localStorage.getItem("user-token"),
+          Accept: "application/json",
+          "content-type": "application/x-www-form-urlencoded"
         },
-        body: data
+        body: parseParams({ id: selected[i] })
       };
-      fetch(apiUrl + "/questionaire/delete", requestOptions)
+      fetch(apiUrl + "/questionnaire/delete", requestOptions)
         .then(handleResponse)
         .then(response => {
-          console.log(response); // TODO
+          if (i === 0) alert(response.msg);
         });
     }
     removeData(selected); // 选中项的row数据删除
@@ -140,12 +144,13 @@ function RecycleBin(props) {
       fetch(apiUrl + "/questionnaire/previews", requestOptions)
         .then(handleResponse)
         .then(response => {
+          console.log(response);
           let res = response.reverse();
           let rowData = [];
           for (let i = 0; i < res.length; i++) {
             if (response[i].inTrash === 1)
               // 数据在回收站中
-              rowData.append(
+              rowData.push(
                 createData(
                   res[i].taskID,
                   res[i].taskName,
@@ -154,6 +159,7 @@ function RecycleBin(props) {
                 )
               );
           }
+          console.log(rowData);
           setRows(rowData);
         });
     };

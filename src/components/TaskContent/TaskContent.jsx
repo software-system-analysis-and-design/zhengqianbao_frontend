@@ -22,7 +22,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-import { handleResponse } from "variables/serverFunc.jsx";
+import { handleResponse, parseParams } from "variables/serverFunc.jsx";
 
 const apiUrl = "https://littlefish33.cn:8080";
 
@@ -70,7 +70,8 @@ function Content(props) {
     endTime,
     finishedNumber,
     number,
-    transferMsg
+    transferMsg,
+    removeTask
   } = props;
 
   const [taskButtonState, setTaskButtonState] = React.useState("");
@@ -88,21 +89,7 @@ function Content(props) {
   // 移入回收站
   function deleteToTrash() {
     setOpen_delete(false);
-    let data = new FormData();
-    data.append("id", taskID);
-    data.append("inTrash", 0);
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("user-token")
-      },
-      body: data
-    };
-    fetch(apiUrl + "/questionaire/trash", requestOptions)
-      .then(handleResponse)
-      .then(response => {
-        console.log(response); // TODO
-      });
+    removeTask(taskID);
     handleClose_delete(); // 关闭对话框
   }
 
@@ -130,7 +117,7 @@ function Content(props) {
   function editTask() {
     // 点击按钮编辑任务，传递给父组件点击的任务ID
     transferMsg(taskID);
-    console.log("taskContent transfer");
+    // console.log("taskContent transfer");
   }
 
   React.useEffect(() => {

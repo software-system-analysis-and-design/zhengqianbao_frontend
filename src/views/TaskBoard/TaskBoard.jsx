@@ -72,7 +72,7 @@ function TaskBoard(props) {
       // 。。。。{`${match.path}/updatetask/Questionnaire`}
       let url = match.url + "/updatetask/Questionnaire";
       setTaskID(msg);
-      history.push(url);  // 跳转到页面进行编辑
+      history.push(url); // 跳转到页面进行编辑
       setToTask(1);
     }
   }

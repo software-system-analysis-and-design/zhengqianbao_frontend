@@ -320,7 +320,7 @@ function QuestionaireContent(props) {
         id: tmpChooseData[updateIndex].id,
         title: questionTitle,
         dataType: dataType,
-        required: required.choice === true ? 1 : 0,
+        required: required.choice,
         dataContent: questionChoice.chooseData
       };
       setContent({ maxID: Content.maxID, chooseData: tmpChooseData });
@@ -337,7 +337,7 @@ function QuestionaireContent(props) {
         id: id,
         title: questionTitle,
         dataType: dataType,
-        required: required.choice === true ? 1 : 0,
+        required: required.choice,
         dataContent: questionChoice.chooseData
       });
       setContent({ maxID: id, chooseData: tmpChooseData });
