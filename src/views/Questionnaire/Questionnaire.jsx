@@ -29,7 +29,7 @@ const styles = theme => ({
 });
 
 function Questionnaire(props) {
-  const { classes, transferMsg, path } = props;
+  const { classes, transferMsg, path, taskID } = props;
 
   // 存放问卷基本字段
   const [values, setValues] = React.useState({
@@ -46,7 +46,8 @@ function Questionnaire(props) {
     chooseData: []
   }); // 存放问卷页面数据
 
-  const [test, setTest] = React.useState("test");
+  // create or update
+  const [QState, setQState] = React.useState("创建");
 
   const submitQuestionnaire = () => {
     if (values.title === "") {
@@ -85,7 +86,7 @@ function Questionnaire(props) {
     };
 
     // eslint-disable-next-line no-console
-    console.log(JSON.stringify(allData));
+    // console.log(JSON.stringify(allData));
 
     let data = new FormData();
     data.append("data", JSON.stringify(allData));
@@ -98,17 +99,29 @@ function Questionnaire(props) {
       body: data
     };
 
-    console.log(requestOptions);
-
-    fetch(apiUrl + "/questionnaire/create", requestOptions)
-      .then(handleResponse)
-      .then(response => {
-        if (response.code === 200) {
-          alert("创建任务成功");
-        } else {
-          alert("创建任务失败");
-        }
-      });
+    // console.log(requestOptions);
+    if (taskID.length === 14) {
+      // 更新
+      fetch(apiUrl + "/questionnaire/update", requestOptions)
+        .then(handleResponse)
+        .then(response => {
+          if (response.code === 200) {
+            alert("更新任务成功");
+          } else {
+            alert("创建任务失败");
+          }
+        });
+    } else {
+      fetch(apiUrl + "/questionnaire/create", requestOptions)
+        .then(handleResponse)
+        .then(response => {
+          if (response.code === 200) {
+            alert("创建任务成功");
+          } else {
+            alert("创建任务失败");
+          }
+        });
+    }
   };
 
   const handleChange = name => event => {
@@ -117,6 +130,28 @@ function Questionnaire(props) {
 
   useEffect(() => {
     transferMsg("2Q"); // 更新组件
+    if (taskID.length === 14) {
+      // 传入了将要更新的任务的taskID
+      setQState("更新");
+      // 根据taskID，获取问卷数据
+      let data = new FormData();
+      data.append("id", taskID);
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("user-token")
+        },
+        body: {
+          id: taskID
+        }
+      };
+      console.log(requestOptions);
+      fetch(apiUrl + "/questionnaire/select")
+        .then(handleResponse)
+        .then(response => {
+          console.log(response); // TODO
+        });
+    }
     return () => {
       transferMsg("Return"); // 离开问卷组件
     };
@@ -127,7 +162,7 @@ function Questionnaire(props) {
       <Grid container spacing={8}>
         <Grid item xs={12} sm={4}>
           <Typography variant="h5" gutterBottom>
-            创建问卷任务
+            {QState}问卷任务
           </Typography>
           <TextField
             label="问卷名称"
@@ -212,7 +247,7 @@ function Questionnaire(props) {
             className={classes.button}
             onClick={submitQuestionnaire}
           >
-            创建
+            {QState}
           </Button>
         </Grid>
         <Grid item xs={12} sm={8}>

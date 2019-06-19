@@ -8,6 +8,8 @@ import user from "variables/global.jsx";
 const apiUrl = "https://littlefish33.cn:8080";
 
 function TaskList(props) {
+  const { transferMsg } = props;
+
   const [taskContent, setTaskContent] = React.useState([]);
 
   React.useEffect(() => {
@@ -40,6 +42,7 @@ function TaskList(props) {
               publishTime={item.publishTime}
               endTime={item.endTime}
               taskState="进行中"
+              transferMsg={transferMsg}
             />
           )
       )}

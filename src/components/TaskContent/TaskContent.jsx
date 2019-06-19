@@ -13,6 +13,7 @@ import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import EditIcon from "@material-ui/icons/Edit";
 import DetailsIcon from "@material-ui/icons/Details";
+import { Route, Link } from "react-router-dom";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -68,7 +69,8 @@ function Content(props) {
     publishTime,
     endTime,
     finishedNumber,
-    number
+    number,
+    transferMsg
   } = props;
 
   const [taskButtonState, setTaskButtonState] = React.useState("");
@@ -99,7 +101,7 @@ function Content(props) {
     fetch(apiUrl + "/questionaire/trash", requestOptions)
       .then(handleResponse)
       .then(response => {
-        console.log(response);
+        console.log(response); // TODO
       });
     handleClose_delete(); // 关闭对话框
   }
@@ -126,7 +128,9 @@ function Content(props) {
 
   // 点击编辑任务
   function editTask() {
-    // 点击按钮编辑任务，首先必须进行页面跳转，然后获取数据，并填充
+    // 点击按钮编辑任务，传递给父组件点击的任务ID
+    transferMsg(taskID);
+    console.log("taskContent transfer");
   }
 
   React.useEffect(() => {
@@ -160,7 +164,7 @@ function Content(props) {
               <Grid item xs={4} sm={1}>
                 <Tooltip title="编辑">
                   <IconButton>
-                    <EditIcon color="inherit" />
+                    <EditIcon color="inherit" onClick={editTask} />
                   </IconButton>
                 </Tooltip>
               </Grid>

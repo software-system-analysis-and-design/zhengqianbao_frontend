@@ -88,7 +88,7 @@ function RecycleBin(props) {
       fetch(apiUrl + "/questionaire/trash", requestOptions)
         .then(handleResponse)
         .then(response => {
-          console.log(response);
+          console.log(response); //TODO
         });
     }
     removeData(selected); // 选中项的row数据删除
@@ -110,7 +110,7 @@ function RecycleBin(props) {
       fetch(apiUrl + "/questionaire/delete", requestOptions)
         .then(handleResponse)
         .then(response => {
-          console.log(response);
+          console.log(response); // TODO
         });
     }
     removeData(selected); // 选中项的row数据删除
@@ -143,7 +143,8 @@ function RecycleBin(props) {
           let res = response.reverse();
           let rowData = [];
           for (let i = 0; i < res.length; i++) {
-            if (response[i].inTrash === 1) // 数据在回收站中
+            if (response[i].inTrash === 1)
+              // 数据在回收站中
               rowData.append(
                 createData(
                   res[i].taskID,

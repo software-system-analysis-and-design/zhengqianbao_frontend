@@ -43,21 +43,37 @@ const styles = {
 */
 function TaskBoard(props) {
   // eslint-disable-next-line react/prop-types
-  const { classes, match } = props;
+  const { classes, match, history } = props;
+
   // eslint-disable-next-line no-console
   // = 1 进入问卷  = 2 进入委托任务
   const [ToTask, setToTask] = useState(0); // 用于条件渲染，如果进入创建问卷页面，将不会显示三个按钮;
+  const [taskID, setTaskID] = useState(""); // 用于接收来点击任务的taskID
+
+  const createTask = "创建";
+  const nullTaskID = "";
+  const updateTask = "更新";
 
   // 用于与子组件进行通信，解析来自子组件的操作
   function transferMsg(msg) {
     // eslint-disable-next-line no-console
-    // console.log("transfer the msg: " + msg);
+    console.log("transfer the msg: " + msg);
     if (msg === "2Q") {
+      // 进入问卷编辑页面
       setToTask(1);
     } else if (msg === "2C") {
+      // 进入委托任务页面
       setToTask(2);
     } else if (msg === "Return") {
+      // 返回到主页面
       setToTask(0);
+    } else if (msg.length === 14) {
+      // 更新编辑问卷
+      // 。。。。{`${match.path}/updatetask/Questionnaire`}
+      let url = match.url + "/updatetask/Questionnaire";
+      setTaskID(msg);
+      history.push(url);  // 跳转到页面进行编辑
+      setToTask(1);
     }
   }
 
@@ -92,7 +108,11 @@ function TaskBoard(props) {
           </Grid>
         </div>
       )}
-      <Route exact path={`${match.path}`} component={() => <TaskList />} />
+      <Route
+        exact
+        path={`${match.path}`}
+        component={() => <TaskList transferMsg={transferMsg} />}
+      />
       <Route
         path={`${match.path}/createtask`}
         component={() => (
@@ -107,7 +127,23 @@ function TaskBoard(props) {
       <Route
         path={`${match.path}/createtask/Questionnaire`}
         component={() => (
-          <Questionnaire transferMsg={transferMsg} path={match.url} />
+          <Questionnaire
+            transferMsg={transferMsg}
+            path={match.url}
+            taskID={nullTaskID}
+            state={createTask}
+          />
+        )}
+      />
+      <Route
+        path={`${match.path}/updatetask/Questionnaire`}
+        component={() => (
+          <Questionnaire
+            transferMsg={transferMsg}
+            path={match.url}
+            taskID={taskID}
+            state={updateTask}
+          />
         )}
       />
       <Route
