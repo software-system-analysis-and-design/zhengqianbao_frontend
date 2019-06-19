@@ -21,6 +21,10 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
+import { handleResponse } from "variables/serverFunc.jsx";
+
+const apiUrl = "https://littlefish33.cn:8080";
+
 const styles = theme => ({
   paper: {
     maxWidth: 1000,
@@ -54,28 +58,6 @@ function Content(props) {
   const [open_refresh, setOpen_refresh] = React.useState(false);
   const [open_stop, setOpen_stop] = React.useState(false);
 
-  function handleClickOpen_delete() {
-    setOpen_delete(true);
-  }
-  function handleClose_delete() {
-    setOpen_delete(false);
-  }
-
-  function handleClickOpen_refresh() {
-    setOpen_refresh(true);
-  }
-  function handleClose_refresh() {
-    setOpen_refresh(false);
-  }
-
-  function handleClickOpen_stop() {
-    setOpen_stop(true);
-  }
-
-  function handleClose_stop() {
-    setOpen_stop(false);
-  }
-
   const {
     classes,
     taskName,
@@ -90,6 +72,62 @@ function Content(props) {
   } = props;
 
   const [taskButtonState, setTaskButtonState] = React.useState("");
+
+  // 点击删除图标按钮，弹出对话框
+  function handleClickOpen_delete() {
+    setOpen_delete(true);
+  }
+
+  // 点击否，关闭对话框
+  function handleClose_delete() {
+    setOpen_delete(false);
+  }
+
+  // 移入回收站
+  function deleteToTrash() {
+    setOpen_delete(false);
+    let data = new FormData();
+    data.append("id", taskID);
+    data.append("inTrash", 0);
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user-token")
+      },
+      body: data
+    };
+    fetch(apiUrl + "/questionaire/trash", requestOptions)
+      .then(handleResponse)
+      .then(response => {
+        console.log(response);
+      });
+    handleClose_delete(); // 关闭对话框
+  }
+
+  // 点击任务，开始启动任务
+  function handleClickOpen_refresh() {
+    setOpen_refresh(true);
+  }
+
+  // 点击按钮，关闭启动对话框
+  function handleClose_refresh() {
+    setOpen_refresh(false);
+  }
+
+  // 终止任务，弹出对话框
+  function handleClickOpen_stop() {
+    setOpen_stop(true);
+  }
+
+  // 关闭弹出对话框
+  function handleClose_stop() {
+    setOpen_stop(false);
+  }
+
+  // 点击编辑任务
+  function editTask() {
+    // 点击按钮编辑任务，首先必须进行页面跳转，然后获取数据，并填充
+  }
 
   React.useEffect(() => {
     if (taskState === "进行中") {
@@ -206,7 +244,7 @@ function Content(props) {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose_delete} color="primary">
+            <Button onClick={deleteToTrash} color="primary">
               是
             </Button>
             <Button onClick={handleClose_delete} color="primary" autoFocus>

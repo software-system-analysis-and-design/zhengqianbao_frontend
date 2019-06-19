@@ -81,7 +81,7 @@ class RegisterPage extends React.Component {
       .then(handleResponse)
       .then(response => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
-        console.log(response);
+        // console.log(response);
         if (response.code === 200) {
           localStorage.setItem("user", inputInfo);
           this.props.history.push("/login");

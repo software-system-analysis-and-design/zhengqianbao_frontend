@@ -3,17 +3,16 @@ import PropTypes from "prop-types";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Checkbox from "@material-ui/core/Checkbox";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+
+import { handleResponse } from "variables/serverFunc.jsx";
+const apiUrl = "https://littlefish33.cn:8080";
 
 const styles = {
   paper: {
@@ -32,30 +31,18 @@ const styles = {
   }
 };
 
-function createData(taskID, taskName, taskType, taskDeleteTime){
+function createData(taskID, taskName, taskType, taskDeleteTime) {
   return { taskID, taskName, taskType, taskDeleteTime };
 }
-
-const rows = [
-  createData("0001", "任务1", "问卷", "2019-01-02"),
-  createData("0002", "任务2", "问卷", "2019-01-03")
-];
 
 function RecycleBin(props) {
   const { classes } = props;
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rows, setRows] = React.useState([]);
 
-  function handleSelectAllClick(event) {
-    if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  }
-
+  // 记录选中or不选中的check box。
   function handleClick(event, name) {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -69,19 +56,108 @@ function RecycleBin(props) {
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        selected.slice(selectedIndex + 1)
       );
     }
     setSelected(newSelected);
   }
 
+  // 换页
   function handleChangePage(event, newPage) {
     setPage(newPage);
   }
 
+  // 设置每一页的行数
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(+event.target.value);
   }
+
+  // 恢复任务
+  function recoverTask() {
+    for (let i = 0; i < selected.length; i++) {
+      let data = new FormData();
+      data.append("id", selected[i]);
+      data.append("inTrash", 1); // 移出回收站
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("user-token")
+        },
+        body: data
+      };
+      fetch(apiUrl + "/questionaire/trash", requestOptions)
+        .then(handleResponse)
+        .then(response => {
+          console.log(response);
+        });
+    }
+    removeData(selected); // 选中项的row数据删除
+    setSelected([]); // 选中项置为空
+  }
+
+  // 彻底删除任务
+  function deleteTask() {
+    for (let i = 0; i < selected.length; i++) {
+      let data = new FormData();
+      data.append("id", selected[i]);
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("user-token")
+        },
+        body: data
+      };
+      fetch(apiUrl + "/questionaire/delete", requestOptions)
+        .then(handleResponse)
+        .then(response => {
+          console.log(response);
+        });
+    }
+    removeData(selected); // 选中项的row数据删除
+    setSelected([]); // 选中项置为空
+  }
+
+  // 指定 id 从 row 中移除
+  function removeData(taskIDList) {
+    let newRows = rows;
+    for (let i = 0; i < taskIDList.length; i++) {
+      for (let j = 0; j < newRows.length; j++) {
+        if (newRows[j].taskID === taskIDList[i]) {
+          newRows.splice(j, 1);
+          break;
+        }
+      }
+    }
+    setRows(newRows);
+  }
+
+  // 加载组件时，获取数据到rows中；
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const requestOptions = {
+        method: "GET"
+      };
+      fetch(apiUrl + "/questionnaire/previews", requestOptions)
+        .then(handleResponse)
+        .then(response => {
+          let res = response.reverse();
+          let rowData = [];
+          for (let i = 0; i < res.length; i++) {
+            if (response[i].inTrash === 1) // 数据在回收站中
+              rowData.append(
+                createData(
+                  res[i].taskID,
+                  res[i].taskName,
+                  res[i].taskType,
+                  "未知"
+                )
+              );
+          }
+          setRows(rowData);
+        });
+    };
+    fetchData(); // 请求数据
+  }, []);
 
   const isSelected = name => selected.indexOf(name) !== -1;
 
@@ -99,8 +175,10 @@ function RecycleBin(props) {
           >
             <TableBody>
               <TableRow>
-                <TableCell padding="checkbox"></TableCell>
-                <TableCell component="th" scope="row" padding="none">任务ID</TableCell>
+                <TableCell padding="checkbox" />
+                <TableCell component="th" scope="row" padding="none">
+                  任务ID
+                </TableCell>
                 <TableCell align="right">任务名</TableCell>
                 <TableCell align="right">类型</TableCell>
                 <TableCell align="right">删除时间</TableCell>
@@ -156,12 +234,12 @@ function RecycleBin(props) {
       <div className={classes.button}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <Button variant="contained" color="secondary">
+            <Button variant="contained" color="secondary" onClick={recoverTask}>
               恢复任务
             </Button>
           </Grid>
           <Grid item xs={6}>
-            <Button variant="contained" color="secondary">
+            <Button variant="contained" color="secondary" onClick={deleteTask}>
               彻底删除
             </Button>
           </Grid>

@@ -92,7 +92,7 @@ function TaskBoard(props) {
           </Grid>
         </div>
       )}
-      <Route exact path={`${match.path}`} component={() => <TaskList  />} />
+      <Route exact path={`${match.path}`} component={() => <TaskList />} />
       <Route
         path={`${match.path}/createtask`}
         component={() => (
