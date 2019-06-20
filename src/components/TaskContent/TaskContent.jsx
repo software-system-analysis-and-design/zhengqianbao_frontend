@@ -13,6 +13,7 @@ import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import EditIcon from "@material-ui/icons/Edit";
 import DetailsIcon from "@material-ui/icons/Details";
+import { Route, Link } from "react-router-dom";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -20,6 +21,10 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+
+import { handleResponse, parseParams } from "variables/serverFunc.jsx";
+
+const apiUrl = "https://littlefish33.cn:8080";
 
 const styles = theme => ({
   paper: {
@@ -54,40 +59,75 @@ function Content(props) {
   const [open_refresh, setOpen_refresh] = React.useState(false);
   const [open_stop, setOpen_stop] = React.useState(false);
 
-  function handleClickOpen_delete() {
-    setOpen_delete(true);
-  }
-  function handleClose_delete() {
-    setOpen_delete(false);
-  }
-
-  function handleClickOpen_refresh() {
-    setOpen_refresh(true);
-  }
-  function handleClose_refresh() {
-    setOpen_refresh(false);
-  }
-
-  function handleClickOpen_stop() {
-    setOpen_stop(true);
-  }
-
-  function handleClose_stop() {
-    setOpen_stop(false);
-  }
-
   const {
     classes,
     taskName,
     taskState,
     taskID,
     taskType,
-    taskReward,
-    taskStartTime,
-    taskEndTime,
-    numOfFinishedTasks,
-    numOfAllTasks
+    money,
+    publishTime,
+    endTime,
+    finishedNumber,
+    number,
+    transferMsg,
+    removeTask
   } = props;
+
+  const [taskButtonState, setTaskButtonState] = React.useState("");
+
+  // 点击删除图标按钮，弹出对话框
+  function handleClickOpen_delete() {
+    setOpen_delete(true);
+  }
+
+  // 点击否，关闭对话框
+  function handleClose_delete() {
+    setOpen_delete(false);
+  }
+
+  // 移入回收站
+  function deleteToTrash() {
+    setOpen_delete(false);
+    removeTask(taskID);
+    handleClose_delete(); // 关闭对话框
+  }
+
+  // 点击任务，开始启动任务
+  function handleClickOpen_refresh() {
+    setOpen_refresh(true);
+  }
+
+  // 点击按钮，关闭启动对话框
+  function handleClose_refresh() {
+    setOpen_refresh(false);
+  }
+
+  // 终止任务，弹出对话框
+  function handleClickOpen_stop() {
+    setOpen_stop(true);
+  }
+
+  // 关闭弹出对话框
+  function handleClose_stop() {
+    setOpen_stop(false);
+  }
+
+  // 点击编辑任务
+  function editTask() {
+    // 点击按钮编辑任务，传递给父组件点击的任务ID
+    transferMsg(taskID);
+    // console.log("taskContent transfer");
+  }
+
+  React.useEffect(() => {
+    if (taskState === "进行中") {
+      setTaskButtonState("终止任务");
+    }
+    if (taskState === "待发布" || taskState === "已终止") {
+      setTaskButtonState("发布任务");
+    }
+  });
 
   return (
     <div>
@@ -111,7 +151,7 @@ function Content(props) {
               <Grid item xs={4} sm={1}>
                 <Tooltip title="编辑">
                   <IconButton>
-                    <EditIcon color="inherit" />
+                    <EditIcon color="inherit" onClick={editTask} />
                   </IconButton>
                 </Tooltip>
               </Grid>
@@ -153,18 +193,18 @@ function Content(props) {
                 类型：{taskType}
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                报酬：{taskReward} 金币/个
+                报酬：{money} 金币/个
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                完成个数：{numOfFinishedTasks}/{numOfAllTasks}
+                完成个数：{finishedNumber}/{number}
               </Typography>
             </Grid>
             <Grid item xs={4}>
               <Typography variant="subtitle1" gutterBottom>
-                任务发布时间：{taskStartTime}
+                任务发布时间：{publishTime}
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                任务截止时间：{taskEndTime}
+                任务截止时间：{endTime}
               </Typography>
               <Button variant="contained" color="secondary">
                 下载任务数据
@@ -175,7 +215,7 @@ function Content(props) {
                 className={classes.button}
                 onClick={handleClickOpen_stop}
               >
-                终止任务
+                {taskButtonState}
               </Button>
             </Grid>
           </Grid>
@@ -195,7 +235,7 @@ function Content(props) {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose_delete} color="primary">
+            <Button onClick={deleteToTrash} color="primary">
               是
             </Button>
             <Button onClick={handleClose_delete} color="primary" autoFocus>
@@ -228,7 +268,7 @@ function Content(props) {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {"确定要终止该任务吗？"}
+            {`确定要 ${taskButtonState} 吗？`}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
