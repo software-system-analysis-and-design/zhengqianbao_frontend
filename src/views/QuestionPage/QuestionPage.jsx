@@ -27,26 +27,30 @@ function QuestionPage(props) {
   const {classes, match} = props;
 
   const [count, setCount] = React.useState({value: 0});
-  const [questions, setQuestions] = React.useState(null);
+  const [questions, setQuestions] = React.useState([]);
   const [warning, setWarning] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState({ title: "保存成功", content: "" });
   const [qdata, setQuestionData] = React.useState([]);
   const [answers, setAnswers] = React.useState({});
+  const [testButton, setTestButton] = React.useState(null);
 
   console.log("re-render: " + count.value);
 
-  const setAns = index => (answer, pre) => {
+  const setAns = index => answer => {
     console.log(index + "preAns:");
-    console.log(pre);
+    console.log(answers);
     setCount({...count, value: count.value + 1});
     setAnswers({...answers, [index]: answer});
   };
 
-  const callback = index => () => {
+  const callback = index => step => {
     console.log(index);
-    setCount({...count, value: parseInt(count.value) + 1});
+    console.log(count);
+    setCount({...count, value: parseInt(count.value) + step});
   };
+
+  const button = [<TestButton callback={callback(0)} step={1}/>];
 
   const fetchQuestion = questionID => () => {
     const apiUrl = "https://littlefish33.cn:8080/questionnaire/select";
@@ -62,6 +66,7 @@ function QuestionPage(props) {
     fetch(apiUrl, requestOption)
       .then(handleResponse)
       .then(response => {
+        console.log("useEffect");
         let ret = [];
         ret.push(
           <Typography className={classes.title} variant="h5" component="h2">
@@ -102,11 +107,13 @@ function QuestionPage(props) {
               break;
           }
         }
+        ret.push(<TestButton callback={callback(0)} step={1}/>);
         setQuestions(ret);
       });
   }
 
   React.useEffect(fetchQuestion(match.params.taskID), []);
+  React.useEffect(() => setTestButton(button), []);
 
   function save() {
     if (Object.keys(answers).length == qdata.length) {
@@ -180,14 +187,14 @@ function QuestionPage(props) {
 
   return (
     <div>
-      {questions}
+      {questions.map(e => e)}
       <Button variant="contained" color="primary" className={classes.button} onClick={save}>
         保存
       </Button>
       <Button variant="contained" color="secondary" className={classes.button} onClick={() => setCount({...count, value: (parseInt(count.value) + 1)})}>
         取消
       </Button>
-      <TestButton callback={callback(0)} />
+      {testButton}
       <Dialog
         open={open}
         onClose={handleClose}
