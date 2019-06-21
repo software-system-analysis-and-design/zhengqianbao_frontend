@@ -27,13 +27,12 @@ function QuestionPage(props) {
   const {classes, match} = props;
 
   const [count, setCount] = React.useState({value: 0});
-  const [questions, setQuestions] = React.useState([]);
   const [warning, setWarning] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState({ title: "保存成功", content: "" });
   const [qdata, setQuestionData] = React.useState([]);
   const [answers, setAnswers] = React.useState({});
-  const [testButton, setTestButton] = React.useState(null);
+  const [testButton, setTestButton] = React.useState([]);
 
   console.log("re-render: " + count.value);
 
@@ -50,7 +49,7 @@ function QuestionPage(props) {
     setCount({...count, value: parseInt(count.value) + step});
   };
 
-  const button = [<TestButton callback={callback(0)} step={1}/>];
+  const button = [1];
 
   const fetchQuestion = questionID => () => {
     const apiUrl = "https://littlefish33.cn:8080/questionnaire/select";
@@ -66,56 +65,20 @@ function QuestionPage(props) {
     fetch(apiUrl, requestOption)
       .then(handleResponse)
       .then(response => {
-        console.log("useEffect");
         let ret = [];
         ret.push(
           <Typography className={classes.title} variant="h5" component="h2">
             {response.taskName}
           </Typography>
         );
-        let data = response.chooseData;
         setQuestionData(response.chooseData);
-        for (let i = 0; i < data.length; i++) {
-          let content = {};
-          let arr = [];
-          switch (data[i].dataType) {
-            case 2:
-              for (let j = 0; j < data[i].dataContent.length; j++) {
-                arr.push(data[i].dataContent[j].content);
-              }
-              content = {...content, ["title"]: data[i].title, ["arr"]: arr};
-              ret.push(
-                <SingleChoiceCard content={content} warning={warning} callback={setAns(i)} answers={answers}/>
-              );
-              break;
-
-            case 3:
-              for (let j = 0; j < data[i].dataContent.length; j++) {
-                arr.push(data[i].dataContent[j].content);
-              }
-              content = {...content, ["title"]: data[i].title, ["arr"]: arr, ["minNum"]: 0, ["maxNum"]: 1000};
-              ret.push(
-                <MultiChoiceCard content={content} warning={warning} callback={setAns(i)} answers={answers}/>
-              );
-              break;
-
-            case 1:
-              content = {...content, ["title"]: data[i].title};
-              ret.push(
-                <ShortAnswerCard content={content} warning={warning} callback={setAns(i)} answers={answers}/>
-              );
-              break;
-          }
-        }
-        ret.push(<TestButton callback={callback(0)} step={1}/>);
-        setQuestions(ret);
       });
   }
 
   React.useEffect(fetchQuestion(match.params.taskID), []);
   React.useEffect(() => setTestButton(button), []);
 
-  function save() {
+  const save = () => {
     if (Object.keys(answers).length == qdata.length) {
       for (let i = 0; i < Object.keys(answers).length; i++) {
         if (answers[i] === undefined) {
@@ -183,18 +146,48 @@ function QuestionPage(props) {
     if (success) {
       props.history.push("/tasksquare");
     }
-  }
+  };
+
+  const createQuestionCard = (elem, index) => {
+    let ret = null;
+    let content = {};
+    let arr = [];
+    switch (elem.dataType) {
+      case 2:
+        for (let j = 0; j < elem.dataContent.length; j++) {
+          arr.push(elem.dataContent[j].content);
+        }
+        content = {...content, ["title"]: elem.title, ["arr"]: arr};
+
+        ret = <SingleChoiceCard content={content} warning={warning} callback={setAns(index)} answers={answers}/>;
+        break;
+
+      case 3:
+        for (let j = 0; j < elem.dataContent.length; j++) {
+          arr.push(elem.dataContent[j].content);
+        }
+        content = {...content, ["title"]: elem.title, ["arr"]: arr, ["minNum"]: 0, ["maxNum"]: 1000};
+        ret = <MultiChoiceCard content={content} warning={warning} callback={setAns(index)} answers={answers}/>;
+        break;
+
+      case 1:
+        content = {...content, ["title"]: elem.title};
+        ret = <ShortAnswerCard content={content} warning={warning} callback={setAns(index)} answers={answers}/>;
+        break;
+    }
+    return ret;
+  };
 
   return (
     <div>
-      {questions.map(e => e)}
+      {qdata.map(createQuestionCard)}
       <Button variant="contained" color="primary" className={classes.button} onClick={save}>
         保存
       </Button>
       <Button variant="contained" color="secondary" className={classes.button} onClick={() => setCount({...count, value: (parseInt(count.value) + 1)})}>
         取消
       </Button>
-      {testButton}
+      {testButton.map( e => {return <TestButton callback={callback(0)} step={e}/>})}
       <Dialog
         open={open}
         onClose={handleClose}
