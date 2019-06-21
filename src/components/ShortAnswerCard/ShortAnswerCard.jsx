@@ -19,12 +19,14 @@ const style = {
 };
 
 function ShortAnswerCard(props) {
-  const {classes, content, warning, callback} = props;
+  const {classes, content, warning, callback, answers} = props;
   const [error, setError] = React.useState(warning);
+
+  console.log("Short re-render");
 
   const handleChange = event => {
     setError(event.target.value == "");
-    callback(event.target.value);
+    callback(event.target.value, answers);
   }
 
   return (

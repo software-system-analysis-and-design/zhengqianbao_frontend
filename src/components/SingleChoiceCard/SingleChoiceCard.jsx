@@ -27,13 +27,14 @@ const style = {
 
 function SingleChoiceCard(props) {
   // "const" for formal; "let" for test
-  const { classes, content, warning, callback} = props;
+  const { classes, content, warning, callback, answers} = props;
 
   const [value, setValue] = React.useState(-1);
 
+  console.log("Single re-render");
   function handleChange(event) {
+    callback(event.target.value, answers);
     setValue(parseInt(event.target.value));
-    callback(event.target.value);
   }
 
   let error = value < 0 || value >= content.arr.length;

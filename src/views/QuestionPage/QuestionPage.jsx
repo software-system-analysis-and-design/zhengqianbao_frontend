@@ -11,6 +11,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import { withStyles } from "@material-ui/core/styles";
+import TestButton from "../../components/TestButton/TestButton";
 
 const style = {
   title: {
@@ -25,13 +26,31 @@ const style = {
 function QuestionPage(props) {
   const {classes, match} = props;
 
-  const [questions, setQuestions] = React.useState(null);
+  const [count, setCount] = React.useState({value: 0});
+  const [questions, setQuestions] = React.useState([]);
   const [warning, setWarning] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const [errorMsg, setErrorMsg] = React.useState("");
-  const [dialogTitle, setDialogTitle] = React.useState("保存成功");
+  const [message, setMessage] = React.useState({ title: "保存成功", content: "" });
   const [qdata, setQuestionData] = React.useState([]);
-  const [answers, setAns] = React.useState({});
+  const [answers, setAnswers] = React.useState({});
+  const [testButton, setTestButton] = React.useState(null);
+
+  console.log("re-render: " + count.value);
+
+  const setAns = index => answer => {
+    console.log(index + "preAns:");
+    console.log(answers);
+    setCount({...count, value: count.value + 1});
+    setAnswers({...answers, [index]: answer});
+  };
+
+  const callback = index => step => {
+    console.log(index);
+    console.log(count);
+    setCount({...count, value: parseInt(count.value) + step});
+  };
+
+  const button = [<TestButton callback={callback(0)} step={1}/>];
 
   const fetchQuestion = questionID => () => {
     const apiUrl = "https://littlefish33.cn:8080/questionnaire/select";
@@ -47,6 +66,7 @@ function QuestionPage(props) {
     fetch(apiUrl, requestOption)
       .then(handleResponse)
       .then(response => {
+        console.log("useEffect");
         let ret = [];
         ret.push(
           <Typography className={classes.title} variant="h5" component="h2">
@@ -65,7 +85,7 @@ function QuestionPage(props) {
               }
               content = {...content, ["title"]: data[i].title, ["arr"]: arr};
               ret.push(
-                <SingleChoiceCard content={content} warning={warning} callback={setAnswers(i)}/>
+                <SingleChoiceCard content={content} warning={warning} callback={setAns(i)} answers={answers}/>
               );
               break;
 
@@ -75,44 +95,37 @@ function QuestionPage(props) {
               }
               content = {...content, ["title"]: data[i].title, ["arr"]: arr, ["minNum"]: 0, ["maxNum"]: 1000};
               ret.push(
-                <MultiChoiceCard content={content} warning={warning} callback={setAnswers(i)}/>
+                <MultiChoiceCard content={content} warning={warning} callback={setAns(i)} answers={answers}/>
               );
               break;
 
             case 1:
               content = {...content, ["title"]: data[i].title};
               ret.push(
-                <ShortAnswerCard content={content} warning={warning} callback={setAnswers(i)}/>
+                <ShortAnswerCard content={content} warning={warning} callback={setAns(i)} answers={answers}/>
               );
               break;
           }
         }
-        let defaultAnswers = {};
-        for (let i = 0; i < data.length; i++) {
-          defaultAnswers = {...defaultAnswers, [i]:""};
-        }
-        setAns(defaultAnswers);
+        ret.push(<TestButton callback={callback(0)} step={1}/>);
         setQuestions(ret);
       });
   }
 
   React.useEffect(fetchQuestion(match.params.taskID), []);
-
-  const setAnswers = index => answer => {
-    console.log(answers);
-    setAns({...answers, [index]: answer});
-  };
+  React.useEffect(() => setTestButton(button), []);
 
   function save() {
     if (Object.keys(answers).length == qdata.length) {
       for (let i = 0; i < Object.keys(answers).length; i++) {
-        if (answers == "") {
+        if (answers[i] === undefined) {
           setWarning(true);
           return;
         }
       }
     } else {
       setWarning(true);
+      console.log("answers:");
       console.log(answers);
       console.log(qdata.length);
       return;
@@ -153,11 +166,13 @@ function QuestionPage(props) {
       .then(handleResponse)
       .then(response => {
         if (response.code == 200) {
-          setDialogTitle("保存成功");
+          setMessage({...message, title: "保存成功"});
           setOpen(true);
         } else {
-          setDialogTitle("保存失败");
-          setErrorMsg(response.msg);
+          setMessage({
+            title: "保存失败",
+            content: response.msg
+          });
           setOpen(true);
         }
       });
@@ -172,27 +187,28 @@ function QuestionPage(props) {
 
   return (
     <div>
-      {questions}
+      {questions.map(e => e)}
       <Button variant="contained" color="primary" className={classes.button} onClick={save}>
         保存
       </Button>
-      <Button variant="contained" color="secondary" className={classes.button}>
+      <Button variant="contained" color="secondary" className={classes.button} onClick={() => setCount({...count, value: (parseInt(count.value) + 1)})}>
         取消
       </Button>
+      {testButton}
       <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{dialogTitle}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{message.title}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {errorMsg}
+            {message.content}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose(dialogTitle == "保存成功", props)} color="primary">
+          <Button onClick={handleClose(message.title == "保存成功", props)} color="primary">
             确定
           </Button>
         </DialogActions>
