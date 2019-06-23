@@ -28,6 +28,69 @@ const styles = theme => ({
   }
 });
 
+/*
+ * 时间判断比较相关函数 *********************
+ */
+
+function stringToDate(time) {
+  // 一个字符串  2019-06-12T12:00 转为 Date对象
+  // let time = _time.toString();
+  let year = time.slice(0, 4);
+  let month = time.slice(5, 7);
+  let day = time.slice(8, 10);
+  let min = time.slice(11, 13);
+  let sec = time.slice(14, 16);
+  let date = new Date(year, month - 1, day, min, sec);
+  return date;
+}
+
+function judgeTime(time) {
+  // 用于时间的分钟检查  2019-06-12T12:00
+  // time 从时间选择器返回的字符串
+  // 内容为空，则允许，需要手动发布
+  // 内容若不为空，则需要精确到分钟，且时间必须在当前时间之后，否则不予发布
+  // let time = _time.toString();
+  if (time.length == 0) {
+    return true;
+  } else if (time.length == 16) {
+    let currentTime = new Date();
+    let cmpTime = stringToDate(time);
+    if (cmpTime > currentTime) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
+function compareTime(publishTime, endTime) {
+  // publishTime，endTime是经过分钟检查之后的字段，为空字段或者完整字段，并且时间都在当前时间之后
+  // 有以下情况：
+  // 0. 发布时间和结束时间都为空，正常返回 1
+  // 1. 发布时间为空，结束时间不为空，异常返回  0
+  // 2. 发布时间不为空，结束时间为空 ，正常返回 1
+  // 3. 时间都不为空，发布时间在结束时间之后，异常返回 2
+  // 4. 时间都不为空，发布时间在结束时间之前，正常返回 1
+  // 时间示例： 2019-06-12T12:00
+  if (publishTime.length === 0 && endTime.length === 0) {
+    return 1;
+  } else if (publishTime.length === 0 && endTime.length !== 0) {
+    return 0;
+  } else if (publishTime.length !== 0 && endTime.length === 0) {
+    return 1;
+  } else {
+    let date1 = stringToDate(publishTime.toString());
+    let date2 = stringToDate(endTime.toString());
+    if (date1 < date2) {
+      return 1;
+    } else {
+      return 2;
+    }
+  }
+}
+
 function Questionnaire(props) {
   const { classes, transferMsg, path, taskID } = props;
 
@@ -70,6 +133,26 @@ function Questionnaire(props) {
       return null;
     }
 
+    if (judgeTime(values.publishTime) === false) {
+      alert("发布时间不合法，必须完整且大于当前时间或者不设置");
+      return null;
+    }
+
+    if (judgeTime(values.endTime) === false) {
+      alert("截止时间不合法，必须完整且大于当前时间或者不设置");
+      return null;
+    }
+
+    let timeState = compareTime(values.publishTime, values.endTime);
+    if (timeState === 0) {
+      alert("不允许发布时间为空，截止时间不为空!");
+      return null;
+    }
+    if (timeState === 2) {
+      alert(" 发布时间在截止时间之后，不合法！");
+      return null;
+    }
+
     // console.log(requestOptions);
     if (taskID.length === 14) {
       let allData = {
@@ -104,7 +187,7 @@ function Questionnaire(props) {
       fetch(apiUrl + "/questionnaire/update", requestOptions)
         .then(handleResponse)
         .then(response => {
-          console.log(response);
+          // console.log(response);
           if (response.code === 200) {
             alert(response.msg);
           } else {
@@ -168,11 +251,11 @@ function Questionnaire(props) {
         },
         body: parseParams({ id: taskID })
       };
-      console.log(requestOptions);
+      // console.log(requestOptions);
       fetch(apiUrl + "/questionnaire/select", requestOptions)
         .then(handleResponse)
         .then(response => {
-          console.log(response);
+          // console.log(response);
           setValues({
             title: response.taskName,
             description: response.description,

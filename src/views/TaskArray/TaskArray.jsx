@@ -49,7 +49,12 @@ function TaskArray(props) {
           };
           ret.push(
             <Grid className={classes.item} item xs={4}>
-              <TaskCard title={title} ownership={ownership} details={details} match={match} />
+              <TaskCard
+                title={title}
+                ownership={ownership}
+                details={details}
+                match={match}
+              />
             </Grid>
           );
         }

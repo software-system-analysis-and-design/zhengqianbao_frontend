@@ -1,5 +1,5 @@
 import React from "react";
-import { handleResponse, parseParams } from "variables/serverFunc.jsx"
+import { handleResponse, parseParams } from "variables/serverFunc.jsx";
 import Typography from "@material-ui/core/Typography";
 import SingleChoiceCard from "../../components/SingleChoiceCard/SingleChoiceCard";
 import MultiChoiceCard from "../../components/MultiChoiceCard/MultiChoiceCard";
@@ -24,13 +24,16 @@ const style = {
 
 // TODO FIX BUGS
 function QuestionPage(props) {
-  const {classes, match} = props;
+  const { classes, match } = props;
 
-  const [count, setCount] = React.useState({value: 0});
+  const [count, setCount] = React.useState({ value: 0 });
   const [questions, setQuestions] = React.useState([]);
   const [warning, setWarning] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const [message, setMessage] = React.useState({ title: "保存成功", content: "" });
+  const [message, setMessage] = React.useState({
+    title: "保存成功",
+    content: ""
+  });
   const [qdata, setQuestionData] = React.useState([]);
   const [answers, setAnswers] = React.useState({});
   const [testButton, setTestButton] = React.useState(null);
@@ -40,25 +43,25 @@ function QuestionPage(props) {
   const setAns = index => answer => {
     console.log(index + "preAns:");
     console.log(answers);
-    setCount({...count, value: count.value + 1});
-    setAnswers({...answers, [index]: answer});
+    setCount({ ...count, value: count.value + 1 });
+    setAnswers({ ...answers, [index]: answer });
   };
 
   const callback = index => step => {
     console.log(index);
     console.log(count);
-    setCount({...count, value: parseInt(count.value) + step});
+    setCount({ ...count, value: parseInt(count.value) + step });
   };
 
-  const button = [<TestButton callback={callback(0)} step={1}/>];
+  const button = [<TestButton callback={callback(0)} step={1} />];
 
   const fetchQuestion = questionID => () => {
     const apiUrl = "https://littlefish33.cn:8080/questionnaire/select";
     const requestOption = {
       method: "POST",
       headers: {
-        'Accept': 'application/json',
-        'content-type': 'application/x-www-form-urlencoded'
+        Accept: "application/json",
+        "content-type": "application/x-www-form-urlencoded"
       },
       body: parseParams({ id: questionID })
     };
@@ -83,9 +86,14 @@ function QuestionPage(props) {
               for (let j = 0; j < data[i].dataContent.length; j++) {
                 arr.push(data[i].dataContent[j].content);
               }
-              content = {...content, ["title"]: data[i].title, ["arr"]: arr};
+              content = { ...content, ["title"]: data[i].title, ["arr"]: arr };
               ret.push(
-                <SingleChoiceCard content={content} warning={warning} callback={setAns(i)} answers={answers}/>
+                <SingleChoiceCard
+                  content={content}
+                  warning={warning}
+                  callback={setAns(i)}
+                  answers={answers}
+                />
               );
               break;
 
@@ -93,24 +101,40 @@ function QuestionPage(props) {
               for (let j = 0; j < data[i].dataContent.length; j++) {
                 arr.push(data[i].dataContent[j].content);
               }
-              content = {...content, ["title"]: data[i].title, ["arr"]: arr, ["minNum"]: 0, ["maxNum"]: 1000};
+              content = {
+                ...content,
+                ["title"]: data[i].title,
+                ["arr"]: arr,
+                ["minNum"]: 0,
+                ["maxNum"]: 1000
+              };
               ret.push(
-                <MultiChoiceCard content={content} warning={warning} callback={setAns(i)} answers={answers}/>
+                <MultiChoiceCard
+                  content={content}
+                  warning={warning}
+                  callback={setAns(i)}
+                  answers={answers}
+                />
               );
               break;
 
             case 1:
-              content = {...content, ["title"]: data[i].title};
+              content = { ...content, ["title"]: data[i].title };
               ret.push(
-                <ShortAnswerCard content={content} warning={warning} callback={setAns(i)} answers={answers}/>
+                <ShortAnswerCard
+                  content={content}
+                  warning={warning}
+                  callback={setAns(i)}
+                  answers={answers}
+                />
               );
               break;
           }
         }
-        ret.push(<TestButton callback={callback(0)} step={1}/>);
+        ret.push(<TestButton callback={callback(0)} step={1} />);
         setQuestions(ret);
       });
-  }
+  };
 
   React.useEffect(fetchQuestion(match.params.taskID), []);
   React.useEffect(() => setTestButton(button), []);
@@ -150,9 +174,9 @@ function QuestionPage(props) {
     const requestOption = {
       method: "POST",
       headers: {
-        'Accept': 'application/json',
-        'content-type': 'application/x-www-form-urlencoded',
-        Authorization: "Bearer " + localStorage.getItem("user-token"),
+        Accept: "application/json",
+        "content-type": "application/x-www-form-urlencoded",
+        Authorization: "Bearer " + localStorage.getItem("user-token")
       },
       body: parseParams({ data: postData })
     };
@@ -166,7 +190,7 @@ function QuestionPage(props) {
       .then(handleResponse)
       .then(response => {
         if (response.code == 200) {
-          setMessage({...message, title: "保存成功"});
+          setMessage({ ...message, title: "保存成功" });
           setOpen(true);
         } else {
           setMessage({
@@ -176,22 +200,32 @@ function QuestionPage(props) {
           setOpen(true);
         }
       });
-  };
+  }
 
   const handleClose = (success, props) => () => {
     setOpen(false);
     if (success) {
       props.history.push("/tasksquare");
     }
-  }
+  };
 
   return (
     <div>
       {questions.map(e => e)}
-      <Button variant="contained" color="primary" className={classes.button} onClick={save}>
+      <Button
+        variant="contained"
+        color="primary"
+        className={classes.button}
+        onClick={save}
+      >
         保存
       </Button>
-      <Button variant="contained" color="secondary" className={classes.button} onClick={() => setCount({...count, value: (parseInt(count.value) + 1)})}>
+      <Button
+        variant="contained"
+        color="secondary"
+        className={classes.button}
+        onClick={() => setCount({ ...count, value: parseInt(count.value) + 1 })}
+      >
         取消
       </Button>
       {testButton}
@@ -208,7 +242,10 @@ function QuestionPage(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose(message.title == "保存成功", props)} color="primary">
+          <Button
+            onClick={handleClose(message.title == "保存成功", props)}
+            color="primary"
+          >
             确定
           </Button>
         </DialogActions>
