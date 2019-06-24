@@ -159,7 +159,7 @@ function QuestionPage(props) {
         }
         content = {...content, ["title"]: elem.title, ["arr"]: arr};
 
-        ret = <SingleChoiceCard content={content} warning={warning} callback={setAns(index)} />;
+        ret = <SingleChoiceCard content={content} warning={warning && qdata[index].required} callback={setAns(index)} />;
         break;
 
       case 3:
@@ -167,12 +167,12 @@ function QuestionPage(props) {
           arr.push(elem.dataContent[j].content);
         }
         content = {...content, ["title"]: elem.title, ["arr"]: arr, ["minNum"]: 1, ["maxNum"]: arr.length};
-        ret = <MultiChoiceCard content={content} warning={warning} callback={setAns(index)} />;
+        ret = <MultiChoiceCard content={content} warning={warning && qdata[index].required} callback={setAns(index)} />;
         break;
 
       case 1:
         content = {...content, ["title"]: elem.title};
-        ret = <ShortAnswerCard content={content} warning={warning} callback={setAns(index)} />;
+        ret = <ShortAnswerCard content={content} warning={warning && qdata[index].required} callback={setAns(index)} />;
         break;
     }
     return ret;

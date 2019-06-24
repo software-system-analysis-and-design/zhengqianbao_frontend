@@ -20,13 +20,14 @@ const style = {
 
 function ShortAnswerCard(props) {
   const {classes, content, warning, callback} = props;
-  const [error, setError] = React.useState(warning);
+  const [input, setInput] = React.useState("");
 
   const handleChange = event => {
-    setError(event.target.value == "");
+    setInput(event.target.value);
     callback(event.target.value);
   }
 
+  let error = (input === "") && warning;
   return (
     <Card className={classes.card}>
       <CardContent>
