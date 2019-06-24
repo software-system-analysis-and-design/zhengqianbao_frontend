@@ -121,10 +121,10 @@ function Notifications (props) {
         console.log(response);
         if (response !== null){
           setMsgList(response);
-          tmpMsgList = response;
+          let tmpMsgList = response;
           // 获取这些消息，将这些消息设置为已读状态
           for (let i = 0; i < tmpMsgList.length; i++){
-            if (msgList[i].state === 0){
+            if (tmpMsgList[i].state === 0){
               let msgid = tmpMsgList[i].msgID;
               const requestOptions2 = {
                 method: "POST",
