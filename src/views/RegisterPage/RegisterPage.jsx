@@ -17,18 +17,18 @@ class RegisterPage extends React.Component {
     //this.props.router = props;
     this.state = {
       user: {
-        username: null,
-        role: null,
-        userphone: null,
-        password: null,
-        age: null,
-        class: null,
-        university: null,
-        company: null,
-        gender: null
+        username: "",
+        role: "",
+        userphone: "",
+        password: "",
+        age: "",
+        class: "",
+        university: "",
+        company: "",
+        gender: ""
       },
       submitted: false,
-      confirm_password: null,
+      confirm_password: "",
       error_msg: " "
     };
 

@@ -9,13 +9,12 @@ import {handleResponse, parseParams, apiUrl} from "variables/serverFunc.jsx";
 class LoginPage extends React.Component {
   constructor(props) {
     super(props);
-
     // reset login status
     //this.props.dispatch(userActions.logout());
 
     this.state = {
-      userphone: null,
-      password: null,
+      userphone: "",
+      password: "",
       submitted: false,
       responseMsg: " ",
       user_error: false,
@@ -47,7 +46,7 @@ class LoginPage extends React.Component {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         if (response.code === 200) {
           localStorage.setItem("user-token", response.data.token);
-          localStorage.setItem("userID", userphone)
+          localStorage.setItem("userID", userphone);
           this.props.history.push("/");
         } else {
           const msg = response.msg;

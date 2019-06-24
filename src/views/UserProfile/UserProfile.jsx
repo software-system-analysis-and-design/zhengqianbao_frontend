@@ -31,6 +31,8 @@ class UserProfile extends React.Component{
 		this.state = {
             value: '',
 			isView: true,
+			isUpdateMoney: false,
+			addMoney:0,
 			user: {
 				name:null,
 				phone:null,
@@ -63,6 +65,8 @@ class UserProfile extends React.Component{
 		this.handleChange = this.handleChange.bind(this);
 		this.cancelUpdate = this.cancelUpdate.bind(this);
 		this.updateMoney = this.updateMoney.bind(this);
+		this.cancelUpdateMooney =  this.cancelUpdateMooney.bind(this);
+		this.ensureUpdateMooney =  this.ensureUpdateMooney.bind(this);
 		//initialUser();
     }
 	
@@ -88,7 +92,47 @@ class UserProfile extends React.Component{
 	}
 
 	updateMoney(){
+		this.setState({isUpdateMoney: true});
+	}
+
+	cancelUpdateMooney(){
+		this.setState({isUpdateMoney: false, money: 0});
+	}
+
+	ensureUpdateMooney(){
+		var money = parseInt(this.state.user.remain + this.state.money);
+		console.log(money);
+		var data = new FormData();
+		data.append("money",money);
+		const requestOptions = {
+			method: "POST",
+			headers: {
+				Authorization: "Bearer " + localStorage.getItem("user-token")
+			},
+			body: data
+		};
 		
+		fetch(apiUrl + "/updatemoney", requestOptions)
+		.then(handleResponse)
+		.then(response => {
+			// store user details and jwt token in local storage to keep user logged in between page refreshes
+			console.log(response);
+			if(response.code == 200){
+				const {user, tempUser} = this.state;
+				this.setState({
+					user:{
+						...user,
+						remain: money
+					},
+					tempUser:{
+						...tempUser,
+						remain: money
+					},
+					isUpdateMoney:false,
+					money: 0
+				})
+			}
+		});
 	}
 
   componentDidMount() {
@@ -154,7 +198,11 @@ class UserProfile extends React.Component{
   }
 
   handleChange(e) {
-    const { name, value } = e.target;
+	const { name, value } = e.target;
+	if(name == "remain"){
+		this.setState({money:value});
+		return;
+	}
     const { tempUser } = this.state;
     this.setState({
       tempUser: {
@@ -179,10 +227,7 @@ class UserProfile extends React.Component{
 				<CardBody profile>
 					<h6 >CEO / {(user.iscow)?"奶牛":"学生"}</h6>
 					<h4 >{user.name}</h4>
-					<div display="block">
-						<p style={{fontSize:"11pt"}}>余额：{user.remain}</p>
-						<Button fontSize="5pt" onClick={this.updateMoney}>充值</Button>
-					</div>
+					<p style={{fontSize:"11pt"}}>余额：{user.remain}</p>		
 					<p >
 					Don't be scared of the truth because we need to restart the
 					human foundation in truth And I love you like Kanye loves Kanye
@@ -343,6 +388,26 @@ class UserProfile extends React.Component{
 						<GridItem xs={12} sm={12} md={12} style={{display: (this.state.isView) ? "inline":"none"}}>
 							<p style={{fontSize:"10pt"}}>关于我 :</p>
 							<p style={{fontSize: "14pt"}}>{user.description}</p>
+						</GridItem>
+						<GridItem xs={12} sm={12} md={6} style={{display: (this.state.isView) ? "inline":"none"}}>
+							<div  style={{display : (this.state.isUpdateMoney) ? "inline":"none"}}>
+							<CustomInput
+								labelText="充值金额"
+								id="money"
+								type="number"
+								formControlProps={{
+									fullWidth: true
+								}}
+								inputProps={{
+									name: 'remain',
+									
+								}}
+								onChange={this.handleChange}
+								/>	
+							<Button fontSize="5pt" onClick={this.ensureUpdateMooney}>确定</Button>
+							<Button fontSize="5pt" onClick={this.cancelUpdateMooney}>取消</Button>
+							</div>
+							<Button style={{display : (this.state.isUpdateMoney) ? "none":"inline"}} fontSize="5pt" onClick={this.updateMoney}>充值</Button>
 						</GridItem>
 					</GridContainer>
 					<GridContainer style={{display: (this.state.isView) ? "none":"inline"}}>
