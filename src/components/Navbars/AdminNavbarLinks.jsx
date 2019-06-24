@@ -1,5 +1,4 @@
 import React from "react";
-import classNames from "classnames";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -20,10 +19,32 @@ import Button from "components/CustomButtons/Button.jsx";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.jsx";
 
+import { handleResponse} from "variables/serverFunc.jsx";
+const apiUrl = "https://littlefish33.cn:8080";
+
 class HeaderLinks extends React.Component {
   state = {
-    open: false
+    open: false,
+    notReadNum: 1
   };
+
+  componentDidMount = () => {
+    // 获取未读消息数目,显示在logo上
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user-token")
+      }
+    };
+    fetch(apiUrl + "/message/count", requestOptions)
+      .then(handleResponse)
+      .then(response => {
+        if (response.code === 200) {
+          this.setState({ notReadNum: response.msg });
+        }
+      });
+  };
+
   handleToggle = () => {
     this.setState(state => ({ open: !state.open }));
   };
@@ -83,72 +104,13 @@ class HeaderLinks extends React.Component {
             className={classes.buttonLink}
           >
             <Notifications className={classes.icons} />
-            <span className={classes.notifications}>5</span>
-            <Hidden mdUp implementation="css">
-              <p onClick={this.handleClick} className={classes.linkText}>
-                Notification
-              </p>
-            </Hidden>
-          </Button>
-          <Poppers
-            open={open}
-            anchorEl={this.anchorEl}
-            transition
-            disablePortal
-            className={
-              classNames({ [classes.popperClose]: !open }) +
-              " " +
-              classes.pooperNav
-            }
-          >
-            {({ TransitionProps, placement }) => (
-              <Grow
-                {...TransitionProps}
-                id="menu-list-grow"
-                style={{
-                  transformOrigin:
-                    placement === "bottom" ? "center top" : "center bottom"
-                }}
-              >
-                <Paper>
-                  <ClickAwayListener onClickAway={this.handleClose}>
-                    <MenuList role="menu">
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        Mike John responded to your email
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        You have 5 new tasks
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        You're now friend with Andrew
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        Another Notification
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        Another One
-                      </MenuItem>
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Grow>
+            {this.state.notReadNum !== "0" && (
+              <span className={classes.notifications}>
+                {" "}
+                {this.state.notReadNum}{" "}
+              </span>
             )}
-          </Poppers>
+          </Button>
         </div>
         <Button
           color={window.innerWidth > 959 ? "transparent" : "white"}

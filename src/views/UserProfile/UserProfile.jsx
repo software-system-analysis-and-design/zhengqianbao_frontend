@@ -13,13 +13,14 @@ import CardAvatar from "components/Card/CardAvatar.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import avatar from "assets/img/faces/marc.jpg";
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
-import {handleResponse, parseParams, apiUrl} from "variables/serverFunc.jsx"
+import { handleResponse, parseParams, apiUrl } from "variables/serverFunc.jsx";
 
-const cardText = "你可以点击\“编辑\”按钮进行新的信息写入，只需要填写想要更新的信息，点击左下角\“更新\”进行更新，点击右下角\“取消\”取消编辑";
-const classes = ["none","2015", "2016", "2017", "2018"];
+const cardText =
+  "你可以点击“编辑”按钮进行新的信息写入，只需要填写想要更新的信息，点击左下角“更新”进行更新，点击右下角“取消”取消编辑";
+const classes = ["none", "2015", "2016", "2017", "2018"];
 
 class UserProfile extends React.Component{
 	_props;
@@ -90,62 +91,78 @@ class UserProfile extends React.Component{
 		
 	}
 
-	updateUserInfo(){
-		console.log(this.state.tempUser);
-		var updateInfo = this.state.tempUser;
-		//console.log(updateInfo);
-		updateInfo.gender = (this.state.tempUser.gender === 1)?"男":"女";
-		updateInfo.class = classes[this.state.tempUser.class];
-		console.log(this.state.tempUser);
-		const requestOptions = {
-			method: "POST",
-            headers: { 
-				'Authorization':"Bearer "+ localStorage.getItem('user-token'),
-				'content-type': 'application/x-www-form-urlencoded'
-			},
-			body: parseParams(updateInfo)
-		};
-		console.log(requestOptions);
-		fetch(apiUrl+"/update",requestOptions)
-        .then(handleResponse)
-        .then(response => {
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-			console.log(response);
-			if(response.code === 200){
-				this.setState({user: updateInfo});
-			}
-		});
-		
-		this.setState({isView: true});
-		
-	}
+  componentDidMount() {
+    //console.log(localStorage.getItem('user-token'));
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user-token")
+      }
+    };
 
-	cancelUpdate(){
-		this.setState({isView: true, tempUser: this.state.user});
-	}
+    fetch(apiUrl + "/profile", requestOptions)
+      .then(handleResponse)
+      .then(response => {
+        // store user details and jwt token in local storage to keep user logged in between page refreshes
+        this.setState({ user: response, tempUser: response });
+      });
+  }
 
-	editUserInfo(){
-		this.setState({isView: false});
-		const tempUserInfo = this.state.tempUser;
-		this.setState({
-			tempUser:{
-				...tempUserInfo,
-				gender: (tempUserInfo.gender === "男")?1:2,
-				class: getIndex(tempUserInfo.class)
-			}
-		});
-	}
+  updateUserInfo() {
+    console.log(this.state.tempUser);
+    var updateInfo = this.state.tempUser;
+    //console.log(updateInfo);
+    updateInfo.gender = this.state.tempUser.gender === 1 ? "男" : "女";
+    updateInfo.class = classes[this.state.tempUser.class];
+    console.log(this.state.tempUser);
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user-token"),
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      body: parseParams(updateInfo)
+    };
+    console.log(requestOptions);
+    fetch(apiUrl + "/update", requestOptions)
+      .then(handleResponse)
+      .then(response => {
+        // store user details and jwt token in local storage to keep user logged in between page refreshes
+        console.log(response);
+        if (response.code === 200) {
+          this.setState({ user: updateInfo });
+        }
+      });
 
-	handleChange(e){
-		const { name, value } = e.target;
-		const {tempUser} = this.state;
-        this.setState({ 
-			tempUser:{
-				...tempUser,
-				[name]: value
-			}
-		});
-	}
+    this.setState({ isView: true });
+  }
+
+  cancelUpdate() {
+    this.setState({ isView: true, tempUser: this.state.user });
+  }
+
+  editUserInfo() {
+    this.setState({ isView: false });
+    const tempUserInfo = this.state.tempUser;
+    this.setState({
+      tempUser: {
+        ...tempUserInfo,
+        gender: tempUserInfo.gender === "男" ? 1 : 2,
+        class: getIndex(tempUserInfo.class)
+      }
+    });
+  }
+
+  handleChange(e) {
+    const { name, value } = e.target;
+    const { tempUser } = this.state;
+    this.setState({
+      tempUser: {
+        ...tempUser,
+        [name]: value
+      }
+    });
+  }
 
 	render(){
 		const {user, tempUser} = this.state;
@@ -390,13 +407,15 @@ class UserProfile extends React.Component{
     
 };
 
-function getIndex(the_class){
-	for(var i = 0; i < classes.length; i++){
-		if(the_class === classes[i]){
-			return i;
-		}
+
+function getIndex(the_class) {
+	for (var i = 0; i < classes.length; i++) {
+	  if (the_class === classes[i]) {
+		return i;
+	  }
 	}
 	return 0;
-}
+  }
+
 
 export default UserProfile;
