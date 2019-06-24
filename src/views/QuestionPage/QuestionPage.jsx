@@ -11,7 +11,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import { withStyles } from "@material-ui/core/styles";
-import TestButton from "../../components/TestButton/TestButton";
 
 const style = {
   title: {
@@ -22,11 +21,9 @@ const style = {
   }
 };
 
-// TODO FIX BUGS
 function QuestionPage(props) {
   const {classes, match} = props;
 
-  const [count, setCount] = React.useState({value: 0});
   const [warning, setWarning] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState({ title: "保存成功", content: "" });
@@ -34,22 +31,9 @@ function QuestionPage(props) {
   const [answers, setAnswers] = React.useState({});
   const [testButton, setTestButton] = React.useState([]);
 
-  console.log("re-render: " + count.value);
-
   const setAns = index => answer => {
-    console.log(index + "preAns:");
-    console.log(answers);
-    setCount({...count, value: count.value + 1});
     setAnswers({...answers, [index]: answer});
   };
-
-  const callback = index => step => {
-    console.log(index);
-    console.log(count);
-    setCount({...count, value: parseInt(count.value) + step});
-  };
-
-  const button = [1];
 
   const fetchQuestion = questionID => () => {
     const apiUrl = "https://littlefish33.cn:8080/questionnaire/select";
@@ -76,7 +60,12 @@ function QuestionPage(props) {
   }
 
   React.useEffect(fetchQuestion(match.params.taskID), []);
-  React.useEffect(() => setTestButton(button), []);
+
+  const parseJson = (json) => {
+    let ret = new FormData();
+    ret.append("data", JSON.stringify(json));
+    return ret;
+  };
 
   const save = () => {
     if (Object.keys(answers).length == qdata.length) {
@@ -113,14 +102,13 @@ function QuestionPage(props) {
     const requestOption = {
       method: "POST",
       headers: {
-        'Accept': 'application/json',
-        'content-type': 'application/x-www-form-urlencoded',
-        Authorization: "Bearer " + localStorage.getItem("user-token"),
+        Authorization: "Bearer " + localStorage.getItem("user-token")
       },
-      body: parseParams({ data: postData })
+      body: parseJson(postData)
     };
 
-    console.log(postData);
+    console.log(JSON.stringify(postData));
+    console.log("Bearer " + localStorage.getItem("user-token"));
     console.log(qdata);
     console.log(answers);
     console.log(answerData);
@@ -184,10 +172,9 @@ function QuestionPage(props) {
       <Button variant="contained" color="primary" className={classes.button} onClick={save}>
         保存
       </Button>
-      <Button variant="contained" color="secondary" className={classes.button} onClick={() => setCount({...count, value: (parseInt(count.value) + 1)})}>
+      <Button variant="contained" color="secondary" className={classes.button}>
         取消
       </Button>
-      {testButton.map( e => {return <TestButton callback={callback(0)} step={e}/>})}
       <Dialog
         open={open}
         onClose={handleClose}
