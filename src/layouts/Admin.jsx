@@ -47,6 +47,11 @@ class Dashboard extends React.Component {
       mobileOpen: false
     };
   }
+  componentWillMount(){
+		if(!localStorage.getItem('user-token')){
+        this.props.history.push('/login');
+    }
+  }
   getRoute() {
     return this.props.location.pathname !== "/map";
   }

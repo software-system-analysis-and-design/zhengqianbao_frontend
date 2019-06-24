@@ -26,6 +26,9 @@ const styles = theme => ({
 });
 
 function CreateTask(props) {
+  if(!localStorage.getItem('user-token')){
+    props.history.push('/login');
+  }
   const { classes, transferMsg, path, display } = props;
 
   const toQuestionnairePath = path + "/createTask/Questionnaire";

@@ -37,6 +37,9 @@ function createData(taskID, taskName, taskType, taskDeleteTime) {
 }
 
 function RecycleBin(props) {
+  if(!localStorage.getItem('user-token')){
+    props.history.push('/login');
+  }
   const { classes } = props;
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);

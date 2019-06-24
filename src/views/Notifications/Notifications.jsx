@@ -79,6 +79,7 @@ function MessageBox (props) {
     setShow(null);
     console.log("delete")
   }
+ // to stop the warning of calling setState of unmounted component
 
   return (
     <div>
@@ -100,6 +101,9 @@ function MessageBox (props) {
 
 
 function Notifications (props) {
+  if(!localStorage.getItem('user-token')){
+    props.history.push('/login');
+  }
   const { classes } = props;
 
   const [msgList, setMsgList] = React.useState([]);

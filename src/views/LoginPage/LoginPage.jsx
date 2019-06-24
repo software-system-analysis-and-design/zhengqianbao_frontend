@@ -3,18 +3,18 @@ import { Link } from "react-router-dom";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import TextField from "@material-ui/core/TextField";
 import Button from "components/CustomButtons/Button.jsx";
+import logo from "assets/img/logo.jpg";
 import { handleResponse, parseParams, apiUrl } from "variables/serverFunc.jsx";
 
 class LoginPage extends React.Component {
   constructor(props) {
     super(props);
-
     // reset login status
     //this.props.dispatch(userActions.logout());
 
     this.state = {
-      userphone: null,
-      password: null,
+      userphone: "",
+      password: "",
       submitted: false,
       responseMsg: " ",
       user_error: false,
@@ -59,10 +59,8 @@ class LoginPage extends React.Component {
       });
   }
 
-
   handleSubmit(e) {
     e.preventDefault();
-
     this.setState({ submitted: true });
     const { userphone, password } = this.state;
     const { dispatch } = this.props;
@@ -85,7 +83,25 @@ class LoginPage extends React.Component {
       <div>
         <GridContainer justify="center" direction="column" alignItems="center">
           <div className="col-md-6 col-md-offset-3" style={{ width: "400px" }}>
-            <h2>登录</h2>
+            <div style={{ marginTop: "100px", textAlign: "center" }}>
+              <img
+                style={{ verticalAlign: "middle" }}
+                src={logo}
+                width="70px"
+                height="70px"
+                alt="....."
+              />
+              <span
+                style={{
+                  fontSize: "30pt",
+                  verticalAlign: "middle",
+                  marginLeft: "10px"
+                }}
+              >
+                挣钱宝
+              </span>
+            </div>
+            <h3>登录</h3>
             <form name="form" onSubmit={this.handleSubmit}>
               <div
                 className={
