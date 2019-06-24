@@ -9,11 +9,14 @@ import TaskArray from "../TaskArray/TaskArray.jsx";
 
 
 function TaskSquare(props) {
+  if(!localStorage.getItem('user-token')){
+    props.history.push('/login');
+  }
   const {match} = props;
 
   return (
     <div>
-      <Route exact path={match.path} component={() => (<TaskArray match={match} />)} />
+      <Route exact path={match.path} component={() => (<TaskArray match={match} history={props.history} />)} />
       <Route path={match.path + "/" + ":taskID"} component={QuestionPage} />
     </div>
   );

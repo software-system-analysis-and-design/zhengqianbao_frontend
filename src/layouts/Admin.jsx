@@ -15,8 +15,8 @@ import routes from "routes.js";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboardStyle.jsx";
 
-import image from "assets/img/sidebar-2.jpg";  // 边界栏背景图片
-import logo from "assets/img/reactlogo.png";  // 应用图标
+import image from "assets/img/logo.jpg";  // 边界栏背景图片
+import logo from "assets/img/logo.jpg";  // 应用图标
 
 const switchRoutes = (
   <Switch>
@@ -37,6 +37,7 @@ const switchRoutes = (
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
+  
     this.state = {
       image: image,
       color: "blue",
@@ -44,11 +45,6 @@ class Dashboard extends React.Component {
       fixedClasses: "dropdown show",
       mobileOpen: false
     };
-  }
-  componentWillMount(){
-		if(!localStorage.getItem('user-token')){
-        this.props.history.push('/login');
-    }
   }
   getRoute() {
     return this.props.location.pathname !== "/map";
@@ -73,6 +69,7 @@ class Dashboard extends React.Component {
     }
   }
   componentWillUnmount() {
+    
     window.removeEventListener("resize", this.resizeFunction);
   }
   render() {
@@ -93,6 +90,7 @@ class Dashboard extends React.Component {
           <Navbar
             routes={routes}
             handleDrawerToggle={this.handleDrawerToggle}
+            history={this.props.history}
             {...rest}
           />
           {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}

@@ -23,26 +23,42 @@ import { handleResponse} from "variables/serverFunc.jsx";
 const apiUrl = "https://littlefish33.cn:8080";
 
 class HeaderLinks extends React.Component {
-  state = {
-    open: false,
-    notReadNum: 1
-  };
+  
+  
+
+  constructor(props){
+    
+    super(props);
+    if(!localStorage.getItem('user-token')){
+      console.log(this.props);
+      this.props.history.push('/login');
+      //console.log("XXX");
+    }
+    this.state = {
+      open: false,
+      notReadNum: 1
+    };
+  }
 
   componentDidMount = () => {
-    // 获取未读消息数目,显示在logo上
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("user-token")
-      }
-    };
-    fetch(apiUrl + "/message/count", requestOptions)
-      .then(handleResponse)
-      .then(response => {
-        if (response.code === 200) {
-          this.setState({ notReadNum: response.msg });
+    if(!localStorage.getItem('user-token')){
+      //console.log("XXX");
+    }else{
+      // 获取未读消息数目,显示在logo上
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("user-token")
         }
-      });
+      };
+      fetch(apiUrl + "/message/count", requestOptions)
+        .then(handleResponse)
+        .then(response => {
+          if (response.code === 200) {
+            this.setState({ notReadNum: response.msg });
+          }
+        });
+    }
   };
 
   handleToggle = () => {

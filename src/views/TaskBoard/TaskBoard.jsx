@@ -42,9 +42,6 @@ const styles = {
 }
 */
 function TaskBoard(props) {
-  if(!localStorage.getItem('user-token')){
-      props.history.push('/login');
-  }
   // eslint-disable-next-line react/prop-types
   const { classes, match, history } = props;
 
@@ -114,7 +111,7 @@ function TaskBoard(props) {
       <Route
         exact
         path={`${match.path}`}
-        component={() => <TaskList transferMsg={transferMsg} />}
+        component={() => <TaskList transferMsg={transferMsg} history={history} />}
       />
       <Route
         path={`${match.path}/createtask`}

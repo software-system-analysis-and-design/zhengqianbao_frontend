@@ -92,6 +92,9 @@ function compareTime(publishTime, endTime) {
 }
 
 function Questionnaire(props) {
+  if(!localStorage.getItem('user-token')){
+    props.history.push('/login');
+  }
   const { classes, transferMsg, path, taskID } = props;
 
   // 存放问卷基本字段

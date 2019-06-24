@@ -25,7 +25,9 @@ const classes = ["none", "2015", "2016", "2017", "2018"];
 class UserProfile extends React.Component{
 	_props;
 	constructor(props){
-        super(props)
+		
+		super(props);
+		
 		this._props = props;
 
 		this.state = {
@@ -72,7 +74,7 @@ class UserProfile extends React.Component{
 	
 	componentWillMount(){
 		if(!localStorage.getItem('user-token')){
-            this.props.history.push('/login');
+
         }else{
 			//console.log(localStorage.getItem('user-token'));
 			const requestOptions = {
@@ -136,20 +138,24 @@ class UserProfile extends React.Component{
 	}
 
   componentDidMount() {
-    //console.log(localStorage.getItem('user-token'));
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("user-token")
-      }
-    };
+	if(!localStorage.getItem('user-token')){
 
-    fetch(apiUrl + "/profile", requestOptions)
-      .then(handleResponse)
-      .then(response => {
-        // store user details and jwt token in local storage to keep user logged in between page refreshes
-        this.setState({ user: response, tempUser: response });
-      });
+	}else{
+    //console.log(localStorage.getItem('user-token'));
+		const requestOptions = {
+		method: "GET",
+		headers: {
+			Authorization: "Bearer " + localStorage.getItem("user-token")
+		}
+		};
+
+		fetch(apiUrl + "/profile", requestOptions)
+		.then(handleResponse)
+		.then(response => {
+			// store user details and jwt token in local storage to keep user logged in between page refreshes
+			this.setState({ user: response, tempUser: response });
+		});
+	}
   }
 
   updateUserInfo() {
