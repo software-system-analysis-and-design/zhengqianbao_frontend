@@ -77,6 +77,14 @@ function TaskArray(props) {
     return ret;
   };
 
+  const moneyFilter = (task, param) => {
+    let money = parseInt(task.details.reward);
+    return (
+      (param.min === null || money > param.min) &&
+      (param.max === null || money < param.max)
+    );
+  }
+
   return (
     <div>
       <Grid className={classes.nav} container spacing={2}>
