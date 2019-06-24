@@ -1,5 +1,5 @@
 import React from "react";
-import { handleResponse, parseParams } from "variables/serverFunc.jsx"
+import { handleResponse, parseParams } from "variables/serverFunc.jsx";
 import Typography from "@material-ui/core/Typography";
 import SingleChoiceCard from "../../components/SingleChoiceCard/SingleChoiceCard";
 import MultiChoiceCard from "../../components/MultiChoiceCard/MultiChoiceCard";
@@ -22,11 +22,14 @@ const style = {
 };
 
 function QuestionPage(props) {
-  const {classes, match} = props;
+  const { classes, match } = props;
 
   const [warning, setWarning] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const [message, setMessage] = React.useState({ title: "保存成功", content: "" });
+  const [message, setMessage] = React.useState({
+    title: "保存成功",
+    content: ""
+  });
   const [qdata, setQuestionData] = React.useState([]);
   const [answers, setAnswers] = React.useState({});
   const [testButton, setTestButton] = React.useState([]);
@@ -40,8 +43,8 @@ function QuestionPage(props) {
     const requestOption = {
       method: "POST",
       headers: {
-        'Accept': 'application/json',
-        'content-type': 'application/x-www-form-urlencoded'
+        Accept: "application/json",
+        "content-type": "application/x-www-form-urlencoded"
       },
       body: parseParams({ id: questionID })
     };
@@ -57,7 +60,7 @@ function QuestionPage(props) {
         );
         setQuestionData(response.chooseData);
       });
-  }
+  };
 
   React.useEffect(fetchQuestion(match.params.taskID), []);
 
@@ -117,7 +120,7 @@ function QuestionPage(props) {
       .then(handleResponse)
       .then(response => {
         if (response.code == 200) {
-          setMessage({...message, title: "保存成功"});
+          setMessage({ ...message, title: "保存成功" });
           setOpen(true);
         } else {
           setMessage({
@@ -127,7 +130,7 @@ function QuestionPage(props) {
           setOpen(true);
         }
       });
-  };
+  }
 
   const handleClose = (success, props) => () => {
     setOpen(false);
@@ -188,7 +191,10 @@ function QuestionPage(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose(message.title == "保存成功", props)} color="primary">
+          <Button
+            onClick={handleClose(message.title == "保存成功", props)}
+            color="primary"
+          >
             确定
           </Button>
         </DialogActions>

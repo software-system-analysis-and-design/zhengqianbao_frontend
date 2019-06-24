@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React from "react";
+import PropTypes from "prop-types";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 // @material-ui/icons
@@ -9,10 +10,14 @@ import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import SnackbarContent from "components/Snackbar/SnackbarContent.jsx";
-import Snackbar from "components/Snackbar/Snackbar.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
+import Paper from "@material-ui/core/Paper";
+import Typography from '@material-ui/core/Typography';
+
+import IconButton from "@material-ui/core/IconButton";
+import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 
 const styles = {
   cardCategoryWhite: {
@@ -41,260 +46,135 @@ const styles = {
       fontWeight: "400",
       lineHeight: "1"
     }
+  },
+  card: {
+    maxWidth: 850,
+    margin: "auto",
+    overflow: "hidden",
+  },
+  button: {
+    margin: "0px 0 0 80%"
+  },
+  paper: {
+    padding: "20px",
+    margin: "10px 0 0 0"
+  },
+  typography: {
+    margin: "0 10% 0 0"
   }
 };
 
-class Notifications extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tl: false,
-      tc: false,
-      tr: false,
-      bl: false,
-      bc: false,
-      br: false
-    };
+
+function MessageBox (props) {
+  const {classes, MsgID, Time, Content, Title, deleteOneMsg, hiddenAll} = props;
+
+  const [show, setShow] = React.useState("not null");
+
+  function deleteMsg() {
+    deleteOneMsg(MsgID);  // 通知父组件删除该消息
+    setShow(null);
+    console.log("delete")
   }
-  // to stop the warning of calling setState of unmounted component
-  componentWillUnmount() {
-    var id = window.setTimeout(null, 0);
-    while (id--) {
-      window.clearTimeout(id);
+
+  return (
+    <div>
+      {
+        show !== null && hiddenAll !==null ? (
+        <Paper className={classes.paper}> 
+          <AddAlert /> {"  "}{"【"} <strong>{Title}</strong>  {"】 "}{Time.replace("T", " ")}  
+          <Typography variant="body1" gutterBottom className={classes.typography}>
+            {Content}
+            <IconButton onClick={deleteMsg}>
+              <DeleteOutlinedIcon color="inherit"/>
+            </IconButton>
+          </Typography>
+        </Paper>):(null)
+      }
+    </div>
+  )
+}
+
+
+
+function Notifications (props) {
+  const { classes } = props;
+
+  const [msgList, setMsgList] = React.useState([]);
+  
+  const [hiddenAll, setHiddenAll] = React.useState("show") // if it's null, all msgs will be hidden.
+
+
+  React.useEffect(()=>{
+    // TODO  Get消息列表数据，存入msglist内部
+  }, [])
+
+  const clearMsg = async ()=> {
+    // 一键清空所有的消息  TODO
+    let msgs = msgList;
+    if (msgs.length === 0){
+      alert("暂无可清除的消息");
     }
+    for (let i = 0; i < msgs.length; i++){
+      deleteOneMsg(msgs[i].MsgID);  // 在该函数种会对msglist进行set操作
+    }
+    setHiddenAll(null);
   }
-  showNotification(place) {
-    var x = [];
-    x[place] = true;
-    this.setState(x);
-    this.alertTimeout = setTimeout(
-      function() {
-        x[place] = false;
-        this.setState(x);
-      }.bind(this),
-      6000
-    );
+
+  function deleteOneMsg(msgID) {
+    let msgs = msgList;
+    let index = 0;
+    for (let i = 0; i < msgs.length; i++){
+      if (msgs[i].MsgID === msgID){
+        index = i;
+        break;
+      }
+    }
+
+    // TODO 发送post请求，删除该条消息
+
+    msgs.splice(index, 1);
+    setMsgList(msgs);
   }
-  render() {
-    const { classes } = this.props;
-    return (
+
+  return (
+    <div className={classes.card}>
       <Card>
         <CardHeader color="primary">
-          <h4 className={classes.cardTitleWhite}>Notifications</h4>
-          <p className={classes.cardCategoryWhite}>
-            Handcrafted by our friends from{" "}
-            <a target="_blank" href="https://material-ui-next.com/">
-              Material UI
-            </a>{" "}
-            and styled by{" "}
-            <a target="_blank" href="https://www.creative-tim.com/">
-              Creative Tim
-            </a>
-            . Please checkout the{" "}
-            <a href="#pablo" target="_blank">
-              full documentation
-            </a>
-            .
-          </p>
+          <h3 className={classes.cardTitleWhite}>消息通知列表</h3>
+          <Button className={classes.button} variant="contained" color="primary" onClick={clearMsg}>清空消息</Button>
         </CardHeader>
         <CardBody>
-          <GridContainer>
-            <GridItem xs={12} sm={12} md={6}>
-              <h5>Notifications Style</h5>
-              <br />
-              <SnackbarContent message={"This is a plain notification"} />
-              <SnackbarContent
-                message={"This is a notification with close button."}
-                close
-              />
-              <SnackbarContent
-                message={"This is a notification with close button and icon."}
-                close
-                icon={AddAlert}
-              />
-              <SnackbarContent
-                message={
-                  "This is a notification with close button and icon and have many lines. You can see that the icon and the close button are always vertically aligned. This is a beautiful notification. So you don't have to worry about the style."
+        {
+        msgList.length === 0 ? (
+          <Typography variant="body1" gutterBottom className={classes.typography}>暂无消息通知。</Typography>
+        ) : (
+            <GridContainer>
+              <GridItem xs={12}>
+                {
+                  msgList.map(msg => (
+                    <MessageBox 
+                      MsgID={msg.MsgID}
+                      Time={msg.Time}
+                      Content={msg.Content}
+                      Title={msg.Title}
+                      classes={classes}
+                      deleteOneMsg={deleteOneMsg}
+                      hiddenAll={hiddenAll}
+                    />
+                  ))
                 }
-                close
-                icon={AddAlert}
-              />
-            </GridItem>
-            <GridItem xs={12} sm={12} md={6}>
-              <h5>Notifications States</h5>
-              <br />
-              <SnackbarContent
-                message={
-                  'INFO - This is a regular notification made with color="info"'
-                }
-                close
-                color="info"
-              />
-              <SnackbarContent
-                message={
-                  'SUCCESS - This is a regular notification made with color="success"'
-                }
-                close
-                color="success"
-              />
-              <SnackbarContent
-                message={
-                  'WARNING - This is a regular notification made with color="warning"'
-                }
-                close
-                color="warning"
-              />
-              <SnackbarContent
-                message={
-                  'DANGER - This is a regular notification made with color="danger"'
-                }
-                close
-                color="danger"
-              />
-              <SnackbarContent
-                message={
-                  'PRIMARY - This is a regular notification made with color="primary"'
-                }
-                close
-                color="primary"
-              />
-            </GridItem>
-          </GridContainer>
-          <br />
-          <br />
-          <GridContainer justify="center">
-            <GridItem xs={12} sm={12} md={6} style={{ textAlign: "center" }}>
-              <h5>
-                Notifications Places
-                <br />
-                <small>Click to view notifications</small>
-              </h5>
-            </GridItem>
-          </GridContainer>
-          <GridContainer justify="center">
-            <GridItem xs={12} sm={12} md={10} lg={8}>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                  <Button
-                    fullWidth
-                    color="primary"
-                    onClick={() => this.showNotification("tl")}
-                  >
-                    Top Left
-                  </Button>
-                  <Snackbar
-                    place="tl"
-                    color="info"
-                    icon={AddAlert}
-                    message="Welcome to MATERIAL DASHBOARD React - a beautiful freebie for every web developer."
-                    open={this.state.tl}
-                    closeNotification={() => this.setState({ tl: false })}
-                    close
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <Button
-                    fullWidth
-                    color="primary"
-                    onClick={() => this.showNotification("tc")}
-                  >
-                    Top Center
-                  </Button>
-                  <Snackbar
-                    place="tc"
-                    color="info"
-                    icon={AddAlert}
-                    message="Welcome to MATERIAL DASHBOARD React - a beautiful freebie for every web developer."
-                    open={this.state.tc}
-                    closeNotification={() => this.setState({ tc: false })}
-                    close
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <Button
-                    fullWidth
-                    color="primary"
-                    onClick={() => this.showNotification("tr")}
-                  >
-                    Top Right
-                  </Button>
-                  <Snackbar
-                    place="tr"
-                    color="info"
-                    icon={AddAlert}
-                    message="Welcome to MATERIAL DASHBOARD React - a beautiful freebie for every web developer."
-                    open={this.state.tr}
-                    closeNotification={() => this.setState({ tr: false })}
-                    close
-                  />
-                </GridItem>
-              </GridContainer>
-            </GridItem>
-          </GridContainer>
-          <GridContainer justify={"center"}>
-            <GridItem xs={12} sm={12} md={10} lg={8}>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                  <Button
-                    fullWidth
-                    color="primary"
-                    onClick={() => this.showNotification("bl")}
-                  >
-                    Bottom Left
-                  </Button>
-                  <Snackbar
-                    place="bl"
-                    color="info"
-                    icon={AddAlert}
-                    message="Welcome to MATERIAL DASHBOARD React - a beautiful freebie for every web developer."
-                    open={this.state.bl}
-                    closeNotification={() => this.setState({ bl: false })}
-                    close
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <Button
-                    fullWidth
-                    color="primary"
-                    onClick={() => this.showNotification("bc")}
-                  >
-                    Bottom Center
-                  </Button>
-                  <Snackbar
-                    place="bc"
-                    color="info"
-                    icon={AddAlert}
-                    message="Welcome to MATERIAL DASHBOARD React - a beautiful freebie for every web developer."
-                    open={this.state.bc}
-                    closeNotification={() => this.setState({ bc: false })}
-                    close
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <Button
-                    fullWidth
-                    color="primary"
-                    onClick={() => this.showNotification("br")}
-                  >
-                    Bottom Right
-                  </Button>
-                  <Snackbar
-                    place="br"
-                    color="info"
-                    icon={AddAlert}
-                    message="Welcome to MATERIAL DASHBOARD React - a beautiful freebie for every web developer."
-                    open={this.state.br}
-                    closeNotification={() => this.setState({ br: false })}
-                    close
-                  />
-                </GridItem>
-              </GridContainer>
-            </GridItem>
-          </GridContainer>
+              </GridItem>
+            </GridContainer>)
+        }
         </CardBody>
       </Card>
-    );
-  }
+    </div>
+  );
 }
+
+
+Notification.propTypes = {
+  classes: PropTypes.object.isRequired
+};
 
 export default withStyles(styles)(Notifications);

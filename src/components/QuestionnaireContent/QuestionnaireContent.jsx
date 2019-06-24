@@ -457,7 +457,7 @@ function QuestionaireContent(props) {
       <List subheader={<li />} className={classes.list}>
         {Content.chooseData.map(item => {
           let required = "";
-          if (item.required === 1) {
+          if (item.required === true) {
             required = "【必答】";
           }
           let multiChoice = "";

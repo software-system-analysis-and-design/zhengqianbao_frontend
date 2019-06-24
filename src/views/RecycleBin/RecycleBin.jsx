@@ -39,7 +39,7 @@ function RecycleBin(props) {
   const { classes } = props;
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState([]);
 
   // 记录选中or不选中的check box。

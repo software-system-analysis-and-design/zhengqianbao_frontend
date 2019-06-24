@@ -50,6 +50,7 @@ function TaskArray(props) {
             endTime: task.endTime,
             description: task.description
           };
+
           ret.push({
             title: task.taskName,
             ownership: task.creator,
