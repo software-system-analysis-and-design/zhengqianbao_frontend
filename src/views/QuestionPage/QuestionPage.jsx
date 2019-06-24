@@ -85,19 +85,13 @@ function QuestionPage(props) {
   };
 
   const save = () => {
-    if (Object.keys(answers).length == qdata.length) {
-      for (let i = 0; i < Object.keys(answers).length; i++) {
-        if (answers[i] === undefined) {
-          setWarning(true);
-          return;
-        }
+    for (let i = 0; i < qdata.length; i++) {
+      console.log("Require" + i);
+      console.log(qdata[i].required);
+      if (qdata[i].required && (answers[i] === undefined || answers[i] === "")) {
+        setWarning(true);
+        return;
       }
-    } else {
-      setWarning(true);
-      console.log("answers:");
-      console.log(answers);
-      console.log(qdata.length);
-      return;
     }
 
     // upload answers
@@ -172,7 +166,7 @@ function QuestionPage(props) {
         for (let j = 0; j < elem.dataContent.length; j++) {
           arr.push(elem.dataContent[j].content);
         }
-        content = {...content, ["title"]: elem.title, ["arr"]: arr, ["minNum"]: 0, ["maxNum"]: 1000};
+        content = {...content, ["title"]: elem.title, ["arr"]: arr, ["minNum"]: 1, ["maxNum"]: arr.length};
         ret = <MultiChoiceCard content={content} warning={warning} callback={setAns(index)} />;
         break;
 
