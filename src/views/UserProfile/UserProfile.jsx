@@ -25,7 +25,8 @@ class UserProfile extends React.Component{
 	_props;
 	constructor(props){
         super(props)
-        this._props = props;
+		this._props = props;
+
 		this.state = {
             value: '',
 			isView: true,
@@ -39,7 +40,8 @@ class UserProfile extends React.Component{
 				company:null,
 				class:null,
 				iscow:null,
-				description:null
+				description:null,
+				remain:null
 			},
 			tempUser: {
 				name:null,
@@ -51,31 +53,41 @@ class UserProfile extends React.Component{
 				company:null,
 				class:null,
 				iscow:null,
-				description:null
+				description:null,
+				remain:null
 			}
         };
 		this.updateUserInfo = this.updateUserInfo.bind(this);
 		this.editUserInfo = this.editUserInfo.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.cancelUpdate = this.cancelUpdate.bind(this);
+		this.updateMoney = this.updateMoney.bind(this);
 		//initialUser();
     }
 	
 	componentWillMount(){
-		//console.log(localStorage.getItem('user-token'));
-		const requestOptions = {
-			method: "GET",
-            headers: { 
-                'Authorization':"Bearer "+ localStorage.getItem('user-token')
-			},
-		};
-		console.log(requestOptions);
-		fetch(apiUrl+"/profile",requestOptions)
-        .then(handleResponse)
-        .then(response => {
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-			this.setState({user: response, tempUser: response});
-        });
+		if(!localStorage.getItem('user-token')){
+            this.props.history.push('/login');
+        }else{
+			//console.log(localStorage.getItem('user-token'));
+			const requestOptions = {
+				method: "GET",
+				headers: { 
+					'Authorization':"Bearer "+ localStorage.getItem('user-token')
+				},
+			};
+			console.log(requestOptions);
+			fetch(apiUrl+"/profile",requestOptions)
+			.then(handleResponse)
+			.then(response => {
+				// store user details and jwt token in local storage to keep user logged in between page refreshes
+				this.setState({user: response, tempUser: response});
+			});
+		}
+	}
+
+	updateMoney(){
+		
 	}
 
 	updateUserInfo(){
@@ -150,6 +162,11 @@ class UserProfile extends React.Component{
 				<CardBody profile>
 					<h6 >CEO / {(user.iscow)?"奶牛":"学生"}</h6>
 					<h4 >{user.name}</h4>
+					<div display="block">
+						<p style={{fontSize:"11pt"}}>余额：{user.remain}</p>
+						<Button fontSize="5pt" onClick={this.updateMoney}>充值</Button>
+					</div>
+					
 					<p >
 					Don't be scared of the truth because we need to restart the
 					human foundation in truth And I love you like Kanye loves Kanye
@@ -276,7 +293,7 @@ class UserProfile extends React.Component{
 					</GridContainer>
 					<GridContainer style={{display: (this.state.isView) ?  "none":"inline"}}>
 						<GridItem xs={12} sm={12} md={12}>
-							<InputLabel style={{ color: "#AAAAAA" }}>About me</InputLabel>
+							<InputLabel style={{ color: "#AAAAAA" }}>关于我</InputLabel>
 							<CustomInput
 							labelText={user.description}
 							id="about-me"
@@ -341,7 +358,7 @@ class UserProfile extends React.Component{
 						</GridItem>
 
 						<GridItem xs={12} sm={12} md={12}>
-							<InputLabel style={{ color: "#AAAAAA" }}>About me</InputLabel>
+							<InputLabel style={{ color: "#AAAAAA" }}>关于我</InputLabel>
 							<CustomInput
 							labelText={user.description}
 							id="about-me"

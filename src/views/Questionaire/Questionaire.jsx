@@ -27,6 +27,9 @@ const styles = theme => ({
 });
 
 function Questionaire(props) {
+  if(!localStorage.getItem('user-token')){
+    props.history.push('/login');
+  }
   const { classes, transferMsg, path } = props;
 
   const [values, setValues] = React.useState({

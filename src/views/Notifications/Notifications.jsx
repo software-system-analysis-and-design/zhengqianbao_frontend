@@ -58,6 +58,9 @@ class Notifications extends React.Component {
   }
   // to stop the warning of calling setState of unmounted component
   componentWillUnmount() {
+    if(!localStorage.getItem('user-token')){
+      this.props.history.push('/login');
+    }
     var id = window.setTimeout(null, 0);
     while (id--) {
       window.clearTimeout(id);
