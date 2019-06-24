@@ -32,7 +32,7 @@ function QuestionPage(props) {
   });
   const [qdata, setQuestionData] = React.useState([]);
   const [answers, setAnswers] = React.useState({});
-  const [testButton, setTestButton] = React.useState([]);
+  const [money, setMoney] = React.useState(0);
 
   const setAns = index => answer => {
     setAnswers({...answers, [index]: answer});
@@ -52,12 +52,7 @@ function QuestionPage(props) {
     fetch(apiUrl, requestOption)
       .then(handleResponse)
       .then(response => {
-        let ret = [];
-        ret.push(
-          <Typography className={classes.title} variant="h5" component="h2">
-            {response.taskName}
-          </Typography>
-        );
+        setMoney(parseInt(response.money));
         setQuestionData(response.chooseData);
       });
   };
@@ -68,6 +63,25 @@ function QuestionPage(props) {
     let ret = new FormData();
     ret.append("data", JSON.stringify(json));
     return ret;
+  };
+
+  const updateMoney = () => {
+    let data = new FormData();
+    data.append("money", localStorage.getItem("user-remain") + money);
+
+    const apiUrl = "https://littlefish33.cn:8080/user/updatemoney";
+    const requestOption = {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user-token")
+      },
+      body: data
+    };
+    fetch(apiUrl, requestOption)
+      .then(handleResponse)
+      .then(response => {
+        console.log(response);
+      });
   };
 
   const save = () => {
@@ -121,6 +135,7 @@ function QuestionPage(props) {
       .then(response => {
         if (response.code == 200) {
           setMessage({ ...message, title: "保存成功" });
+          updateMoney();
           setOpen(true);
         } else {
           setMessage({
@@ -150,7 +165,7 @@ function QuestionPage(props) {
         }
         content = {...content, ["title"]: elem.title, ["arr"]: arr};
 
-        ret = <SingleChoiceCard content={content} warning={warning} callback={setAns(index)} answers={answers}/>;
+        ret = <SingleChoiceCard content={content} warning={warning} callback={setAns(index)} />;
         break;
 
       case 3:
@@ -158,12 +173,12 @@ function QuestionPage(props) {
           arr.push(elem.dataContent[j].content);
         }
         content = {...content, ["title"]: elem.title, ["arr"]: arr, ["minNum"]: 0, ["maxNum"]: 1000};
-        ret = <MultiChoiceCard content={content} warning={warning} callback={setAns(index)} answers={answers}/>;
+        ret = <MultiChoiceCard content={content} warning={warning} callback={setAns(index)} />;
         break;
 
       case 1:
         content = {...content, ["title"]: elem.title};
-        ret = <ShortAnswerCard content={content} warning={warning} callback={setAns(index)} answers={answers}/>;
+        ret = <ShortAnswerCard content={content} warning={warning} callback={setAns(index)} />;
         break;
     }
     return ret;

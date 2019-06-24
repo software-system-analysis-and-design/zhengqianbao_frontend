@@ -26,7 +26,7 @@ const style = {
 };
 
 function MultiChoiceCard(props) {
-  const {classes, content, warning, callback, answers} = props;
+  const {classes, content, warning, callback} = props;
 
   let defaultChecked = {};
   for (let i = 0; i < content.arr.length; i++) {
@@ -34,10 +34,10 @@ function MultiChoiceCard(props) {
   }
   const [checked, setChecked] = React.useState(defaultChecked);
 
-  const getAnswer = () => {
+  const getAnswer = (arr) => {
     let ret = [];
-    for (let i = 0; i < checked.length; i++) {
-      if (checked[i]) {
+    for (let i = 0; i < Object.keys(arr).length; i++) {
+      if (arr[i]) {
         ret.push(i);
       }
     }
@@ -45,7 +45,7 @@ function MultiChoiceCard(props) {
   };
   const handleChange = (index) => (event) => {
     setChecked({...checked, [index]:event.target.checked});
-    callback(getAnswer(), answers);
+    callback(getAnswer({...checked, [index]:event.target.checked}));
   };
 
   function count(arr) {
