@@ -34,7 +34,7 @@ function TaskArray(props) {
   React.useEffect(fetchTaskList, []);
 
   function fetchTaskList() {
-    const apiUrl = "https://littlefish33.cn:8080/questionnaire/previews";
+    const apiUrl = "https://littlefish33.cn:8080/questionnaire/previews/valid";
     const requestOption = {
       method: "GET"
     };
@@ -75,12 +75,26 @@ function TaskArray(props) {
     );
   };
 
+  function stringToDate(time) {
+    // 一个字符串  2019-06-12T12:00 转为 Date对象
+    // let time = _time.toString();
+    console.log("stringToDate");
+    if (time.length !== 16) return null;
+    console.log("stringToDate valid");
+    let year = time.slice(0, 4);
+    let month = time.slice(5, 7);
+    let day = time.slice(8, 10);
+    let min = time.slice(11, 13);
+    let sec = time.slice(14, 16);
+    let date = new Date(year, month - 1, day, min, sec);
+    return date;
+  }
+
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
   };
 
   const filterButtonClick = () => {
-    console.log("buttonClick");
     let moneyParam = {
       min: parseInt(values.moneyMin),
       max: parseInt(values.moneyMax)
@@ -91,12 +105,22 @@ function TaskArray(props) {
       keyWord: values.search
     }
     temp = stateFilter(temp, searchFilter, searchParam);
+
+    let timeParam = {
+      begin: values.beginTime,
+      end: values.endTime
+    };
+    console.log("time filter");
+    temp = stateFilter(temp, timeFilter, timeParam);
+
     setFiltedTask(temp);
   }
 
   const stateFilter = (arr, func, param) => {
+    console.log("state filter");
     let ret = [];
     for (let task of arr) {
+      console.log(task);
       if (func(task, param)) ret.push(task);
     }
     return ret;
@@ -114,6 +138,22 @@ function TaskArray(props) {
     );
   };
 
+  const timeFilter = (task, param) => {
+    let taskBegin = stringToDate(task.details.startTime);
+    let taskEnd = stringToDate(task.details.endTime);
+    let paramBegin = stringToDate(param.begin);
+    let paramEnd = stringToDate(param.end);
+
+    console.log(taskBegin);
+    console.log(taskEnd);
+    console.log(paramBegin);
+    console.log(paramEnd);
+    return (
+      (paramBegin === null || taskBegin >= paramBegin) &&
+      (paramEnd === null || (taskEnd !== null && taskEnd <= paramEnd))
+    );
+  };
+
   return (
     <div>
       <Grid className={classes.nav} container spacing={2}>
@@ -123,15 +163,37 @@ function TaskArray(props) {
             label="搜索"
             className={classes.textField}
             value={values.search}
-            onChange={handleChange('search')}
+            onChange={handleChange("search")}
             margin="normal"
             variant="outlined"
+          />
+          <TextField
+            id="datetime-local"
+            label="开始时间"
+            type="datetime-local"
+            onChange={handleChange("beginTime")}
+            value={values.beginTime}
+            className={classes.textField}
+            InputLabelProps={{
+              shrink: true
+            }}
+          />
+          <TextField
+            id="datetime-local"
+            label="终止时间"
+            type="datetime-local"
+            onChange={handleChange("endTime")}
+            value={values.endTime}
+            className={classes.textField}
+            InputLabelProps={{
+              shrink: true
+            }}
           />
           <TextField
             id="outlined-number"
             label="最小"
             value={values.moneyMin}
-            onChange={handleChange('moneyMin')}
+            onChange={handleChange("moneyMin")}
             type="number"
             className={classes.textField}
             InputLabelProps={{
@@ -144,7 +206,7 @@ function TaskArray(props) {
             id="outlined-number"
             label="最大"
             value={values.moneyMax}
-            onChange={handleChange('moneyMax')}
+            onChange={handleChange("moneyMax")}
             type="number"
             className={classes.textField}
             InputLabelProps={{
