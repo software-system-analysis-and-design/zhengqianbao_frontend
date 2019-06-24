@@ -97,7 +97,7 @@ function QuestionPage(props) {
     }
     let postData = {
       taskID: match.params.taskID,
-      userID: localStorage.getItem("user-id"),
+      userID: localStorage.getItem("userID"),
       data: answerData
     };
 
@@ -175,7 +175,7 @@ function QuestionPage(props) {
       <Button variant="contained" color="primary" className={classes.button} onClick={save}>
         保存
       </Button>
-      <Button variant="contained" color="secondary" className={classes.button}>
+      <Button variant="contained" color="secondary" className={classes.button} onClick={ () => props.history.push("/tasksquare")}>
         取消
       </Button>
       <Dialog
