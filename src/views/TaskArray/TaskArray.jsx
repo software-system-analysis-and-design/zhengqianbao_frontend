@@ -69,8 +69,12 @@ function TaskArray(props) {
     );
   };
 
-  const stateFilter = (tasks) => {
-
+  const stateFilter = (tasks, func, param) => {
+    let ret = [];
+    for (let task of tasks) {
+      if (func(task, param)) ret.push(task);
+    }
+    return ret;
   };
 
   return (
