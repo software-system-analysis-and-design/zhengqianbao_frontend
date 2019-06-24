@@ -17,6 +17,8 @@ import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboar
 
 import image from "assets/img/sidebar-2.jpg";  // 边界栏背景图片
 import logo from "assets/img/reactlogo.png";  // 应用图标
+import { handleResponse, parseParams, apiUrl } from "variables/serverFunc.jsx";
+
 
 const switchRoutes = (
   <Switch>
@@ -58,6 +60,24 @@ class Dashboard extends React.Component {
       const ps = new PerfectScrollbar(this.refs.mainPanel);
     }
     window.addEventListener("resize", this.resizeFunction);
+
+
+    // 获取用户信息，将用户余额写入localstorage中，全局访问
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user-token")
+      }
+    };
+
+    fetch(apiUrl + "/profile", requestOptions)
+      .then(handleResponse)
+      .then(response => {  // 在 admin 组件获取用户余额
+        console.log(response)
+        console.log("当前用户余额为" + response.remain.toString());
+        localStorage.setItem("user-remain", response.remain); 
+      });
+
   }
   componentDidUpdate(e) {
     if (e.history.location.pathname !== e.location.pathname) {

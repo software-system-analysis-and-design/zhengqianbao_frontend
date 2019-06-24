@@ -153,7 +153,48 @@ function Questionnaire(props) {
       return null;
     }
 
-    // console.log(requestOptions);
+    // 检查当前余额是否足够支付，如果够则支付，然后进行更新，如果不够支付，那么就 alert提示，然后返回。
+    let currentMoney = localStorage.getItem("user-remain");
+    let payMoney = values.money * values.number;
+    if (currentMoney < payMoney) {
+      alert(
+        "【余额不足】 \n 你需要支付" +
+          payMoney +
+          " toekns, 但你的余额仅剩 " +
+          currentMoney.toString() +
+          " tokens"
+      );
+      return null;
+    }
+
+    // 金额足够，那么需要提前扣除token，然后发送更新金额请求，然后再进行更新和创建任务
+    let data = new FormData();
+    data.append("money", currentMoney - payMoney);
+    const requestUpdateMoney = {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user-token")
+      },
+      body: data
+    };
+
+    let isError = false;
+
+    fetch(apiUrl + "/user/updatemoney", requestUpdateMoney)
+      .then(handleResponse)
+      .then(response => {
+        if (response.code === 200) {
+          localStorage.setItem("user-remain", currentMoney - payMoney);
+        }
+      })
+      .catch(() => {
+        alert("扣除token出现错误，请检查你的网络环境！");
+        isError = true;
+        return null;
+      });
+
+    if (isError) return null;
+
     if (taskID.length === 14) {
       let allData = {
         taskName: values.title,

@@ -119,26 +119,31 @@ function Notifications (props) {
       .then(handleResponse)
       .then(response => {
         console.log(response);
-        if (response !== null)
+        if (response !== null){
           setMsgList(response);
-      });
-
-    // 获取这些消息，将这些消息设置为已读状态
-    for (let i = 0; i < msgList.length; i++){
-      if (msgList[i].state === 0){
-        let msgid = msgList[i].msgID;
-        const requestOptions2 = {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("user-token"),
-            Accept: "application/json",
-            "content-type": "application/x-www-form-urlencoded"
-          },
-          body: parseParams({msgID: msgid, state: 1})
+          tmpMsgList = response;
+          // 获取这些消息，将这些消息设置为已读状态
+          for (let i = 0; i < tmpMsgList.length; i++){
+            if (msgList[i].state === 0){
+              let msgid = tmpMsgList[i].msgID;
+              const requestOptions2 = {
+                method: "POST",
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("user-token"),
+                  Accept: "application/json",
+                  "content-type": "application/x-www-form-urlencoded"
+                },
+                body: parseParams({msgID: msgid, state: 1})
+              }
+              fetch(apiUrl + "/message/read", requestOptions2)
+                .then(handleResponse)
+                .then(response => {
+                  console.log("修改信息已读状态")
+                })
+            }
+          }
         }
-      }
-    }
-    
+      });
   }, [])
 
   const clearMsg = async ()=> {

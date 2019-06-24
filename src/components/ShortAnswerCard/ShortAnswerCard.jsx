@@ -14,18 +14,18 @@ const style = {
     fontSize: 24
   },
   textField: {
-    marginTop: 15,
+    marginTop: 15
   }
 };
 
 function ShortAnswerCard(props) {
-  const {classes, content, warning, callback, answers} = props;
+  const { classes, content, warning, callback, answers } = props;
   const [error, setError] = React.useState(warning);
 
   const handleChange = event => {
     setError(event.target.value == "");
     callback(event.target.value, answers);
-  }
+  };
 
   return (
     <Card className={classes.card}>

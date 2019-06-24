@@ -19,7 +19,7 @@ import Button from "components/CustomButtons/Button.jsx";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.jsx";
 
-import { handleResponse} from "variables/serverFunc.jsx";
+import { handleResponse } from "variables/serverFunc.jsx";
 const apiUrl = "https://littlefish33.cn:8080";
 
 class HeaderLinks extends React.Component {
@@ -36,6 +36,7 @@ class HeaderLinks extends React.Component {
         Authorization: "Bearer " + localStorage.getItem("user-token")
       }
     };
+
     fetch(apiUrl + "/message/count", requestOptions)
       .then(handleResponse)
       .then(response => {
