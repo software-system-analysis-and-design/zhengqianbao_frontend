@@ -81,11 +81,17 @@ function TaskArray(props) {
 
   const filterButtonClick = () => {
     console.log("buttonClick");
-    let param = {
+    let moneyParam = {
       min: parseInt(values.moneyMin),
       max: parseInt(values.moneyMax)
     }
-    setFiltedTask(stateFilter(tasks, moneyFilter, param));
+    let temp = stateFilter(tasks, moneyFilter, moneyParam);
+
+    let searchParam = {
+      keyWord: values.search
+    }
+    temp = stateFilter(temp, searchFilter, searchParam);
+    setFiltedTask(temp);
   }
 
   const stateFilter = (arr, func, param) => {
@@ -95,6 +101,10 @@ function TaskArray(props) {
     }
     return ret;
   };
+
+  const searchFilter = (task, param) => {
+    return task.title.indexOf(param.keyWord) !== -1;
+  }
 
   const moneyFilter = (task, param) => {
     let money = parseInt(task.details.reward);
