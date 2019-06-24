@@ -4,7 +4,7 @@ import GridContainer from "components/Grid/GridContainer.jsx";
 import TextField from "@material-ui/core/TextField";
 import Button from "components/CustomButtons/Button.jsx";
 import logo from "assets/img/logo.jpg";
-import {handleResponse, parseParams, apiUrl} from "variables/serverFunc.jsx"；
+import {handleResponse, parseParams, apiUrl} from "variables/serverFunc.jsx";
 
 class LoginPage extends React.Component {
   constructor(props) {
@@ -63,85 +63,11 @@ class LoginPage extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-
-<<<<<<< HEAD
-    render() {
-        const { loggingIn } = this.props;
-        const { userphone, password, submitted, responseMsg, user_error, password_error } = this.state;
-        return (
-		<div>
-			<GridContainer justify="center" direction="column" alignItems="center">
-            <div className="col-md-6 col-md-offset-3" style={{width:"400px"}}>
-                <div style={{marginTop: "100px", textAlign: "center"}}>
-				    <img style={{verticalAlign: "middle"}} src={logo} width='70px' height='70px' alt='.....'/>
-                    <span style={{fontSize:"30pt", verticalAlign:"middle", marginLeft:"10px"}}>挣钱宝</span>
-                </div>
-                <h3>登录</h3>
-                <form name="form" onSubmit={this.handleSubmit}>
-                    <div className={'form-group' + (submitted && !userphone ? ' has-error' : '')}>
-						<TextField
-							id="phone"
-							label="手机号"
-							type="text"
-							className="form-control"
-							value={userphone}
-							onChange={this.handleChange}
-							margin="normal"
-							inputProps={{
-							name: 'userphone',
-							}}
-							fullWidth
-						  />
-                        {submitted && !userphone &&
-                            <div className="help-block" style={{color: "red"}}>手机号不可为空</div>
-                        }
-                        {submitted && userphone && user_error &&
-                            <div className="help-block" style={{color: "red"}}>{responseMsg}</div>
-                        }
-                    </div>
-                    <div className={'form-group' + (submitted && !password ? ' has-error' : '')}>
-                        <TextField
-							id="password"
-							label="密码"
-							className="form-control"
-							type="password"
-							value={password}
-							autoComplete="current-password"
-							onChange={this.handleChange}
-							margin="normal"
-							inputProps={{
-							name: 'password',
-							}}
-							fullWidth
-						  />
-						  {submitted && !password &&
-                            <div className="help-block" style={{color: "red"}}>密码不可为空</div>
-                          }
-                          {submitted && password && !user_error && password_error &&
-                            <div className="help-block" style={{color: "red"}}>{responseMsg}</div>
-						  }
-                    </div>
-                    <div className="form-group">
-                        <Button className="btn btn-primary" color="primary" type="submit">登录</Button>
-                        {loggingIn &&
-                            <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-                        }
-                        <Link to="/register" >
-							<Button color="primary">注册</Button>
-						</Link>
-                    </div>
-                </form>
-            </div>
-			</GridContainer>
-		</div>
-        );
-=======
     this.setState({ submitted: true });
     const { userphone, password } = this.state;
     const { dispatch } = this.props;
     if (userphone && password) {
       this.login(userphone, password);
->>>>>>> 841935faf062c10c6cbba92df19dc1840d599467
     }
   }
 
@@ -159,7 +85,11 @@ class LoginPage extends React.Component {
       <div>
         <GridContainer justify="center" direction="column" alignItems="center">
           <div className="col-md-6 col-md-offset-3" style={{ width: "400px" }}>
-            <h2>登录</h2>
+            <div style={{marginTop: "100px", textAlign: "center"}}>
+              <img style={{verticalAlign: "middle"}} src={logo} width='70px' height='70px' alt='.....'/>
+              <span style={{fontSize:"30pt", verticalAlign:"middle", marginLeft:"10px"}}>挣钱宝</span>
+            </div>
+            <h3>登录</h3>
             <form name="form" onSubmit={this.handleSubmit}>
               <div
                 className={

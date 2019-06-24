@@ -35,6 +35,9 @@ const styles = theme => ({
 
 function Commission(props) {
   const { classes, transferMsg, path } = props;
+  if(!localStorage.getItem('user-token')){
+    props.history.push('/login');
+  }
 
   useEffect(() => {
     transferMsg("2C");

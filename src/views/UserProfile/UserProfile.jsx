@@ -183,7 +183,6 @@ class UserProfile extends React.Component{
 						<p style={{fontSize:"11pt"}}>余额：{user.remain}</p>
 						<Button fontSize="5pt" onClick={this.updateMoney}>充值</Button>
 					</div>
-					
 					<p >
 					Don't be scared of the truth because we need to restart the
 					human foundation in truth And I love you like Kanye loves Kanye

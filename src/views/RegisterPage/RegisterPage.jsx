@@ -3,18 +3,11 @@ import { Link } from "react-router-dom";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import TextField from "@material-ui/core/TextField";
 import Button from "components/CustomButtons/Button.jsx";
-<<<<<<< HEAD
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import logo from "assets/img/logo.jpg";
-import {handleResponse, parseParams, apiUrl} from "variables/serverFunc.jsx"
-=======
-import Select from "@material-ui/core/Select";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import { handleResponse, parseParams, apiUrl } from "variables/serverFunc.jsx";
->>>>>>> 841935faf062c10c6cbba92df19dc1840d599467
+import {handleResponse, parseParams, apiUrl} from "variables/serverFunc.jsx";
 
 const classes = ["none", "2015", "2016", "2017", "2018"];
 
