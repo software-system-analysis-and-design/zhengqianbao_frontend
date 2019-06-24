@@ -155,7 +155,7 @@ function RecycleBin(props) {
                   res[i].taskID,
                   res[i].taskName,
                   res[i].taskType,
-                  "未知"
+                  "----"
                 )
               );
           }

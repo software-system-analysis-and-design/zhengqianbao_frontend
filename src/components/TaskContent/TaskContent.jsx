@@ -83,7 +83,7 @@ function Content(props) {
     modifyTaskState
   } = props;
 
-  const [taskState, setTaskState] = React.useState("进行中"); 
+  const [taskState, setTaskState] = React.useState("进行中");
   const [taskButtonState, setTaskButtonState] = React.useState("");
 
   // 点击删除图标按钮，弹出对话框
@@ -121,6 +121,13 @@ function Content(props) {
     }
     // TODO  根据时间判断任务状态，修改按钮的显示字样
     modifyTaskState(taskID, state);
+    if (taskButtonState === "发布任务") {
+      setTaskButtonState("终止任务");
+    } else if (taskButtonState === "终止任务") {
+      setTaskButtonState("重启任务");
+    } else if (taskButtonState === "重启任务") {
+      setTaskButtonState("终止任务");
+    }
     setOpen_stop(false);
   }
 
@@ -142,7 +149,10 @@ function Content(props) {
     if (publishDate > currentDate) {
       setTaskState("待发布");
       setTaskButtonState("发布任务");
-    } else if (publishDate <= currentDate && endDate > currentDate) {
+    } else if (
+      (publishDate <= currentDate && endDate > currentDate) ||
+      (publishDate <= currentDate && endTime.length === 0)
+    ) {
       setTaskState("进行中");
       setTaskButtonState("终止任务");
     } else if (endDate < currentDate) {

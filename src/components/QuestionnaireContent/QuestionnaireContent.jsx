@@ -41,58 +41,6 @@ const style = theme => ({
   }
 });
 
-/*
-问卷字段设计：
-
-state = {
-  title: "问卷名"
-  description: "问卷描述" 
-  money: 100, // 问卷字段
-  number: 100, //  问卷设置的份数, 默认 -1 则视为份数不限
-  publishTime: "发布时间"  // 年月日时分 ，如果不设置，则需要手动发布
-  endTime: "截止时间"    // 年月日时分 ， 如果不设置，则需要手动截止
-  choose_data:[  // 问卷题目字段
-    {  // 问答题的字段格式
-      titleNum: 1,   // 题目的编号
-      id: 1           // 题目的 id, 在进行map渲染时，作为唯一的key标识
-      title: "这是问答题的问题"  
-      dataType: 1  （1 表示是问答题)
-      required: 1    (1 表示是必选题目， 0非必选题)
-      dataContent: [] 为空
-    }
-    { // 单选题的字段格式
-      titleNum: 2
-      id: 2
-      title: "这是一道单选题"
-      dataType: 2  (2表示是单选题)
-      required: 0
-      dataContent:[
-        {
-          id: 1 //  选项的id
-          content: "选项的内容"
-        }
-        {
-          id: 2 
-          content: "2113"
-        }
-      ]
-    }  // 多选题的字段格式
-    {
-      titleNum: 3
-      id: 3
-      title: "多选题目"
-      dataType: 3
-      dataContent:[
-        {
-          id: 1
-          content: "asdasd"
-        }
-      ]
-    }
-  ]
-}
-*/
-
 function QuestionaireContent(props) {
   const { classes, title, description, Content, setContent } = props;
   /***************************************************
@@ -164,7 +112,7 @@ function QuestionaireContent(props) {
   const handelChoiceItemChange = id => event => {
     let tmpChoiceItem = questionChoice.chooseData;
     for (let i = 0; i < tmpChoiceItem.length; i++) {
-      if (id == tmpChoiceItem[i].id) {
+      if (id === tmpChoiceItem[i].id) {
         tmpChoiceItem[i].content = event.target.value;
         break;
       }
@@ -272,7 +220,7 @@ function QuestionaireContent(props) {
 
   // 删除选项
   const deleteChoiceItem = id => event => {
-    if (questionChoice.chooseData.length == 1) {
+    if (questionChoice.chooseData.length === 1) {
       alert("不能删除，至少保留一个选项！");
       return null;
     }

@@ -50,9 +50,9 @@ function judgeTime(time) {
   // 内容为空，则允许，需要手动发布
   // 内容若不为空，则需要精确到分钟，且时间必须在当前时间之后，否则不予发布
   // let time = _time.toString();
-  if (time.length == 0) {
+  if (time.length === 0) {
     return true;
-  } else if (time.length == 16) {
+  } else if (time.length === 16) {
     let currentTime = new Date();
     let cmpTime = stringToDate(time);
     if (cmpTime > currentTime) {

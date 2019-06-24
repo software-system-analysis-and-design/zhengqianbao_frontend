@@ -9,7 +9,6 @@ import AddAlert from "@material-ui/icons/AddAlert";
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import Button from "components/CustomButtons/Button.jsx";
-import SnackbarContent from "components/Snackbar/SnackbarContent.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
@@ -18,6 +17,11 @@ import Typography from '@material-ui/core/Typography';
 
 import IconButton from "@material-ui/core/IconButton";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
+
+import { handleResponse, parseParams } from "variables/serverFunc.jsx";
+
+const apiUrl = "https://littlefish33.cn:8080";
+
 
 const styles = {
   cardCategoryWhite: {
@@ -32,7 +36,7 @@ const styles = {
       color: "#FFFFFF"
     }
   },
-  cardTitleWhite: {
+  cardtitleWhite: {
     color: "#FFFFFF",
     marginTop: "0px",
     minHeight: "auto",
@@ -66,12 +70,12 @@ const styles = {
 
 
 function MessageBox (props) {
-  const {classes, MsgID, Time, Content, Title, deleteOneMsg, hiddenAll} = props;
+  const {classes, msgID, time, content, title, deleteOneMsg, hiddenAll} = props;
 
   const [show, setShow] = React.useState("not null");
 
   function deleteMsg() {
-    deleteOneMsg(MsgID);  // 通知父组件删除该消息
+    deleteOneMsg(msgID);  // 通知父组件删除该消息
     setShow(null);
     console.log("delete")
   }
@@ -81,9 +85,9 @@ function MessageBox (props) {
       {
         show !== null && hiddenAll !==null ? (
         <Paper className={classes.paper}> 
-          <AddAlert /> {"  "}{"【"} <strong>{Title}</strong>  {"】 "}{Time.replace("T", " ")}  
+          <AddAlert /> {"  "}{"【"} <strong>{title}</strong>  {"】 "}{time.replace("T", " ")}  
           <Typography variant="body1" gutterBottom className={classes.typography}>
-            {Content}
+            {content}
             <IconButton onClick={deleteMsg}>
               <DeleteOutlinedIcon color="inherit"/>
             </IconButton>
@@ -95,7 +99,6 @@ function MessageBox (props) {
 }
 
 
-
 function Notifications (props) {
   const { classes } = props;
 
@@ -105,7 +108,37 @@ function Notifications (props) {
 
 
   React.useEffect(()=>{
-    // TODO  Get消息列表数据，存入msglist内部
+    // Get消息列表数据，存入msglist内部
+    const requestOptions1 = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user-token")
+      }
+    };
+    fetch(apiUrl + "/message/getall", requestOptions1)
+      .then(handleResponse)
+      .then(response => {
+        console.log(response);
+        if (response !== null)
+          setMsgList(response);
+      });
+
+    // 获取这些消息，将这些消息设置为已读状态
+    for (let i = 0; i < msgList.length; i++){
+      if (msgList[i].state === 0){
+        let msgid = msgList[i].msgID;
+        const requestOptions2 = {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("user-token"),
+            Accept: "application/json",
+            "content-type": "application/x-www-form-urlencoded"
+          },
+          body: parseParams({msgID: msgid, state: 1})
+        }
+      }
+    }
+    
   }, [])
 
   const clearMsg = async ()=> {
@@ -115,7 +148,7 @@ function Notifications (props) {
       alert("暂无可清除的消息");
     }
     for (let i = 0; i < msgs.length; i++){
-      deleteOneMsg(msgs[i].MsgID);  // 在该函数种会对msglist进行set操作
+      deleteOneMsg(msgs[i].msgID);  // 在该函数种会对msglist进行set操作
     }
     setHiddenAll(null);
   }
@@ -124,14 +157,29 @@ function Notifications (props) {
     let msgs = msgList;
     let index = 0;
     for (let i = 0; i < msgs.length; i++){
-      if (msgs[i].MsgID === msgID){
+      if (msgs[i].msgID === msgID){
         index = i;
         break;
       }
     }
-
-    // TODO 发送post请求，删除该条消息
-
+    
+    //发送post请求，删除该条消息
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user-token"),
+        Accept: "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      body: parseParams({msgID: msgID})
+    }
+    fetch(apiUrl + "/message/delete", requestOptions)
+      .then(handleResponse)
+      .then(response => {
+        console.log(response);
+        console.log("代码：" + response.code + " : " +  response.msg);
+        alert(response.msg);
+      })
     msgs.splice(index, 1);
     setMsgList(msgs);
   }
@@ -140,7 +188,7 @@ function Notifications (props) {
     <div className={classes.card}>
       <Card>
         <CardHeader color="primary">
-          <h3 className={classes.cardTitleWhite}>消息通知列表</h3>
+          <h3 className={classes.cardtitleWhite}>消息通知列表</h3>
           <Button className={classes.button} variant="contained" color="primary" onClick={clearMsg}>清空消息</Button>
         </CardHeader>
         <CardBody>
@@ -153,10 +201,10 @@ function Notifications (props) {
                 {
                   msgList.map(msg => (
                     <MessageBox 
-                      MsgID={msg.MsgID}
-                      Time={msg.Time}
-                      Content={msg.Content}
-                      Title={msg.Title}
+                      msgID={msg.msgID}
+                      time={msg.time}
+                      content={msg.content}
+                      title={msg.title}
                       classes={classes}
                       deleteOneMsg={deleteOneMsg}
                       hiddenAll={hiddenAll}

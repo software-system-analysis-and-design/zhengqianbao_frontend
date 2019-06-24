@@ -1,5 +1,4 @@
 import React from "react";
-import classNames from "classnames";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -20,6 +19,9 @@ import Button from "components/CustomButtons/Button.jsx";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.jsx";
 
+import { handleResponse} from "variables/serverFunc.jsx";
+const apiUrl = "https://littlefish33.cn:8080";
+
 class HeaderLinks extends React.Component {
   state = {
     open: false,
@@ -27,7 +29,20 @@ class HeaderLinks extends React.Component {
   };
 
   componentDidMount = () => {
-    // TODO 获取未读消息数目,显示在logo上
+    // 获取未读消息数目,显示在logo上
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user-token")
+      }
+    };
+    fetch(apiUrl + "/message/count", requestOptions)
+      .then(handleResponse)
+      .then(response => {
+        if (response.code === 200) {
+          this.setState({ notReadNum: response.msg });
+        }
+      });
   };
 
   handleToggle = () => {
@@ -89,7 +104,7 @@ class HeaderLinks extends React.Component {
             className={classes.buttonLink}
           >
             <Notifications className={classes.icons} />
-            {this.state.notReadNum !== 0 && (
+            {this.state.notReadNum !== "0" && (
               <span className={classes.notifications}>
                 {" "}
                 {this.state.notReadNum}{" "}

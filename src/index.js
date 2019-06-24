@@ -15,10 +15,10 @@ const hist = createBrowserHistory();
 ReactDOM.render(
   <Router history={hist}>
     <Switch>
-      <Route path="/" exact component={Admin} />
+      <Route path="/" component={Admin} />
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />
-      <Route component={NotMatch} />
+      <Route path="*" component={NotMatch} />
     </Switch>
   </Router>,
   document.getElementById("root")
