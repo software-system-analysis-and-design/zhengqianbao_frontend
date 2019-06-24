@@ -109,6 +109,15 @@ function TaskArray(props) {
       <Grid className={classes.nav} container spacing={2}>
         <Grid className={classes.item} item xs={2}>
           <TextField
+            id="outlined-name"
+            label="搜索"
+            className={classes.textField}
+            value={values.search}
+            onChange={handleChange('search')}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
             id="outlined-number"
             label="最小"
             value={values.moneyMin}
