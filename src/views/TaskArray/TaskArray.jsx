@@ -3,16 +3,20 @@ import Grid from "@material-ui/core/Grid";
 import { handleResponse } from "variables/serverFunc.jsx";
 import { withStyles } from "@material-ui/core/styles";
 import TaskCard from "../../components/TaskCard/TaskCard.jsx";
-import SingleChoiceCard from "../../components/SingleChoiceCard/SingleChoiceCard";
-import MultiChoiceCard from "../../components/MultiChoiceCard/MultiChoiceCard";
-import ShortAnswerCard from "../../components/ShortAnswerCard/ShortAnswerCard";
+import { Button } from "@material-ui/core";
 
 const style = {
   container: {
     padding: 75
   },
+  nav: {
+    padding: 20
+  },
   item: {
     padding: 15
+  },
+  button: {
+    margin: 10
   }
 }
 
@@ -20,6 +24,7 @@ function TaskArray(props) {
   const { classes, match } = props;
 
   const [tasks, setTasks] = useState([]);
+  const [filtedTask, setFiltedTask] = useState([]);
 
   React.useEffect(fetchTaskList, []);
 
@@ -35,8 +40,6 @@ function TaskArray(props) {
         let ret = [];
         for (let i = 0; i < response.length; i++) {
           let task = response[i];
-          let title = task.taskName;
-          let ownership = task.creator;
           let details = {
             taskID: task.taskID,
             reward: task.money,
@@ -47,24 +50,40 @@ function TaskArray(props) {
             endTime: task.endTime,
             description: task.description
           };
-          ret.push(
-            <Grid className={classes.item} item xs={4}>
-              <TaskCard
-                title={title}
-                ownership={ownership}
-                details={details}
-                match={match}
-              />
-            </Grid>
-          );
+
+          ret.push({
+            title: task.taskName,
+            ownership: task.creator,
+            details: details
+          });
         }
         setTasks(ret);
       });
   }
+
+  const createViews = elem => {
+    return (
+      <Grid className={classes.item} item xs={4}>
+        <TaskCard title={elem.title} ownership={elem.ownership} details={elem.details} match={match}/>
+      </Grid>
+    );
+  };
+
+  const stateFilter = (tasks) => {
+
+  };
+
   return (
     <div>
+      <Grid className={classes.nav} container spacing={2}>
+        <Grid className={classes.item} item xs={2}>
+          <Button variant="contained" color="primary" className={classes.button}>
+            筛选
+          </Button>
+        </Grid>
+      </Grid>
       <Grid className={classes.container} container spacing={2}>
-        {tasks}
+        {tasks.map(createViews)}
       </Grid>
     </div>
   );

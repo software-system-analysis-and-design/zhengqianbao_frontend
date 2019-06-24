@@ -28,7 +28,6 @@ const style = {
 function MultiChoiceCard(props) {
   const {classes, content, warning, callback, answers} = props;
 
-  console.log("Multi re-render");
   let defaultChecked = {};
   for (let i = 0; i < content.arr.length; i++) {
     defaultChecked = {...defaultChecked, [i]:false};

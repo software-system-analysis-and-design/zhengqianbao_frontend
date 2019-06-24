@@ -31,7 +31,6 @@ function SingleChoiceCard(props) {
 
   const [value, setValue] = React.useState(-1);
 
-  console.log("Single re-render");
   function handleChange(event) {
     callback(event.target.value, answers);
     setValue(parseInt(event.target.value));
