@@ -4,6 +4,7 @@ import { handleResponse } from "variables/serverFunc.jsx";
 import { withStyles } from "@material-ui/core/styles";
 import TaskCard from "../../components/TaskCard/TaskCard.jsx";
 import { Button } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 
 const style = {
   container: {
@@ -17,6 +18,9 @@ const style = {
   },
   button: {
     margin: 10
+  },
+  textField: {
+
   }
 }
 
@@ -25,6 +29,7 @@ function TaskArray(props) {
 
   const [tasks, setTasks] = useState([]);
   const [filtedTask, setFiltedTask] = useState([]);
+  const [values, setValues] = useState({});
 
   React.useEffect(fetchTaskList, []);
 
@@ -58,6 +63,7 @@ function TaskArray(props) {
           });
         }
         setTasks(ret);
+        setFiltedTask(ret);
       });
   }
 
@@ -69,9 +75,22 @@ function TaskArray(props) {
     );
   };
 
-  const stateFilter = (tasks, func, param) => {
+  const handleChange = name => event => {
+    setValues({ ...values, [name]: event.target.value });
+  };
+
+  const filterButtonClick = () => {
+    console.log("buttonClick");
+    let param = {
+      min: parseInt(values.moneyMin),
+      max: parseInt(values.moneyMax)
+    }
+    setFiltedTask(stateFilter(tasks, moneyFilter, param));
+  }
+
+  const stateFilter = (arr, func, param) => {
     let ret = [];
-    for (let task of tasks) {
+    for (let task of arr) {
       if (func(task, param)) ret.push(task);
     }
     return ret;
@@ -80,22 +99,48 @@ function TaskArray(props) {
   const moneyFilter = (task, param) => {
     let money = parseInt(task.details.reward);
     return (
-      (param.min === null || money > param.min) &&
-      (param.max === null || money < param.max)
+      (isNaN(param.min) || money >= param.min) &&
+      (isNaN(param.max) || money <= param.max)
     );
-  }
+  };
 
   return (
     <div>
       <Grid className={classes.nav} container spacing={2}>
         <Grid className={classes.item} item xs={2}>
-          <Button variant="contained" color="primary" className={classes.button}>
+          <TextField
+            id="outlined-number"
+            label="最小"
+            value={values.moneyMin}
+            onChange={handleChange('moneyMin')}
+            type="number"
+            className={classes.textField}
+            InputLabelProps={{
+              shrink: true
+            }}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            id="outlined-number"
+            label="最大"
+            value={values.moneyMax}
+            onChange={handleChange('moneyMax')}
+            type="number"
+            className={classes.textField}
+            InputLabelProps={{
+              shrink: true
+            }}
+            margin="normal"
+            variant="outlined"
+          />
+          <Button variant="contained" color="primary" className={classes.button} onClick={filterButtonClick}>
             筛选
           </Button>
         </Grid>
       </Grid>
       <Grid className={classes.container} container spacing={2}>
-        {tasks.map(createViews)}
+        {filtedTask.map(createViews)}
       </Grid>
     </div>
   );
