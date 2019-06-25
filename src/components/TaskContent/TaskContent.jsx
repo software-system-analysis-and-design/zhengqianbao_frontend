@@ -80,10 +80,12 @@ function Content(props) {
     number,
     transferMsg,
     removeTask,
-    modifyTaskState
+    modifyTaskState,
+    downloadTaskData
   } = props;
 
   const [taskState, setTaskState] = React.useState("进行中");
+
   const [taskButtonState, setTaskButtonState] = React.useState("");
 
   // 点击删除图标按钮，弹出对话框
@@ -119,7 +121,7 @@ function Content(props) {
     } else if (taskButtonState === "重启任务") {
       state = "restart";
     }
-    // TODO  根据时间判断任务状态，修改按钮的显示字样
+    //根据时间判断任务状态，修改按钮的显示字样
     modifyTaskState(taskID, state);
     if (taskButtonState === "发布任务") {
       setTaskButtonState("终止任务");
@@ -160,6 +162,11 @@ function Content(props) {
       setTaskButtonState("重启任务");
     }
   });
+
+  // 点击下载按钮，下载对应的问卷数据
+  function handleDownloadData() {
+    downloadTaskData(taskID)
+  }
 
   return (
     <div>
@@ -221,7 +228,7 @@ function Content(props) {
                 <Typography variant="subtitle1" gutterBottom>
                   任务截止时间：{endTime}
                 </Typography>
-                <Button variant="contained" color="secondary">
+                <Button variant="contained" color="secondary" onClick={handleDownloadData}>
                   下载任务数据
                 </Button>
                 <Button

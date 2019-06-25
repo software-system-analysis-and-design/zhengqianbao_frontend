@@ -15,8 +15,11 @@ import routes from "routes.js";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboardStyle.jsx";
 
+
 import image from "assets/img/sidebar-2.jpg";  // 边界栏背景图片
-import logo from "assets/img/reactlogo.png";  // 应用图标
+import logo from "assets/img/apple-icon.png";  // 应用图标
+import { handleResponse, parseParams, apiUrl } from "variables/serverFunc.jsx";
+
 
 const switchRoutes = (
   <Switch>
@@ -37,6 +40,9 @@ const switchRoutes = (
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
+    if(!localStorage.getItem('user-token')){
+      this.props.history.push("\login");
+    }
     this.state = {
       image: image,
       color: "blue",
@@ -44,11 +50,6 @@ class Dashboard extends React.Component {
       fixedClasses: "dropdown show",
       mobileOpen: false
     };
-  }
-  componentWillMount(){
-		if(!localStorage.getItem('user-token')){
-        this.props.history.push('/login');
-    }
   }
   getRoute() {
     return this.props.location.pathname !== "/map";
@@ -59,10 +60,30 @@ class Dashboard extends React.Component {
     }
   };
   componentDidMount() {
-    if (navigator.platform.indexOf("Win") > -1) {
-      const ps = new PerfectScrollbar(this.refs.mainPanel);
+    if(localStorage.getItem('user-token')){
+      if (navigator.platform.indexOf("Win") > -1) {
+        const ps = new PerfectScrollbar(this.refs.mainPanel);
+      }
+      window.addEventListener("resize", this.resizeFunction);
+
+
+      // 获取用户信息，将用户余额写入localstorage中，全局访问
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("user-token")
+        }
+      };
+
+      fetch(apiUrl + "/profile", requestOptions)
+        .then(handleResponse)
+        .then(response => {  // 在 admin 组件获取用户余额
+          console.log(response)
+          console.log("当前用户余额为" + response.remain.toString());
+          localStorage.setItem("user-remain", response.remain); 
+        });
     }
-    window.addEventListener("resize", this.resizeFunction);
+
   }
   componentDidUpdate(e) {
     if (e.history.location.pathname !== e.location.pathname) {
@@ -73,6 +94,7 @@ class Dashboard extends React.Component {
     }
   }
   componentWillUnmount() {
+    
     window.removeEventListener("resize", this.resizeFunction);
   }
   render() {
@@ -93,6 +115,7 @@ class Dashboard extends React.Component {
           <Navbar
             routes={routes}
             handleDrawerToggle={this.handleDrawerToggle}
+            history={this.props.history}
             {...rest}
           />
           {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}

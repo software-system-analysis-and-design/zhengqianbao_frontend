@@ -46,9 +46,13 @@ const style = {
     height: 35,
     margin: 4,
   },
-}
+};
+
 
 function TaskArray(props) {
+  if (!localStorage.getItem("user-token")) {
+    props.history.push("/login");
+  }
   const { classes, match } = props;
 
   const [tasks, setTasks] = useState([]);
@@ -97,7 +101,12 @@ function TaskArray(props) {
   const createViews = elem => {
     return (
       <Grid className={classes.item} item xs={4}>
-        <TaskCard title={elem.title} ownership={elem.ownership} details={elem.details} match={match}/>
+        <TaskCard
+          title={elem.title}
+          ownership={elem.ownership}
+          details={elem.details}
+          match={match}
+        />
       </Grid>
     );
   };

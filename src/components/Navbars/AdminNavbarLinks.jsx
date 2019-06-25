@@ -19,30 +19,48 @@ import Button from "components/CustomButtons/Button.jsx";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.jsx";
 
-import { handleResponse} from "variables/serverFunc.jsx";
+import NotificationsPage from "views/Notifications/Notifications.jsx";
+import UserProfile from "views/UserProfile/UserProfile.jsx";
+import { handleResponse } from "variables/serverFunc.jsx";
+import { Link, Route } from "react-router-dom";
+
 const apiUrl = "https://littlefish33.cn:8080";
 
 class HeaderLinks extends React.Component {
-  state = {
-    open: false,
-    notReadNum: 1
-  };
+
+  constructor(props){
+    
+    super(props);
+    if(!localStorage.getItem('user-token')){
+      console.log(this.props);
+      this.props.history.push('/login');
+      //console.log("XXX");
+    }
+    this.state = {
+      open: false,
+      notReadNum: 1
+    };
+  }
 
   componentDidMount = () => {
-    // 获取未读消息数目,显示在logo上
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("user-token")
-      }
-    };
-    fetch(apiUrl + "/message/count", requestOptions)
-      .then(handleResponse)
-      .then(response => {
-        if (response.code === 200) {
-          this.setState({ notReadNum: response.msg });
+    if(!localStorage.getItem('user-token')){
+      //console.log("XXX");
+    }else{
+      // 获取未读消息数目,显示在logo上
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("user-token")
         }
-      });
+      };
+      fetch(apiUrl + "/message/count", requestOptions)
+        .then(handleResponse)
+        .then(response => {
+          if (response.code === 200) {
+            this.setState({ notReadNum: response.msg });
+          }
+        });
+    }
   };
 
   handleToggle = () => {
@@ -91,39 +109,45 @@ class HeaderLinks extends React.Component {
           </Hidden>
         </Button>
         <div className={classes.manager}>
+          <Link to="/notifications">
+            <Button
+              buttonRef={node => {
+                this.anchorEl = node;
+              }}
+              color={window.innerWidth > 959 ? "transparent" : "white"}
+              justIcon={window.innerWidth > 959}
+              simple={!(window.innerWidth > 959)}
+              aria-owns={open ? "menu-list-grow" : null}
+              aria-haspopup="true"
+              onClick={this.handleToggle}
+              className={classes.buttonLink}
+            >
+              <Notifications className={classes.icons} />
+              {this.state.notReadNum !== "0" && (
+                <span className={classes.notifications}>
+                  {" "}
+                  {this.state.notReadNum}{" "}
+                </span>
+              )}
+            </Button>
+          </Link>
+        </div>
+        <Link to="/user">
           <Button
-            buttonRef={node => {
-              this.anchorEl = node;
-            }}
             color={window.innerWidth > 959 ? "transparent" : "white"}
             justIcon={window.innerWidth > 959}
             simple={!(window.innerWidth > 959)}
-            aria-owns={open ? "menu-list-grow" : null}
-            aria-haspopup="true"
-            onClick={this.handleToggle}
+            aria-label="Person"
             className={classes.buttonLink}
           >
-            <Notifications className={classes.icons} />
-            {this.state.notReadNum !== "0" && (
-              <span className={classes.notifications}>
-                {" "}
-                {this.state.notReadNum}{" "}
-              </span>
-            )}
+            <Person className={classes.icons} />
+            <Hidden mdUp implementation="css">
+              <p className={classes.linkText}>Profile</p>
+            </Hidden>
           </Button>
-        </div>
-        <Button
-          color={window.innerWidth > 959 ? "transparent" : "white"}
-          justIcon={window.innerWidth > 959}
-          simple={!(window.innerWidth > 959)}
-          aria-label="Person"
-          className={classes.buttonLink}
-        >
-          <Person className={classes.icons} />
-          <Hidden mdUp implementation="css">
-            <p className={classes.linkText}>Profile</p>
-          </Hidden>
-        </Button>
+        </Link>
+        <Route path="/notifications" />
+        <Route path="/user" />
       </div>
     );
   }

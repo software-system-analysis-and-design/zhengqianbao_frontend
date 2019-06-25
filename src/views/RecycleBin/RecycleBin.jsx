@@ -12,7 +12,8 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 
 import { handleResponse, parseParams } from "variables/serverFunc.jsx";
-const apiUrl = "https://littlefish33.cn:8080";
+
+const apiUrl = "https://littlefish33.cn:8080/user";
 
 const styles = {
   paper: {
@@ -36,8 +37,8 @@ function createData(taskID, taskName, taskType, taskDeleteTime) {
 }
 
 function RecycleBin(props) {
-  if(!localStorage.getItem('user-token')){
-    props.history.push('/login');
+  if (!localStorage.getItem("user-token")) {
+    props.history.push("/login");
   }
   const { classes } = props;
   const [selected, setSelected] = React.useState([]);

@@ -14,7 +14,7 @@ const style = {
     fontSize: 24
   },
   textField: {
-    marginTop: 15,
+    marginTop: 15
   }
 };
 
