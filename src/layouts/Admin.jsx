@@ -15,8 +15,15 @@ import routes from "routes.js";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboardStyle.jsx";
 
+<<<<<<< HEAD
 import image from "assets/img/logo.jpg";  // 边界栏背景图片
 import logo from "assets/img/logo.jpg";  // 应用图标
+=======
+import image from "assets/img/sidebar-2.jpg";  // 边界栏背景图片
+import logo from "assets/img/reactlogo.png";  // 应用图标
+import { handleResponse, parseParams, apiUrl } from "variables/serverFunc.jsx";
+
+>>>>>>> 8eacbbc7b342bcc5dd501a9361671333e6192ac6
 
 const switchRoutes = (
   <Switch>
@@ -59,6 +66,24 @@ class Dashboard extends React.Component {
       const ps = new PerfectScrollbar(this.refs.mainPanel);
     }
     window.addEventListener("resize", this.resizeFunction);
+
+
+    // 获取用户信息，将用户余额写入localstorage中，全局访问
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user-token")
+      }
+    };
+
+    fetch(apiUrl + "/profile", requestOptions)
+      .then(handleResponse)
+      .then(response => {  // 在 admin 组件获取用户余额
+        console.log(response)
+        console.log("当前用户余额为" + response.remain.toString());
+        localStorage.setItem("user-remain", response.remain); 
+      });
+
   }
   componentDidUpdate(e) {
     if (e.history.location.pathname !== e.location.pathname) {

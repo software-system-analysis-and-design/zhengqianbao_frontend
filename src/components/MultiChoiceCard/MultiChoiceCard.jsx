@@ -7,7 +7,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormHelperText from "@material-ui/core/FormHelperText";
-import {withStyles} from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 
 const style = {
   card: {
@@ -26,11 +26,11 @@ const style = {
 };
 
 function MultiChoiceCard(props) {
-  const {classes, content, warning, callback, answers} = props;
+  const { classes, content, warning, callback, answers } = props;
 
   let defaultChecked = {};
   for (let i = 0; i < content.arr.length; i++) {
-    defaultChecked = {...defaultChecked, [i]:false};
+    defaultChecked = { ...defaultChecked, [i]: false };
   }
   const [checked, setChecked] = React.useState(defaultChecked);
 
@@ -43,8 +43,8 @@ function MultiChoiceCard(props) {
     }
     return ret.join("&");
   };
-  const handleChange = (index) => (event) => {
-    setChecked({...checked, [index]:event.target.checked});
+  const handleChange = index => event => {
+    setChecked({ ...checked, [index]: event.target.checked });
     callback(getAnswer(), answers);
   };
 
@@ -62,7 +62,9 @@ function MultiChoiceCard(props) {
   for (let i = 0; i < content.arr.length; i++) {
     checkbox.push(
       <FormControlLabel
-        control={<Checkbox checked={checked[i]} onChange={handleChange(i)} value={i}/>}
+        control={
+          <Checkbox checked={checked[i]} onChange={handleChange(i)} value={i} />
+        }
         label={content.arr[i]}
       />
     );
@@ -79,10 +81,16 @@ function MultiChoiceCard(props) {
           component="fieldset"
           className={classes.formControl}
         >
-          <FormGroup>
-            {checkbox}
-          </FormGroup>
-          {warning && error && <FormHelperText>请选择{content.minNum === content.maxNum ? content.minNum : content.minNum + "--" + content.maxNum}个选项</FormHelperText>}
+          <FormGroup>{checkbox}</FormGroup>
+          {warning && error && (
+            <FormHelperText>
+              请选择
+              {content.minNum === content.maxNum
+                ? content.minNum
+                : content.minNum + "--" + content.maxNum}
+              个选项
+            </FormHelperText>
+          )}
         </FormControl>
       </CardContent>
     </Card>

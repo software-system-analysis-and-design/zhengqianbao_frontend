@@ -112,6 +112,7 @@ function Notifications (props) {
 
 
   React.useEffect(()=>{
+<<<<<<< HEAD
     if(!localStorage.getItem('user-token')){
       //props.history.push('/login');
     }else{
@@ -142,11 +143,44 @@ function Notifications (props) {
               "content-type": "application/x-www-form-urlencoded"
             },
             body: parseParams({msgID: msgid, state: 1})
+=======
+    // Get消息列表数据，存入msglist内部
+    const requestOptions1 = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user-token")
+      }
+    };
+    fetch(apiUrl + "/message/getall", requestOptions1)
+      .then(handleResponse)
+      .then(response => {
+        console.log(response);
+        if (response !== null){
+          setMsgList(response);
+          let tmpMsgList = response;
+          // 获取这些消息，将这些消息设置为已读状态
+          for (let i = 0; i < tmpMsgList.length; i++){
+            if (tmpMsgList[i].state === 0){
+              let msgid = tmpMsgList[i].msgID;
+              const requestOptions2 = {
+                method: "POST",
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("user-token"),
+                  Accept: "application/json",
+                  "content-type": "application/x-www-form-urlencoded"
+                },
+                body: parseParams({msgID: msgid, state: 1})
+              }
+              fetch(apiUrl + "/message/read", requestOptions2)
+                .then(handleResponse)
+                .then(response => {
+                  console.log("修改信息已读状态")
+                })
+            }
+>>>>>>> 8eacbbc7b342bcc5dd501a9361671333e6192ac6
           }
         }
-      }
-    }
-    
+      });
   }, [])
 
   const clearMsg = async ()=> {

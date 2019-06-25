@@ -38,7 +38,7 @@ function QuestionPage(props) {
   const [testButton, setTestButton] = React.useState([]);
 
   const setAns = index => answer => {
-    setAnswers({...answers, [index]: answer});
+    setAnswers({ ...answers, [index]: answer });
   };
 
   const fetchQuestion = questionID => () => {
@@ -67,7 +67,7 @@ function QuestionPage(props) {
 
   React.useEffect(fetchQuestion(match.params.taskID), []);
 
-  const parseJson = (json) => {
+  const parseJson = json => {
     let ret = new FormData();
     ret.append("data", JSON.stringify(json));
     return ret;
@@ -133,7 +133,7 @@ function QuestionPage(props) {
           setOpen(true);
         }
       });
-  }
+  };
 
   const handleClose = (success, props) => () => {
     setOpen(false);
@@ -151,22 +151,49 @@ function QuestionPage(props) {
         for (let j = 0; j < elem.dataContent.length; j++) {
           arr.push(elem.dataContent[j].content);
         }
-        content = {...content, ["title"]: elem.title, ["arr"]: arr};
+        content = { ...content, ["title"]: elem.title, ["arr"]: arr };
 
-        ret = <SingleChoiceCard content={content} warning={warning} callback={setAns(index)} answers={answers}/>;
+        ret = (
+          <SingleChoiceCard
+            content={content}
+            warning={warning}
+            callback={setAns(index)}
+            answers={answers}
+          />
+        );
         break;
 
       case 3:
         for (let j = 0; j < elem.dataContent.length; j++) {
           arr.push(elem.dataContent[j].content);
         }
-        content = {...content, ["title"]: elem.title, ["arr"]: arr, ["minNum"]: 0, ["maxNum"]: 1000};
-        ret = <MultiChoiceCard content={content} warning={warning} callback={setAns(index)} answers={answers}/>;
+        content = {
+          ...content,
+          ["title"]: elem.title,
+          ["arr"]: arr,
+          ["minNum"]: 0,
+          ["maxNum"]: 1000
+        };
+        ret = (
+          <MultiChoiceCard
+            content={content}
+            warning={warning}
+            callback={setAns(index)}
+            answers={answers}
+          />
+        );
         break;
 
       case 1:
-        content = {...content, ["title"]: elem.title};
-        ret = <ShortAnswerCard content={content} warning={warning} callback={setAns(index)} answers={answers}/>;
+        content = { ...content, ["title"]: elem.title };
+        ret = (
+          <ShortAnswerCard
+            content={content}
+            warning={warning}
+            callback={setAns(index)}
+            answers={answers}
+          />
+        );
         break;
     }
     return ret;
@@ -175,7 +202,12 @@ function QuestionPage(props) {
   return (
     <div>
       {qdata.map(createQuestionCard)}
-      <Button variant="contained" color="primary" className={classes.button} onClick={save}>
+      <Button
+        variant="contained"
+        color="primary"
+        className={classes.button}
+        onClick={save}
+      >
         保存
       </Button>
       <Button variant="contained" color="secondary" className={classes.button}>

@@ -19,12 +19,26 @@ import Button from "components/CustomButtons/Button.jsx";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.jsx";
 
-import { handleResponse} from "variables/serverFunc.jsx";
+import NotificationsPage from "views/Notifications/Notifications.jsx";
+import UserProfile from "views/UserProfile/UserProfile.jsx";
+import { handleResponse } from "variables/serverFunc.jsx";
+import { Link, Route } from "react-router-dom";
+
 const apiUrl = "https://littlefish33.cn:8080";
 
 class HeaderLinks extends React.Component {
+<<<<<<< HEAD
   
   
+=======
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+      notReadNum: 1
+    };
+  }
+>>>>>>> 8eacbbc7b342bcc5dd501a9361671333e6192ac6
 
   constructor(props){
     
@@ -38,6 +52,7 @@ class HeaderLinks extends React.Component {
       open: false,
       notReadNum: 1
     };
+<<<<<<< HEAD
   }
 
   componentDidMount = () => {
@@ -49,6 +64,14 @@ class HeaderLinks extends React.Component {
         method: "GET",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("user-token")
+=======
+
+    fetch(apiUrl + "/message/count", requestOptions)
+      .then(handleResponse)
+      .then(response => {
+        if (response.code === 200) {
+          this.setState({ notReadNum: response.msg });
+>>>>>>> 8eacbbc7b342bcc5dd501a9361671333e6192ac6
         }
       };
       fetch(apiUrl + "/message/count", requestOptions)
@@ -107,39 +130,45 @@ class HeaderLinks extends React.Component {
           </Hidden>
         </Button>
         <div className={classes.manager}>
+          <Link to="/notifications">
+            <Button
+              buttonRef={node => {
+                this.anchorEl = node;
+              }}
+              color={window.innerWidth > 959 ? "transparent" : "white"}
+              justIcon={window.innerWidth > 959}
+              simple={!(window.innerWidth > 959)}
+              aria-owns={open ? "menu-list-grow" : null}
+              aria-haspopup="true"
+              onClick={this.handleToggle}
+              className={classes.buttonLink}
+            >
+              <Notifications className={classes.icons} />
+              {this.state.notReadNum !== "0" && (
+                <span className={classes.notifications}>
+                  {" "}
+                  {this.state.notReadNum}{" "}
+                </span>
+              )}
+            </Button>
+          </Link>
+        </div>
+        <Link to="/user">
           <Button
-            buttonRef={node => {
-              this.anchorEl = node;
-            }}
             color={window.innerWidth > 959 ? "transparent" : "white"}
             justIcon={window.innerWidth > 959}
             simple={!(window.innerWidth > 959)}
-            aria-owns={open ? "menu-list-grow" : null}
-            aria-haspopup="true"
-            onClick={this.handleToggle}
+            aria-label="Person"
             className={classes.buttonLink}
           >
-            <Notifications className={classes.icons} />
-            {this.state.notReadNum !== "0" && (
-              <span className={classes.notifications}>
-                {" "}
-                {this.state.notReadNum}{" "}
-              </span>
-            )}
+            <Person className={classes.icons} />
+            <Hidden mdUp implementation="css">
+              <p className={classes.linkText}>Profile</p>
+            </Hidden>
           </Button>
-        </div>
-        <Button
-          color={window.innerWidth > 959 ? "transparent" : "white"}
-          justIcon={window.innerWidth > 959}
-          simple={!(window.innerWidth > 959)}
-          aria-label="Person"
-          className={classes.buttonLink}
-        >
-          <Person className={classes.icons} />
-          <Hidden mdUp implementation="css">
-            <p className={classes.linkText}>Profile</p>
-          </Hidden>
-        </Button>
+        </Link>
+        <Route path="/notifications" />
+        <Route path="/user" />
       </div>
     );
   }
