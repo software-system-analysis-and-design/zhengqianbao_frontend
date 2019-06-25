@@ -26,6 +26,9 @@ const styles = {
   },
   description: {
     marginTop: 20
+  },
+  button: {
+    margin: 5
   }
 };
 
@@ -44,7 +47,8 @@ function TaskCard(props) {
         <Typography className={classes.details} variant="body2" component="p">
           报酬：{details.reward} 金币/人 <br />
           类型：{details.missionType} <br />
-          发布时间：{details.startTime} —— {details.endTime} <br />
+          发布时间：{details.startTime} <br />
+          终止时间：{details.endTime} <br />
           完成情况：{details.finishedNumber} / {details.totalNumber}
         </Typography>
         <Typography className={classes.description}>
@@ -53,7 +57,7 @@ function TaskCard(props) {
       </CardContent>
       <CardActions>
         <Link to={match.url + "/" + details.taskID}>
-          <Button variant="contained" size="small" color={"primary"}>START</Button>
+          <Button className={classes.button} variant="contained" size="small" color={"primary"}>START</Button>
         </Link>
       </CardActions>
     </Card>

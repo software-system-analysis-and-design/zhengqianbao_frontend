@@ -3,15 +3,22 @@ import Grid from "@material-ui/core/Grid";
 import { handleResponse } from "variables/serverFunc.jsx";
 import { withStyles } from "@material-ui/core/styles";
 import TaskCard from "../../components/TaskCard/TaskCard.jsx";
-import { Button } from "@material-ui/core";
+import {Button, Typography} from "@material-ui/core";
 import { TextField } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
+import { Paper } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import SearchIcon from "@material-ui/icons/Search";
+import DirectionsIcon from "@material-ui/icons/Directions";
+import InputBase from "@material-ui/core/InputBase";
+import Divider from "@material-ui/core/Divider";
 
 const style = {
   container: {
-    padding: 75
+    paddingLeft: 75,
+    paddingRight: 75
   },
   nav: {
-    padding: 20
   },
   item: {
     padding: 15
@@ -19,9 +26,25 @@ const style = {
   button: {
     margin: 10
   },
-  textField: {
-
-  }
+  root: {
+    marginLeft: 20,
+    marginRight: 20,
+    display: "flex",
+    alignItems: "center",
+    height: 60
+  },
+  input: {
+    marginLeft: 8,
+    flex: 1,
+  },
+  iconButton: {
+    padding: 10,
+  },
+  divider: {
+    width: 1,
+    height: 35,
+    margin: 4,
+  },
 }
 
 function TaskArray(props) {
@@ -77,21 +100,6 @@ function TaskArray(props) {
     );
   };
 
-  function stringToDate(time) {
-    // 一个字符串  2019-06-12T12:00 转为 Date对象
-    // let time = _time.toString();
-    console.log("stringToDate");
-    if (time.length !== 16) return null;
-    console.log("stringToDate valid");
-    let year = time.slice(0, 4);
-    let month = time.slice(5, 7);
-    let day = time.slice(8, 10);
-    let min = time.slice(11, 13);
-    let sec = time.slice(14, 16);
-    let date = new Date(year, month - 1, day, min, sec);
-    return date;
-  }
-
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
   };
@@ -108,11 +116,11 @@ function TaskArray(props) {
     }
     temp = stateFilter(temp, searchFilter, searchParam);
 
-    let timeParam = {
-      begin: values.beginTime,
-      end: values.endTime
-    };
-    console.log("time filter");
+    // let timeParam = {
+    //   begin: values.beginTime,
+    //   end: values.endTime
+    // };
+    // console.log("time filter");
     //temp = stateFilter(temp, timeFilter, timeParam);
 
     setFiltedTask(temp);
@@ -129,7 +137,11 @@ function TaskArray(props) {
   };
 
   const searchFilter = (task, param) => {
-    return task.title.indexOf(param.keyWord) !== -1;
+    return (
+      param.keyWord == null ||
+      param.keyWord == "" ||
+      task.title.indexOf(param.keyWord) !== -1
+    );
   }
 
   const moneyFilter = (task, param) => {
@@ -140,66 +152,64 @@ function TaskArray(props) {
     );
   };
 
-  const timeFilter = (task, param) => {
-    let taskBegin = stringToDate(task.details.startTime);
-    let taskEnd = stringToDate(task.details.endTime);
-    let paramBegin = stringToDate(param.begin);
-    let paramEnd = stringToDate(param.end);
-
-    console.log(taskBegin);
-    console.log(taskEnd);
-    console.log(paramBegin);
-    console.log(paramEnd);
-    return (
-      (paramBegin === null || taskBegin >= paramBegin) &&
-      (paramEnd === null || (taskEnd !== null && taskEnd <= paramEnd))
-    );
-  };
+  // function stringToDate(time) {
+  //   // 一个字符串  2019-06-12T12:00 转为 Date对象
+  //   // let time = _time.toString();
+  //   console.log("stringToDate");
+  //   if (time.length !== 16) return null;
+  //   console.log("stringToDate valid");
+  //   let year = time.slice(0, 4);
+  //   let month = time.slice(5, 7);
+  //   let day = time.slice(8, 10);
+  //   let min = time.slice(11, 13);
+  //   let sec = time.slice(14, 16);
+  //   let date = new Date(year, month - 1, day, min, sec);
+  //   return date;
+  // }
+  // const timeFilter = (task, param) => {
+  //   let taskBegin = stringToDate(task.details.startTime);
+  //   let taskEnd = stringToDate(task.details.endTime);
+  //   let paramBegin = stringToDate(param.begin);
+  //   let paramEnd = stringToDate(param.end);
+  //
+  //   console.log(taskBegin);
+  //   console.log(taskEnd);
+  //   console.log(paramBegin);
+  //   console.log(paramEnd);
+  //   return (
+  //     (paramBegin === null || taskBegin >= paramBegin) &&
+  //     (paramEnd === null || (taskEnd !== null && taskEnd <= paramEnd))
+  //   );
+  // };
 
   return (
     <div>
+      <Grid className={classes.nav} container spacing={2} justify={"center"}>
+        <Grid className={classes.item} item xs={8}>
+          <Paper className={classes.root}>
+            <IconButton className={classes.iconButton} aria-label="Menu">
+              <MenuIcon />
+            </IconButton>
+            <InputBase
+              className={classes.input}
+              placeholder="Search"
+              inputProps={{ "aria-label": "Search" }}
+              value={values.search}
+              onChange={handleChange("search")}
+            />
+            <Divider className={classes.divider} />
+            <IconButton className={classes.iconButton} aria-label="Search" onClick={filterButtonClick}>
+              <SearchIcon />
+            </IconButton>
+          </Paper>
+        </Grid>
+      </Grid>
       <Grid className={classes.nav} container spacing={2}>
-        <Grid className={classes.item} item xs={2}>
-          <TextField
-            id="outlined-name"
-            label="搜索"
-            className={classes.textField}
-            value={values.search}
-            onChange={handleChange("search")}
-            margin="normal"
-            variant="outlined"
-          />
-        </Grid>
-        <Grid className={classes.item} item xs={2}>
-          <TextField
-            id="datetime-local"
-            label="开始时间"
-            type="datetime-local"
-            onChange={handleChange("beginTime")}
-            value={values.beginTime}
-            className={classes.textField}
-            InputLabelProps={{
-              shrink: true
-            }}
-          />
-        </Grid>
-        <Grid className={classes.item} item xs={2}>
-          <TextField
-            id="datetime-local"
-            label="终止时间"
-            type="datetime-local"
-            onChange={handleChange("endTime")}
-            value={values.endTime}
-            className={classes.textField}
-            InputLabelProps={{
-              shrink: true
-            }}
-          />
-        </Grid>
+        <Grid className={classes.item} item xs={3} />
         <Grid className={classes.item} item xs={2}>
           <TextField
             id="outlined-number"
-            label="最小"
+            label="最小金额"
             value={values.moneyMin}
             onChange={handleChange("moneyMin")}
             type="number"
@@ -214,7 +224,7 @@ function TaskArray(props) {
         <Grid className={classes.item} item xs={2}>
           <TextField
             id="outlined-number"
-            label="最大"
+            label="最大金额"
             value={values.moneyMax}
             onChange={handleChange("moneyMax")}
             type="number"
@@ -225,11 +235,6 @@ function TaskArray(props) {
             margin="normal"
             variant="outlined"
           />
-        </Grid>
-        <Grid className={classes.item} item xs={2}>
-          <Button variant="contained" color="primary" className={classes.button} onClick={filterButtonClick}>
-            筛选
-          </Button>
         </Grid>
       </Grid>
       <Grid className={classes.container} container spacing={2}>
