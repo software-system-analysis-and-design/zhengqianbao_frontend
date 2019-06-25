@@ -12,6 +12,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import DirectionsIcon from "@material-ui/icons/Directions";
 import InputBase from "@material-ui/core/InputBase";
 import Divider from "@material-ui/core/Divider";
+import Collapse from '@material-ui/core/Collapse';
 
 const style = {
   container: {
@@ -53,6 +54,7 @@ function TaskArray(props) {
   const [tasks, setTasks] = useState([]);
   const [filtedTask, setFiltedTask] = useState([]);
   const [values, setValues] = useState({});
+  const [checked, setChecked] = useState(false);
 
   React.useEffect(fetchTaskList, []);
 
@@ -187,7 +189,7 @@ function TaskArray(props) {
       <Grid className={classes.nav} container spacing={2} justify={"center"}>
         <Grid className={classes.item} item xs={8}>
           <Paper className={classes.root}>
-            <IconButton className={classes.iconButton} aria-label="Menu">
+            <IconButton className={classes.iconButton} aria-label="Menu" onClick={() => setChecked(prev => !prev)}>
               <MenuIcon />
             </IconButton>
             <InputBase
@@ -204,39 +206,41 @@ function TaskArray(props) {
           </Paper>
         </Grid>
       </Grid>
-      <Grid className={classes.nav} container spacing={2}>
-        <Grid className={classes.item} item xs={3} />
-        <Grid className={classes.item} item xs={2}>
-          <TextField
-            id="outlined-number"
-            label="最小金额"
-            value={values.moneyMin}
-            onChange={handleChange("moneyMin")}
-            type="number"
-            className={classes.textField}
-            InputLabelProps={{
-              shrink: true
-            }}
-            margin="normal"
-            variant="outlined"
-          />
+      <Collapse in={checked}>
+        <Grid className={classes.nav} container spacing={2}>
+          <Grid className={classes.item} item xs={3} />
+          <Grid className={classes.item} item xs={2}>
+            <TextField
+              id="outlined-number"
+              label="最小金额"
+              value={values.moneyMin}
+              onChange={handleChange("moneyMin")}
+              type="number"
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true
+              }}
+              margin="normal"
+              variant="outlined"
+            />
+          </Grid>
+          <Grid className={classes.item} item xs={2}>
+            <TextField
+              id="outlined-number"
+              label="最大金额"
+              value={values.moneyMax}
+              onChange={handleChange("moneyMax")}
+              type="number"
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true
+              }}
+              margin="normal"
+              variant="outlined"
+            />
+          </Grid>
         </Grid>
-        <Grid className={classes.item} item xs={2}>
-          <TextField
-            id="outlined-number"
-            label="最大金额"
-            value={values.moneyMax}
-            onChange={handleChange("moneyMax")}
-            type="number"
-            className={classes.textField}
-            InputLabelProps={{
-              shrink: true
-            }}
-            margin="normal"
-            variant="outlined"
-          />
-        </Grid>
-      </Grid>
+      </Collapse>
       <Grid className={classes.container} container spacing={2}>
         {filtedTask.map(createViews)}
       </Grid>
