@@ -25,7 +25,8 @@ function Card({ ...props }) {
     [classes.cardPlain]: plain,
     [classes.cardProfile]: profile,
     [classes.cardChart]: chart,
-    [className]: className !== undefined
+    [className]: className !== undefined,
+    maxWidth: "800px"
   });
   return (
     <div className={cardClasses} {...rest}>

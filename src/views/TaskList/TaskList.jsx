@@ -74,8 +74,8 @@ function compareTime(publishTime, endTime) {
 }
 
 function TaskList(props) {
-  if(!localStorage.getItem('user-token')){
-    props.history.push('/login');
+  if (!localStorage.getItem("user-token")) {
+    props.history.push("/login");
   }
   const { transferMsg } = props;
 
@@ -108,7 +108,7 @@ function TaskList(props) {
     // 1. state = "publish"  :  从未发布到发布状态；发布时间设置为当前时间，终止日期若在当前时间之前，则置空
     // 2. state = "stop" : 从运行状态到终止状态；终止日期设置为当前时间；
     // 3. state = "restart": 从终止到再次发布，发布时间设置为当前时间，终止日期置为空
-    // TODO 通过修改发布和截止时间修改问卷状态，
+    // 通过修改发布和截止时间修改问卷状态，
 
     // 根据特定的ID获取相应的任务，
     // 根据 state 修改任务的时间数据，发送给后台进行更新；
@@ -183,6 +183,11 @@ function TaskList(props) {
     newContent.splice(index, 1);
     setTaskContent(newContent);
   }
+
+  function downloadTaskData(taskID){
+    // TODO 下载某一份任务的数据
+  }
+
 
   React.useEffect(() => {
     const fetchData = async () => {

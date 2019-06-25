@@ -120,7 +120,7 @@ function Content(props) {
     } else if (taskButtonState === "重启任务") {
       state = "restart";
     }
-    // TODO  根据时间判断任务状态，修改按钮的显示字样
+    //根据时间判断任务状态，修改按钮的显示字样
     modifyTaskState(taskID, state);
     if (taskButtonState === "发布任务") {
       setTaskButtonState("终止任务");
