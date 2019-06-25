@@ -20,7 +20,7 @@ import image from "assets/img/logo.jpg";  // 边界栏背景图片
 import logo from "assets/img/logo.jpg";  // 应用图标
 =======
 import image from "assets/img/sidebar-2.jpg";  // 边界栏背景图片
-import logo from "assets/img/reactlogo.png";  // 应用图标
+import logo from "assets/img/apple-icon.png";  // 应用图标
 import { handleResponse, parseParams, apiUrl } from "variables/serverFunc.jsx";
 
 >>>>>>> 8eacbbc7b342bcc5dd501a9361671333e6192ac6
