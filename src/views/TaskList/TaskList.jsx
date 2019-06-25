@@ -74,6 +74,9 @@ function compareTime(publishTime, endTime) {
 }
 
 function TaskList(props) {
+  if(!localStorage.getItem('user-token')){
+    props.history.push('/login');
+  }
   const { transferMsg } = props;
 
   const [taskContent, setTaskContent] = React.useState([]);

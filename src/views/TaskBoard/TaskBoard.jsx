@@ -42,6 +42,7 @@ const styles = {
 }
 */
 function TaskBoard(props) {
+
   if (!localStorage.getItem("user-token")) {
     props.history.push("/login");
   }
@@ -114,7 +115,7 @@ function TaskBoard(props) {
       <Route
         exact
         path={`${match.path}`}
-        component={() => <TaskList transferMsg={transferMsg} />}
+        component={() => <TaskList transferMsg={transferMsg} history={history} />}
       />
       <Route
         path={`${match.path}/createtask`}

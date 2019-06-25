@@ -7,6 +7,9 @@ import TaskArray from "../TaskArray/TaskArray.jsx";
 // 任务广场界面，作为主界面，主要展示一些发布的任务，目前仅考虑支持问卷。
 
 function TaskSquare(props) {
+  if (!localStorage.getItem("user-token")) {
+    props.history.push("/login");
+  }
   const { match } = props;
 
   return (
@@ -14,7 +17,7 @@ function TaskSquare(props) {
       <Route
         exact
         path={match.path}
-        component={() => <TaskArray match={match} />}
+        component={() => <TaskArray match={match} history={props.history} />}
       />
       <Route path={match.path + "/" + ":taskID"} component={QuestionPage} />
     </div>

@@ -21,6 +21,9 @@ const style = {
 };
 
 function TaskArray(props) {
+  if (!localStorage.getItem("user-token")) {
+    props.history.push("/login");
+  }
   const { classes, match } = props;
 
   const [tasks, setTasks] = useState([]);

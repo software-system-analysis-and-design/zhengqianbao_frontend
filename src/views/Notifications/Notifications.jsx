@@ -112,6 +112,9 @@ function Notifications (props) {
 
 
   React.useEffect(()=>{
+    if(!localStorage.getItem('user-token')){
+    
+    }else{
     // Get消息列表数据，存入msglist内部
     const requestOptions1 = {
       method: "GET",
@@ -148,6 +151,7 @@ function Notifications (props) {
           }
         }
       });
+    }
   }, [])
 
   const clearMsg = async ()=> {

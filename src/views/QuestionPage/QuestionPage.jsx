@@ -22,6 +22,9 @@ const style = {
 };
 
 function QuestionPage(props) {
+  if(!localStorage.getItem('user-token')){
+    props.history.push('/login');
+  }
   const { classes, match } = props;
 
   const [warning, setWarning] = React.useState(false);

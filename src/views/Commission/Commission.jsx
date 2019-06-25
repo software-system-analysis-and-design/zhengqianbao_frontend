@@ -34,10 +34,10 @@ const styles = theme => ({
 */
 
 function Commission(props) {
-  const { classes, transferMsg, path } = props;
   if(!localStorage.getItem('user-token')){
     props.history.push('/login');
   }
+  const { classes, transferMsg, path } = props;
 
   useEffect(() => {
     transferMsg("2C");
