@@ -27,7 +27,9 @@ class UserProfile extends React.Component{
 	constructor(props){
 		
 		super(props);
-		
+		if(!localStorage.getItem('user-token')){
+			this.props.history.push("\login");
+        }
 		this._props = props;
 
 		this.state = {

@@ -15,15 +15,11 @@ import routes from "routes.js";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboardStyle.jsx";
 
-<<<<<<< HEAD
-import image from "assets/img/logo.jpg";  // 边界栏背景图片
-import logo from "assets/img/logo.jpg";  // 应用图标
-=======
+
 import image from "assets/img/sidebar-2.jpg";  // 边界栏背景图片
 import logo from "assets/img/apple-icon.png";  // 应用图标
 import { handleResponse, parseParams, apiUrl } from "variables/serverFunc.jsx";
 
->>>>>>> 8eacbbc7b342bcc5dd501a9361671333e6192ac6
 
 const switchRoutes = (
   <Switch>
@@ -44,7 +40,9 @@ const switchRoutes = (
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
-  
+    if(!localStorage.getItem('user-token')){
+      this.props.history.push("\login");
+    }
     this.state = {
       image: image,
       color: "blue",
@@ -62,27 +60,29 @@ class Dashboard extends React.Component {
     }
   };
   componentDidMount() {
-    if (navigator.platform.indexOf("Win") > -1) {
-      const ps = new PerfectScrollbar(this.refs.mainPanel);
-    }
-    window.addEventListener("resize", this.resizeFunction);
-
-
-    // 获取用户信息，将用户余额写入localstorage中，全局访问
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("user-token")
+    if(localStorage.getItem('user-token')){
+      if (navigator.platform.indexOf("Win") > -1) {
+        const ps = new PerfectScrollbar(this.refs.mainPanel);
       }
-    };
+      window.addEventListener("resize", this.resizeFunction);
 
-    fetch(apiUrl + "/profile", requestOptions)
-      .then(handleResponse)
-      .then(response => {  // 在 admin 组件获取用户余额
-        console.log(response)
-        console.log("当前用户余额为" + response.remain.toString());
-        localStorage.setItem("user-remain", response.remain); 
-      });
+
+      // 获取用户信息，将用户余额写入localstorage中，全局访问
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("user-token")
+        }
+      };
+
+      fetch(apiUrl + "/profile", requestOptions)
+        .then(handleResponse)
+        .then(response => {  // 在 admin 组件获取用户余额
+          console.log(response)
+          console.log("当前用户余额为" + response.remain.toString());
+          localStorage.setItem("user-remain", response.remain); 
+        });
+    }
 
   }
   componentDidUpdate(e) {

@@ -42,12 +42,10 @@ const styles = {
 }
 */
 function TaskBoard(props) {
-<<<<<<< HEAD
-=======
+
   if (!localStorage.getItem("user-token")) {
     props.history.push("/login");
   }
->>>>>>> 8eacbbc7b342bcc5dd501a9361671333e6192ac6
   // eslint-disable-next-line react/prop-types
   const { classes, match, history } = props;
 

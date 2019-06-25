@@ -27,18 +27,6 @@ import { Link, Route } from "react-router-dom";
 const apiUrl = "https://littlefish33.cn:8080";
 
 class HeaderLinks extends React.Component {
-<<<<<<< HEAD
-  
-  
-=======
-  constructor(props) {
-    super(props);
-    this.state = {
-      open: false,
-      notReadNum: 1
-    };
-  }
->>>>>>> 8eacbbc7b342bcc5dd501a9361671333e6192ac6
 
   constructor(props){
     
@@ -52,7 +40,6 @@ class HeaderLinks extends React.Component {
       open: false,
       notReadNum: 1
     };
-<<<<<<< HEAD
   }
 
   componentDidMount = () => {
@@ -64,14 +51,6 @@ class HeaderLinks extends React.Component {
         method: "GET",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("user-token")
-=======
-
-    fetch(apiUrl + "/message/count", requestOptions)
-      .then(handleResponse)
-      .then(response => {
-        if (response.code === 200) {
-          this.setState({ notReadNum: response.msg });
->>>>>>> 8eacbbc7b342bcc5dd501a9361671333e6192ac6
         }
       };
       fetch(apiUrl + "/message/count", requestOptions)
