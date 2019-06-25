@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import TextField from "@material-ui/core/TextField";
 import Button from "components/CustomButtons/Button.jsx";
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
+import Select from "@material-ui/core/Select";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
 import logo from "assets/img/logo.jpg";
-import {handleResponse, parseParams, apiUrl} from "variables/serverFunc.jsx";
+import { handleResponse, parseParams, apiUrl } from "variables/serverFunc.jsx";
 
 const classes = ["none", "2015", "2016", "2017", "2018"];
 
@@ -126,9 +126,23 @@ class RegisterPage extends React.Component {
       <div>
         <GridContainer justify="center" direction="column" alignItems="center">
           <div className="col-md-6 col-md-offset-3" style={{ width: "400px" }}>
-            <div style={{marginTop: "100px", textAlign: "center"}}>
-              <img style={{verticalAlign: "middle"}} src={logo} width='70px' height='70px' alt='.....'/>
-              <span style={{fontSize:"30pt", verticalAlign:"middle", marginLeft:"10px"}}>挣钱宝</span>
+            <div style={{ marginTop: "100px", textAlign: "center" }}>
+              <img
+                style={{ verticalAlign: "middle" }}
+                src={logo}
+                width="70px"
+                height="70px"
+                alt="....."
+              />
+              <span
+                style={{
+                  fontSize: "30pt",
+                  verticalAlign: "middle",
+                  marginLeft: "10px"
+                }}
+              >
+                挣钱宝
+              </span>
             </div>
             <h3>注册</h3>
             <form name="form" onSubmit={this.handleSubmit}>

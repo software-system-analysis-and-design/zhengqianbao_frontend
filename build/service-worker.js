@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/software-system-analysis-and-design/zhengqianbao_frontend/precache-manifest.79b94054a3bfeabc9daebea29ef20e7e.js"
+  "/software-system-analysis-and-design/zhengqianbao_frontend/precache-manifest.54b75681e33e3da39cab161576145153.js"
 );
 
 workbox.clientsClaim();

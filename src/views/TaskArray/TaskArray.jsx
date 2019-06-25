@@ -18,7 +18,7 @@ const style = {
   button: {
     margin: 10
   }
-}
+};
 
 function TaskArray(props) {
   const { classes, match } = props;
@@ -64,20 +64,27 @@ function TaskArray(props) {
   const createViews = elem => {
     return (
       <Grid className={classes.item} item xs={4}>
-        <TaskCard title={elem.title} ownership={elem.ownership} details={elem.details} match={match}/>
+        <TaskCard
+          title={elem.title}
+          ownership={elem.ownership}
+          details={elem.details}
+          match={match}
+        />
       </Grid>
     );
   };
 
-  const stateFilter = (tasks) => {
-
-  };
+  const stateFilter = tasks => {};
 
   return (
     <div>
       <Grid className={classes.nav} container spacing={2}>
         <Grid className={classes.item} item xs={2}>
-          <Button variant="contained" color="primary" className={classes.button}>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+          >
             筛选
           </Button>
         </Grid>
