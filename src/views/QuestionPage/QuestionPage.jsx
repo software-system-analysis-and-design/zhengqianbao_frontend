@@ -22,8 +22,8 @@ const style = {
 };
 
 function QuestionPage(props) {
-  if(!localStorage.getItem('user-token')){
-    props.history.push('/login');
+  if (!localStorage.getItem("user-token")) {
+    props.history.push("/login");
   }
   const { classes, match } = props;
 
@@ -91,7 +91,10 @@ function QuestionPage(props) {
     for (let i = 0; i < qdata.length; i++) {
       console.log("Require" + i);
       console.log(qdata[i].required);
-      if (qdata[i].required && (answers[i] === undefined || answers[i] === "")) {
+      if (
+        qdata[i].required &&
+        (answers[i] === undefined || answers[i] === "")
+      ) {
         setWarning(true);
         return;
       }
@@ -160,21 +163,45 @@ function QuestionPage(props) {
         for (let j = 0; j < elem.dataContent.length; j++) {
           arr.push(elem.dataContent[j].content);
         }
-        content = {...content, ["title"]: elem.title, ["arr"]: arr};
-        ret = <SingleChoiceCard content={content} warning={warning && qdata[index].required} callback={setAns(index)} />;
+        content = { ...content, ["title"]: elem.title, ["arr"]: arr };
+        ret = (
+          <SingleChoiceCard
+            content={content}
+            warning={warning && qdata[index].required}
+            callback={setAns(index)}
+          />
+        );
         break;
 
       case 3:
         for (let j = 0; j < elem.dataContent.length; j++) {
           arr.push(elem.dataContent[j].content);
         }
-        content = {...content, ["title"]: elem.title, ["arr"]: arr, ["minNum"]: 1, ["maxNum"]: arr.length};
-        ret = <MultiChoiceCard content={content} warning={warning && qdata[index].required} callback={setAns(index)} />;
+        content = {
+          ...content,
+          ["title"]: elem.title,
+          ["arr"]: arr,
+          ["minNum"]: 1,
+          ["maxNum"]: arr.length
+        };
+        ret = (
+          <MultiChoiceCard
+            content={content}
+            warning={warning && qdata[index].required}
+            callback={setAns(index)}
+          />
+        );
         break;
 
       case 1:
-        content = {...content, ["title"]: elem.title};
-        ret = <ShortAnswerCard content={content} warning={warning && qdata[index].required} callback={setAns(index)} />;
+        content = { ...content, ["title"]: elem.title };
+        ret = (
+          <ShortAnswerCard
+            content={content}
+            warning={warning && qdata[index].required}
+            callback={setAns(index)}
+          />
+        );
         break;
     }
     return ret;
@@ -191,7 +218,12 @@ function QuestionPage(props) {
       >
         保存
       </Button>
-      <Button variant="contained" color="secondary" className={classes.button} onClick={ () => props.history.push("/tasksquare")}>
+      <Button
+        variant="contained"
+        color="secondary"
+        className={classes.button}
+        onClick={() => props.history.push("/tasksquare")}
+      >
         取消
       </Button>
       <Dialog

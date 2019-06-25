@@ -185,7 +185,7 @@ function TaskList(props) {
   }
 
   function downloadTaskData(taskID) {
-    // TODO 下载某一份任务的数据
+    // 下载某一份任务的数据
     // 获取对应任务的题目信息
     // 根据taskID，获取问卷数据
 

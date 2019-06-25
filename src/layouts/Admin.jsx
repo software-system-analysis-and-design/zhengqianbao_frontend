@@ -20,6 +20,7 @@ import image from "assets/img/sidebar-2.jpg";  // 边界栏背景图片
 import logo from "assets/img/apple-icon.png";  // 应用图标
 import { handleResponse, parseParams, apiUrl } from "variables/serverFunc.jsx";
 
+import TaskSquare from "views/TaskSquare/TaskSquare.jsx";
 
 const switchRoutes = (
   <Switch>
@@ -34,6 +35,7 @@ const switchRoutes = (
         );
       }
     })}
+    <Route path="/" component={TaskSquare} />
   </Switch>
 );
 
@@ -94,7 +96,6 @@ class Dashboard extends React.Component {
     }
   }
   componentWillUnmount() {
-    
     window.removeEventListener("resize", this.resizeFunction);
   }
   render() {
@@ -118,7 +119,6 @@ class Dashboard extends React.Component {
             history={this.props.history}
             {...rest}
           />
-          {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
           {this.getRoute() ? (
             <div className={classes.content}>
               <div className={classes.container}>{switchRoutes}</div>

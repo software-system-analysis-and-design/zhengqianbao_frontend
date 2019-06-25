@@ -3,7 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import { handleResponse } from "variables/serverFunc.jsx";
 import { withStyles } from "@material-ui/core/styles";
 import TaskCard from "../../components/TaskCard/TaskCard.jsx";
-import {Button, Typography} from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 import { TextField } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import { Paper } from "@material-ui/core";
@@ -12,15 +12,14 @@ import SearchIcon from "@material-ui/icons/Search";
 import DirectionsIcon from "@material-ui/icons/Directions";
 import InputBase from "@material-ui/core/InputBase";
 import Divider from "@material-ui/core/Divider";
-import Collapse from '@material-ui/core/Collapse';
+import Collapse from "@material-ui/core/Collapse";
 
 const style = {
   container: {
     paddingLeft: 75,
     paddingRight: 75
   },
-  nav: {
-  },
+  nav: {},
   item: {
     padding: 15
   },
@@ -36,18 +35,17 @@ const style = {
   },
   input: {
     marginLeft: 8,
-    flex: 1,
+    flex: 1
   },
   iconButton: {
-    padding: 10,
+    padding: 10
   },
   divider: {
     width: 1,
     height: 35,
-    margin: 4,
-  },
+    margin: 4
+  }
 };
-
 
 function TaskArray(props) {
   if (!localStorage.getItem("user-token")) {
@@ -81,8 +79,8 @@ function TaskArray(props) {
               missionType: task.taskType,
               finishedNumber: task.finishedNumber,
               totalNumber: task.number,
-              startTime: task.publishTime,
-              endTime: task.endTime,
+              startTime: task.publishTime.replace("T", " "),
+              endTime: task.endTime.replace("T", " "),
               description: task.description
             };
 
@@ -119,12 +117,12 @@ function TaskArray(props) {
     let moneyParam = {
       min: parseInt(values.moneyMin),
       max: parseInt(values.moneyMax)
-    }
+    };
     let temp = stateFilter(tasks, moneyFilter, moneyParam);
 
     let searchParam = {
       keyWord: values.search
-    }
+    };
     temp = stateFilter(temp, searchFilter, searchParam);
 
     // let timeParam = {
@@ -135,7 +133,7 @@ function TaskArray(props) {
     //temp = stateFilter(temp, timeFilter, timeParam);
 
     setFiltedTask(temp);
-  }
+  };
 
   const stateFilter = (arr, func, param) => {
     console.log("state filter");
@@ -153,7 +151,7 @@ function TaskArray(props) {
       param.keyWord == "" ||
       task.title.indexOf(param.keyWord) !== -1
     );
-  }
+  };
 
   const moneyFilter = (task, param) => {
     let money = parseInt(task.details.reward);
@@ -198,7 +196,11 @@ function TaskArray(props) {
       <Grid className={classes.nav} container spacing={2} justify={"center"}>
         <Grid className={classes.item} item xs={8}>
           <Paper className={classes.root}>
-            <IconButton className={classes.iconButton} aria-label="Menu" onClick={() => setChecked(prev => !prev)}>
+            <IconButton
+              className={classes.iconButton}
+              aria-label="Menu"
+              onClick={() => setChecked(prev => !prev)}
+            >
               <MenuIcon />
             </IconButton>
             <InputBase
@@ -209,7 +211,11 @@ function TaskArray(props) {
               onChange={handleChange("search")}
             />
             <Divider className={classes.divider} />
-            <IconButton className={classes.iconButton} aria-label="Search" onClick={filterButtonClick}>
+            <IconButton
+              className={classes.iconButton}
+              aria-label="Search"
+              onClick={filterButtonClick}
+            >
               <SearchIcon />
             </IconButton>
           </Paper>
