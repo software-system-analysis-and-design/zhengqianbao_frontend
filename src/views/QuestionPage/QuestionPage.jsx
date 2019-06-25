@@ -35,7 +35,7 @@ function QuestionPage(props) {
   });
   const [qdata, setQuestionData] = React.useState([]);
   const [answers, setAnswers] = React.useState({});
-  const [testButton, setTestButton] = React.useState([]);
+  const [money, setMoney] = React.useState(0);
 
   const setAns = index => answer => {
     setAnswers({ ...answers, [index]: answer });
@@ -55,12 +55,7 @@ function QuestionPage(props) {
     fetch(apiUrl, requestOption)
       .then(handleResponse)
       .then(response => {
-        let ret = [];
-        ret.push(
-          <Typography className={classes.title} variant="h5" component="h2">
-            {response.taskName}
-          </Typography>
-        );
+        setMoney(parseInt(response.money));
         setQuestionData(response.chooseData);
       });
   };
@@ -73,20 +68,33 @@ function QuestionPage(props) {
     return ret;
   };
 
+  const updateMoney = () => {
+    let data = new FormData();
+    data.append("money", localStorage.getItem("user-remain") + money);
+
+    const apiUrl = "https://littlefish33.cn:8080/user/updatemoney";
+    const requestOption = {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user-token")
+      },
+      body: data
+    };
+    fetch(apiUrl, requestOption)
+      .then(handleResponse)
+      .then(response => {
+        console.log(response);
+      });
+  };
+
   const save = () => {
-    if (Object.keys(answers).length == qdata.length) {
-      for (let i = 0; i < Object.keys(answers).length; i++) {
-        if (answers[i] === undefined) {
-          setWarning(true);
-          return;
-        }
+    for (let i = 0; i < qdata.length; i++) {
+      console.log("Require" + i);
+      console.log(qdata[i].required);
+      if (qdata[i].required && (answers[i] === undefined || answers[i] === "")) {
+        setWarning(true);
+        return;
       }
-    } else {
-      setWarning(true);
-      console.log("answers:");
-      console.log(answers);
-      console.log(qdata.length);
-      return;
     }
 
     // upload answers
@@ -100,7 +108,7 @@ function QuestionPage(props) {
     }
     let postData = {
       taskID: match.params.taskID,
-      userID: localStorage.getItem("user-id"),
+      userID: localStorage.getItem("userID"),
       data: answerData
     };
 
@@ -124,6 +132,7 @@ function QuestionPage(props) {
       .then(response => {
         if (response.code == 200) {
           setMessage({ ...message, title: "保存成功" });
+          updateMoney();
           setOpen(true);
         } else {
           setMessage({
@@ -151,49 +160,21 @@ function QuestionPage(props) {
         for (let j = 0; j < elem.dataContent.length; j++) {
           arr.push(elem.dataContent[j].content);
         }
-        content = { ...content, ["title"]: elem.title, ["arr"]: arr };
-
-        ret = (
-          <SingleChoiceCard
-            content={content}
-            warning={warning}
-            callback={setAns(index)}
-            answers={answers}
-          />
-        );
+        content = {...content, ["title"]: elem.title, ["arr"]: arr};
+        ret = <SingleChoiceCard content={content} warning={warning && qdata[index].required} callback={setAns(index)} />;
         break;
 
       case 3:
         for (let j = 0; j < elem.dataContent.length; j++) {
           arr.push(elem.dataContent[j].content);
         }
-        content = {
-          ...content,
-          ["title"]: elem.title,
-          ["arr"]: arr,
-          ["minNum"]: 0,
-          ["maxNum"]: 1000
-        };
-        ret = (
-          <MultiChoiceCard
-            content={content}
-            warning={warning}
-            callback={setAns(index)}
-            answers={answers}
-          />
-        );
+        content = {...content, ["title"]: elem.title, ["arr"]: arr, ["minNum"]: 1, ["maxNum"]: arr.length};
+        ret = <MultiChoiceCard content={content} warning={warning && qdata[index].required} callback={setAns(index)} />;
         break;
 
       case 1:
-        content = { ...content, ["title"]: elem.title };
-        ret = (
-          <ShortAnswerCard
-            content={content}
-            warning={warning}
-            callback={setAns(index)}
-            answers={answers}
-          />
-        );
+        content = {...content, ["title"]: elem.title};
+        ret = <ShortAnswerCard content={content} warning={warning && qdata[index].required} callback={setAns(index)} />;
         break;
     }
     return ret;
@@ -210,7 +191,7 @@ function QuestionPage(props) {
       >
         保存
       </Button>
-      <Button variant="contained" color="secondary" className={classes.button}>
+      <Button variant="contained" color="secondary" className={classes.button} onClick={ () => props.history.push("/tasksquare")}>
         取消
       </Button>
       <Dialog

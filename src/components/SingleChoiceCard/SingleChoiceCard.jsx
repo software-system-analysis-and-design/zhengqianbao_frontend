@@ -27,12 +27,12 @@ const style = {
 
 function SingleChoiceCard(props) {
   // "const" for formal; "let" for test
-  const { classes, content, warning, callback, answers} = props;
+  const { classes, content, warning, callback} = props;
 
   const [value, setValue] = React.useState(-1);
 
   function handleChange(event) {
-    callback(event.target.value, answers);
+    callback(event.target.value);
     setValue(parseInt(event.target.value));
   }
 
