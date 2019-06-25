@@ -34,13 +34,14 @@ const styles = theme => ({
 */
 
 function Commission(props) {
-  if(!localStorage.getItem('user-token')){
-    props.history.push('/login');
+  if (!localStorage.getItem("user-token")) {
+    props.history.push("/login");
   }
   const { classes, transferMsg, path } = props;
 
   useEffect(() => {
     transferMsg("2C");
+    alert("本功能暂处于开发中，暂未上线：）");
     return () => {
       transferMsg("Return");
     };

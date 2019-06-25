@@ -80,7 +80,8 @@ function Content(props) {
     number,
     transferMsg,
     removeTask,
-    modifyTaskState
+    modifyTaskState,
+    downloadTaskData
   } = props;
 
   const [taskState, setTaskState] = React.useState("进行中");
@@ -162,6 +163,11 @@ function Content(props) {
     }
   });
 
+  // 点击下载按钮，下载对应的问卷数据
+  function handleDownloadData() {
+    downloadTaskData(taskID)
+  }
+
   return (
     <div>
       {show !== null ? (
@@ -222,7 +228,7 @@ function Content(props) {
                 <Typography variant="subtitle1" gutterBottom>
                   任务截止时间：{endTime}
                 </Typography>
-                <Button variant="contained" color="secondary">
+                <Button variant="contained" color="secondary" onClick={handleDownloadData}>
                   下载任务数据
                 </Button>
                 <Button

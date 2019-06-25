@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import TaskContent from "../../components/TaskContent/TaskContent.jsx";
-
+import { exportExcel } from "xlsx-oc";
 import { handleResponse, parseParams } from "variables/serverFunc.jsx";
 
 const apiUrl = "https://littlefish33.cn:8080";
@@ -77,6 +77,7 @@ function TaskList(props) {
   if (!localStorage.getItem("user-token")) {
     props.history.push("/login");
   }
+
   const { transferMsg } = props;
 
   const [taskContent, setTaskContent] = React.useState([]);
@@ -147,7 +148,7 @@ function TaskList(props) {
         let data = new FormData();
         data.append("data", JSON.stringify(taskData));
         data.append("id", taskID);
-        // console.log(taskID)
+
         const requestOptions2 = {
           method: "POST",
           headers: {
@@ -160,7 +161,6 @@ function TaskList(props) {
         fetch(apiUrl + "/questionnaire/update", requestOptions2)
           .then(handleResponse)
           .then(response => {
-            // console.log(response);
             if (response.code === 200) {
               alert(response.msg + "请刷新查看！");
             } else {
@@ -184,10 +184,83 @@ function TaskList(props) {
     setTaskContent(newContent);
   }
 
-  function downloadTaskData(taskID){
+  function downloadTaskData(taskID) {
     // TODO 下载某一份任务的数据
-  }
+    // 获取对应任务的题目信息
+    // 根据taskID，获取问卷数据
 
+    // 问卷的格式是：
+    // 列头：序号  问题1  2   3  4
+    const requestOptions1 = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      body: parseParams({ id: taskID })
+    };
+    fetch(apiUrl + "/questionnaire/select", requestOptions1)
+      .then(handleResponse)
+      .then(responseInfo => {
+        // 对应的问卷信息
+        return responseInfo;
+      })
+      .then(responseInfo => {
+        // 下载用户的答案数据
+        let data = new FormData();
+        data.append("taskID", taskID);
+        const requestOptions2 = {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("user-token")
+          },
+          body: data
+        };
+        fetch(apiUrl + "/record/getall", requestOptions2)
+          .then(handleResponse)
+          .then(responseData => {
+            console.log(responseInfo);
+            console.log(responseData);
+            let taskName = responseInfo.taskName;
+            
+            let dataSource = []; // 存储回答的字段和数据
+            let dataHeader = []; // 存储列表头部字段
+
+            let key = 0; // 起始的键名
+
+            let keyList = ["序号","回答者"]; // 存储每一个回答对应的键名
+            dataHeader.push({k: "序号", v: "序号"})
+            dataHeader.push({k: "回答者", v: "回答者"})
+            // 填充 header
+            let chooseData = responseInfo.chooseData;
+            for (let i = 0; i < chooseData.length; i++) {
+              let header = { k: i.toString(), v: chooseData[i].titleNum };
+              keyList.push(i.toString());
+              dataHeader.push(header);
+            }
+
+            // 填充 source
+            for (let i = 0; i < responseData.length; i++) {
+              let data = responseData[i].data;
+              let source = {};
+              source[keyList[0]] = i + 1;                    // 序号
+              source[keyList[1]] =  responseData[i].userID;  // 回答者
+
+              for (let j = 0; j < data.length; j++) {
+                source[keyList[j + 2]] = data[j].content;
+                console.log(data[j].content)
+              }
+              console.log("source")
+              console.log(source);
+              dataSource.push(source);
+            }
+            exportExcel(dataHeader, dataSource);
+            console.log(dataHeader)
+            console.log(dataSource)
+            console.log("expor excel");
+          });
+      });
+  }
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -222,6 +295,7 @@ function TaskList(props) {
               transferMsg={transferMsg}
               removeTask={removeTask}
               modifyTaskState={modifyTaskState}
+              downloadTaskData={downloadTaskData}
             />
           )
       )}
