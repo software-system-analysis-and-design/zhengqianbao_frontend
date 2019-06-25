@@ -43,24 +43,26 @@ function TaskArray(props) {
       .then(handleResponse)
       .then(response => {
         let ret = [];
-        for (let i = 0; i < response.length; i++) {
-          let task = response[i];
-          let details = {
-            taskID: task.taskID,
-            reward: task.money,
-            missionType: task.taskType,
-            finishedNumber: task.finishedNumber,
-            totalNumber: task.number,
-            startTime: task.publishTime,
-            endTime: task.endTime,
-            description: task.description
-          };
+        if (response !== null) {
+          for (let i = 0; i < response.length; i++) {
+            let task = response[i];
+            let details = {
+              taskID: task.taskID,
+              reward: task.money,
+              missionType: task.taskType,
+              finishedNumber: task.finishedNumber,
+              totalNumber: task.number,
+              startTime: task.publishTime,
+              endTime: task.endTime,
+              description: task.description
+            };
 
-          ret.push({
-            title: task.taskName,
-            ownership: task.creator,
-            details: details
-          });
+            ret.push({
+              title: task.taskName,
+              ownership: task.creator,
+              details: details
+            });
+          }
         }
         setTasks(ret);
         setFiltedTask(ret);
@@ -111,7 +113,7 @@ function TaskArray(props) {
       end: values.endTime
     };
     console.log("time filter");
-    temp = stateFilter(temp, timeFilter, timeParam);
+    //temp = stateFilter(temp, timeFilter, timeParam);
 
     setFiltedTask(temp);
   }
@@ -167,6 +169,8 @@ function TaskArray(props) {
             margin="normal"
             variant="outlined"
           />
+        </Grid>
+        <Grid className={classes.item} item xs={2}>
           <TextField
             id="datetime-local"
             label="开始时间"
@@ -178,6 +182,8 @@ function TaskArray(props) {
               shrink: true
             }}
           />
+        </Grid>
+        <Grid className={classes.item} item xs={2}>
           <TextField
             id="datetime-local"
             label="终止时间"
@@ -189,6 +195,8 @@ function TaskArray(props) {
               shrink: true
             }}
           />
+        </Grid>
+        <Grid className={classes.item} item xs={2}>
           <TextField
             id="outlined-number"
             label="最小"
@@ -202,6 +210,8 @@ function TaskArray(props) {
             margin="normal"
             variant="outlined"
           />
+        </Grid>
+        <Grid className={classes.item} item xs={2}>
           <TextField
             id="outlined-number"
             label="最大"
@@ -215,6 +225,8 @@ function TaskArray(props) {
             margin="normal"
             variant="outlined"
           />
+        </Grid>
+        <Grid className={classes.item} item xs={2}>
           <Button variant="contained" color="primary" className={classes.button} onClick={filterButtonClick}>
             筛选
           </Button>

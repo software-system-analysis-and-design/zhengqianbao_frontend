@@ -53,7 +53,7 @@ function TaskCard(props) {
       </CardContent>
       <CardActions>
         <Link to={match.url + "/" + details.taskID}>
-          <Button size="small">START</Button>
+          <Button variant="contained" size="small" color={"primary"}>START</Button>
         </Link>
       </CardActions>
     </Card>
