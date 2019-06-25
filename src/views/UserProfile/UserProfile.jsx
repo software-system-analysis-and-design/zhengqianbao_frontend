@@ -70,6 +70,7 @@ class UserProfile extends React.Component {
     this.updateMoney = this.updateMoney.bind(this);
     this.cancelUpdateMooney = this.cancelUpdateMooney.bind(this);
     this.ensureUpdateMooney = this.ensureUpdateMooney.bind(this);
+    this.logout = this.logout.bind(this);
     //initialUser();
   }
 
@@ -218,6 +219,11 @@ class UserProfile extends React.Component {
     });
   }
 
+  logout(){
+    localStorage.setItem("user-token", "");
+    this.props.history.push("\login");
+  }
+
   render() {
     const { user, tempUser } = this.state;
     return (
@@ -319,6 +325,47 @@ class UserProfile extends React.Component {
                   >
                     <p style={{ fontSize: "10pt" }}>关于我 :</p>
                     <p style={{ fontSize: "14pt" }}>{user.description}</p>
+                  </GridItem>
+                  <GridItem
+                    xs={12}
+                    sm={12}
+                    md={6}
+                    style={{ display: this.state.isView ? "inline" : "none" }}
+                  >
+                    <div
+                      style={{
+                        display: this.state.isUpdateMoney ? "inline" : "none"
+                      }}
+                    >
+                      <CustomInput
+                        labelText="充值金额"
+                        id="money"
+                        type="number"
+                        formControlProps={{
+                          fullWidth: true
+                        }}
+                        inputProps={{
+                          name: "remain"
+                        }}
+                        onChange={this.handleChange}
+                      />
+                      <Button color="primary" fontSize="5pt" onClick={this.ensureUpdateMooney}>
+                        确定
+                      </Button>
+                      <Button color="primary" fontSize="5pt" onClick={this.cancelUpdateMooney}>
+                        取消
+                      </Button>
+                    </div>
+                    <Button
+                      style={{
+                        display: this.state.isUpdateMoney ? "none" : "inline"
+                      }}
+                      color="primary"
+                      fontSize="5pt"
+                      onClick={this.updateMoney}
+                    >
+                      充值
+                    </Button>
                   </GridItem>
                 </GridContainer>
                 <GridContainer
@@ -497,10 +544,10 @@ class UserProfile extends React.Component {
                         }}
                         onChange={this.handleChange}
                       />
-                      <Button fontSize="5pt" onClick={this.ensureUpdateMooney}>
+                      <Button color="primary" fontSize="5pt" onClick={this.ensureUpdateMooney}>
                         确定
                       </Button>
-                      <Button fontSize="5pt" onClick={this.cancelUpdateMooney}>
+                      <Button color="primary" fontSize="5pt" onClick={this.cancelUpdateMooney}>
                         取消
                       </Button>
                     </div>
@@ -508,6 +555,7 @@ class UserProfile extends React.Component {
                       style={{
                         display: this.state.isUpdateMoney ? "none" : "inline"
                       }}
+                      color="primary"
                       fontSize="5pt"
                       onClick={this.updateMoney}
                     >
@@ -585,6 +633,7 @@ class UserProfile extends React.Component {
               </CardFooter>
             </Card>
           </GridItem>
+          <Button onClick={this.logout}>退出登录</Button>
         </GridContainer>
       </div>
     );
