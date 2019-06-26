@@ -1,6 +1,4 @@
 import React from "react";
-//import ReactDOM feom "react-dom"
-// @material-ui/core components
 import InputLabel from "@material-ui/core/InputLabel";
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -71,13 +69,11 @@ class UserProfile extends React.Component {
     this.cancelUpdateMooney = this.cancelUpdateMooney.bind(this);
     this.ensureUpdateMooney = this.ensureUpdateMooney.bind(this);
     this.logout = this.logout.bind(this);
-    //initialUser();
   }
 
   componentWillMount() {
     if (!localStorage.getItem("user-token")) {
     } else {
-      //console.log(localStorage.getItem('user-token'));
       const requestOptions = {
         method: "GET",
         headers: {
@@ -88,7 +84,6 @@ class UserProfile extends React.Component {
       fetch(apiUrl + "/profile", requestOptions)
         .then(handleResponse)
         .then(response => {
-          // store user details and jwt token in local storage to keep user logged in between page refreshes
           this.setState({ user: response, tempUser: response });
         });
     }
@@ -118,9 +113,8 @@ class UserProfile extends React.Component {
     fetch(apiUrl + "/updatemoney", requestOptions)
       .then(handleResponse)
       .then(response => {
-        // store user details and jwt token in local storage to keep user logged in between page refreshes
         console.log(response);
-        if (response.code == 200) {
+        if (response.code === 200) {
           const { user, tempUser } = this.state;
           this.setState({
             user: {
@@ -141,7 +135,6 @@ class UserProfile extends React.Component {
   componentDidMount() {
     if (!localStorage.getItem("user-token")) {
     } else {
-      //console.log(localStorage.getItem('user-token'));
       const requestOptions = {
         method: "GET",
         headers: {
@@ -152,7 +145,6 @@ class UserProfile extends React.Component {
       fetch(apiUrl + "/profile", requestOptions)
         .then(handleResponse)
         .then(response => {
-          // store user details and jwt token in local storage to keep user logged in between page refreshes
           this.setState({ user: response, tempUser: response });
         });
     }
@@ -161,7 +153,6 @@ class UserProfile extends React.Component {
   updateUserInfo() {
     console.log(this.state.tempUser);
     var updateInfo = this.state.tempUser;
-    //console.log(updateInfo);
     updateInfo.gender = this.state.tempUser.gender === 1 ? "男" : "女";
     updateInfo.class = classes[this.state.tempUser.class];
     console.log(this.state.tempUser);
@@ -177,8 +168,6 @@ class UserProfile extends React.Component {
     fetch(apiUrl + "/update", requestOptions)
       .then(handleResponse)
       .then(response => {
-        // store user details and jwt token in local storage to keep user logged in between page refreshes
-        console.log(response);
         if (response.code === 200) {
           this.setState({ user: updateInfo });
         }
@@ -206,7 +195,7 @@ class UserProfile extends React.Component {
 
   handleChange(e) {
     const { name, value } = e.target;
-    if (name == "remain") {
+    if (name === "remain") {
       this.setState({ money: value });
       return;
     }
@@ -221,7 +210,7 @@ class UserProfile extends React.Component {
 
   logout(){
     localStorage.setItem("user-token", "");
-    this.props.history.push("\login");
+    this.props.history.push("\\login");
   }
 
   render() {
@@ -607,9 +596,7 @@ class UserProfile extends React.Component {
                       }}
                       inputProps={{
                         multiline: false,
-                        rows: 5
-                      }}
-                      inputProps={{
+                        rows: 5,
                         name: "description"
                       }}
                     />

@@ -36,7 +36,6 @@ const switchRoutes = (
         );
       }
     })}
-    <Route path="/" component={TaskSquare} />
   </Switch>
 );
 
@@ -45,6 +44,8 @@ class Dashboard extends React.Component {
     super(props);
     if(!localStorage.getItem('user-token')){
       this.props.history.push("/login");
+    }else if(this.props.history.location.pathname === "/"){
+      this.props.history.push("/tasksquare");
     }
     this.state = {
       image: image,
