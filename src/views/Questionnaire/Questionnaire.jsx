@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
 import QuestionnaireContent from "components/QuestionnaireContent/QuestionnaireContent";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -31,7 +30,6 @@ const styles = theme => ({
 /*
  * 时间判断比较相关函数 *********************
  */
-
 function stringToDate(time) {
   // 一个字符串  2019-06-12T12:00 转为 Date对象
   // let time = _time.toString();
@@ -92,10 +90,10 @@ function compareTime(publishTime, endTime) {
 }
 
 function Questionnaire(props) {
-  if(!localStorage.getItem('user-token')){
-    props.history.push('/login');
+  if (!localStorage.getItem("user-token")) {
+    props.history.push("/login");
   }
-  const { classes, transferMsg, path, taskID } = props;
+  const { classes, transferMsg, taskID } = props;
 
   // 存放问卷基本字段
   const [values, setValues] = React.useState({
@@ -163,9 +161,9 @@ function Questionnaire(props) {
       alert(
         "【余额不足】 \n 你需要支付" +
           payMoney +
-          " toekns, 但你的余额仅剩 " +
+          " 金币, 但你的余额仅剩 " +
           currentMoney.toString() +
-          " tokens"
+          " 金币"
       );
       return null;
     }
@@ -191,7 +189,7 @@ function Questionnaire(props) {
         }
       })
       .catch(() => {
-        alert("扣除token出现错误，请检查你的网络环境！");
+        alert("扣除金币出现错误，请检查你的网络环境！");
         isError = true;
         return null;
       });
@@ -213,12 +211,11 @@ function Questionnaire(props) {
         endTime: values.endTime,
         chooseData: Content.chooseData
       };
-      // eslint-disable-next-line no-console
-      // console.log(JSON.stringify(allData));
+
       let data = new FormData();
       data.append("data", JSON.stringify(allData));
       data.append("id", taskID);
-      // console.log(taskID)
+
       const requestOptions = {
         method: "POST",
         headers: {
@@ -253,8 +250,7 @@ function Questionnaire(props) {
         endTime: values.endTime,
         chooseData: Content.chooseData
       };
-      // eslint-disable-next-line no-console
-      console.log(JSON.stringify(allData));
+
       let data = new FormData();
       data.append("data", JSON.stringify(allData));
       const requestOptions = {
@@ -268,7 +264,7 @@ function Questionnaire(props) {
         .then(handleResponse)
         .then(response => {
           if (response.code === 200) {
-            alert("创建任务成功");
+            alert("创建任务成功， 你被扣除" + );
           } else {
             alert("创建任务失败");
           }

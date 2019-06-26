@@ -96,6 +96,7 @@ function QuestionaireContent(props) {
   /***************************************************
    *  定义 本组件使用的事件处理逻辑
    *****************************************************/
+
   // 控制复选框的正负值,实时记录是否必选
   const handleChange = name => event => {
     setRequired({ ...required, [name]: event.target.checked });

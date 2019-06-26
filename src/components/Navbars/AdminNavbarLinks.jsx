@@ -1,13 +1,7 @@
 import React from "react";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
-import MenuItem from "@material-ui/core/MenuItem";
-import MenuList from "@material-ui/core/MenuList";
-import Grow from "@material-ui/core/Grow";
-import Paper from "@material-ui/core/Paper";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Hidden from "@material-ui/core/Hidden";
-import Poppers from "@material-ui/core/Popper";
 // @material-ui/icons
 import Person from "@material-ui/icons/Person";
 import Notifications from "@material-ui/icons/Notifications";
@@ -19,22 +13,16 @@ import Button from "components/CustomButtons/Button.jsx";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.jsx";
 
-import NotificationsPage from "views/Notifications/Notifications.jsx";
-import UserProfile from "views/UserProfile/UserProfile.jsx";
 import { handleResponse } from "variables/serverFunc.jsx";
 import { Link, Route } from "react-router-dom";
 
 const apiUrl = "https://littlefish33.cn:8080";
 
 class HeaderLinks extends React.Component {
-
-  constructor(props){
-    
+  constructor(props) {
     super(props);
-    if(!localStorage.getItem('user-token')){
-      console.log(this.props);
-      this.props.history.push('/login');
-      //console.log("XXX");
+    if (!localStorage.getItem("user-token")) {
+      this.props.history.push("/login");
     }
     this.state = {
       open: false,
@@ -43,9 +31,9 @@ class HeaderLinks extends React.Component {
   }
 
   componentDidMount = () => {
-    if(!localStorage.getItem('user-token')){
+    if (!localStorage.getItem("user-token")) {
       //console.log("XXX");
-    }else{
+    } else {
       // 获取未读消息数目,显示在logo上
       const requestOptions = {
         method: "GET",

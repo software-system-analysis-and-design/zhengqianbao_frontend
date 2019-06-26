@@ -79,7 +79,6 @@ function MessageBox (props) {
     setShow(null);
     console.log("delete")
   }
- // to stop the warning of calling setState of unmounted component
 
   return (
     <div>
@@ -108,12 +107,13 @@ function Notifications (props) {
 
   const [msgList, setMsgList] = React.useState([]);
   
-  const [hiddenAll, setHiddenAll] = React.useState("show") // if it's null, all msgs will be hidden.
-
+  // if it's null, all msgs will be hidden.
+  const [hiddenAll, setHiddenAll] = React.useState("show") 
 
   React.useEffect(()=>{
     if(!localStorage.getItem('user-token')){
-    
+      aler("用户未登录")
+      props.history.push('/login');
     }else{
     // Get消息列表数据，存入msglist内部
     const requestOptions1 = {

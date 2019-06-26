@@ -69,6 +69,7 @@ function TaskArray(props) {
     fetch(apiUrl, requestOption)
       .then(handleResponse)
       .then(response => {
+        console.log(response);
         let ret = [];
         if (response !== null) {
           for (let i = 0; i < response.length; i++) {

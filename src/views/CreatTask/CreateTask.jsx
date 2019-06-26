@@ -26,15 +26,13 @@ const styles = theme => ({
 });
 
 function CreateTask(props) {
-  if(!localStorage.getItem('user-token')){
-    props.history.push('/login');
+  if (!localStorage.getItem("user-token")) {
+    props.history.push("/login");
   }
   const { classes, transferMsg, path, display } = props;
 
   const toQuestionnairePath = path + "/createTask/Questionnaire";
   const toCommissionPath = path + "/createTask/commission";
-
-  // const [display, setDisplay] = useState(true);
 
   const jumpToQ = async () => {
     transferMsg("2Q");

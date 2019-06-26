@@ -46,8 +46,8 @@ class Dashboard extends React.Component {
   };
 
   componentWillUnmount() {
-    if(!localStorage.getItem('user-token')){
-      this.props.history.push('/login');
+    if (!localStorage.getItem("user-token")) {
+      this.props.history.push("/login");
     }
   }
 

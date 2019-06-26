@@ -23,16 +23,6 @@ const styles = theme => ({
   }
 });
 
-/*
- 委托字段设计：
-{
-  taskName: "任务名"
-  money: 100  // 任务报酬
-  number: 100 // 任务次数
-  tasKDescription: "任务描述"  // 任务描述
-}
-*/
-
 function Commission(props) {
   if (!localStorage.getItem("user-token")) {
     props.history.push("/login");

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import AppBar from "@material-ui/core/AppBar";
@@ -10,9 +9,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import { withStyles } from "@material-ui/core/styles";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
-import RefreshIcon from "@material-ui/icons/Refresh";
 import EditIcon from "@material-ui/icons/Edit";
-import DetailsIcon from "@material-ui/icons/Details";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -147,8 +144,12 @@ function Content(props) {
   React.useEffect(() => {
     let publishDate = stringToDate(publishTime);
     let endDate = stringToDate(endTime);
+
     let currentDate = new Date();
-    if (publishDate > currentDate) {
+    if (publishTime.length === 0 && endTime.length === 0) {
+      setTaskState("待发布");
+      setTaskButtonState("发布任务");
+    } else if (publishDate > currentDate) {
       setTaskState("待发布");
       setTaskButtonState("发布任务");
     } else if (
@@ -165,7 +166,7 @@ function Content(props) {
 
   // 点击下载按钮，下载对应的问卷数据
   function handleDownloadData() {
-    downloadTaskData(taskID)
+    downloadTaskData(taskID);
   }
 
   return (
@@ -228,7 +229,11 @@ function Content(props) {
                 <Typography variant="subtitle1" gutterBottom>
                   任务截止时间：{endTime}
                 </Typography>
-                <Button variant="contained" color="secondary" onClick={handleDownloadData}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleDownloadData}
+                >
                   下载任务数据
                 </Button>
                 <Button

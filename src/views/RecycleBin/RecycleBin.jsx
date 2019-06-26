@@ -13,7 +13,7 @@ import Grid from "@material-ui/core/Grid";
 
 import { handleResponse, parseParams } from "variables/serverFunc.jsx";
 
-const apiUrl = "https://littlefish33.cn:8080/user";
+const apiUrl = "https://littlefish33.cn:8080";
 
 const styles = {
   paper: {

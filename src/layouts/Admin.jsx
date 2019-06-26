@@ -18,6 +18,7 @@ import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboar
 
 import image from "assets/img/sidebar-2.jpg";  // 边界栏背景图片
 import logo from "assets/img/apple-icon.png";  // 应用图标
+
 import { handleResponse, parseParams, apiUrl } from "variables/serverFunc.jsx";
 
 import TaskSquare from "views/TaskSquare/TaskSquare.jsx";
@@ -43,7 +44,7 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     if(!localStorage.getItem('user-token')){
-      this.props.history.push("\login");
+      this.props.history.push("/login");
     }
     this.state = {
       image: image,
@@ -80,8 +81,6 @@ class Dashboard extends React.Component {
       fetch(apiUrl + "/profile", requestOptions)
         .then(handleResponse)
         .then(response => {  // 在 admin 组件获取用户余额
-          console.log(response)
-          console.log("当前用户余额为" + response.remain.toString());
           localStorage.setItem("user-remain", response.remain); 
         });
     }
