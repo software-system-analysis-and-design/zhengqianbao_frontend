@@ -49,7 +49,7 @@
   },
   "keywords": [],
   "author": "system analysis and design",
-  "homepage": "https://github.com/software-system-analysis-and-design/zhengqianbao_frontend",
+  "homepage": "",
   "optionalDependencies": {
     "@types/googlemaps": "3.30.16",
     "@types/markerclustererplus": "2.1.33",

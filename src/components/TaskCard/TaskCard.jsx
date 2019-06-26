@@ -33,17 +33,16 @@ const styles = {
 };
 
 function TaskCard(props) {
-  const {classes, title, ownership, details, match} = props;
-
+  const { classes, title, ownership, details, match } = props;
+  console.log("task card match")
+  console.log(match)
   return (
     <Card className={classes.card}>
       <CardContent>
         <Typography className={classes.title} variant="h5" component="h2">
           {title}
         </Typography>
-        <Typography color="textSecondary">
-          发布者：{ownership}
-        </Typography>
+        <Typography color="textSecondary">发布者：{ownership}</Typography>
         <Typography className={classes.details} variant="body2" component="p">
           报酬：{details.reward} 金币/人 <br />
           类型：{details.missionType} <br />
@@ -57,7 +56,14 @@ function TaskCard(props) {
       </CardContent>
       <CardActions>
         <Link to={match.url + "/" + details.taskID}>
-          <Button className={classes.button} variant="contained" size="small" color={"primary"}>START</Button>
+          <Button
+            className={classes.button}
+            variant="contained"
+            size="small"
+            color={"primary"}
+          >
+            START
+          </Button>
         </Link>
       </CardActions>
     </Card>

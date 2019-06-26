@@ -36,7 +36,6 @@ const switchRoutes = (
         );
       }
     })}
-    <Route path="/" component={TaskSquare} />
   </Switch>
 );
 

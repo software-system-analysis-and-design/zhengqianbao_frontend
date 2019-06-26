@@ -22,7 +22,7 @@ class HeaderLinks extends React.Component {
     }
     this.state = {
       open: false,
-      notReadNum: 1
+      notReadNum: 0
     };
   }
 

@@ -12,7 +12,7 @@ import TaskBoard from "views/TaskBoard/TaskBoard.jsx";
 
 const dashboardRoutes = [
    // 增加新的sidebar 导航按钮
-   {
+  {
     path: "/tasksquare",
     name: "任务广场",
     icon: Assignment,

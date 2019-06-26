@@ -53,6 +53,9 @@ function TaskArray(props) {
   }
   const { classes, match } = props;
 
+  console.log("task array match");
+  console.log(match);
+
   const [tasks, setTasks] = useState([]);
   const [filtedTask, setFiltedTask] = useState([]);
   const [values, setValues] = useState({});
