@@ -219,12 +219,8 @@ function TaskList(props) {
         fetch(apiUrl + "/record/getall", requestOptions2)
           .then(handleResponse)
           .then(responseData => {
-            let taskName = responseInfo.taskName;
-
             let dataSource = []; // 存储回答的字段和数据
             let dataHeader = []; // 存储列表头部字段
-
-            let key = 0; // 起始的键名
 
             let keyList = ["序号", "回答者"]; // 存储每一个回答对应的键名
             dataHeader.push({ k: "序号", v: "序号" });

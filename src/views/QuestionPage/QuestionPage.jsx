@@ -1,6 +1,5 @@
 import React from "react";
 import { handleResponse, parseParams } from "variables/serverFunc.jsx";
-import Typography from "@material-ui/core/Typography";
 import SingleChoiceCard from "../../components/SingleChoiceCard/SingleChoiceCard";
 import MultiChoiceCard from "../../components/MultiChoiceCard/MultiChoiceCard";
 import ShortAnswerCard from "../../components/ShortAnswerCard/ShortAnswerCard";
@@ -82,15 +81,11 @@ function QuestionPage(props) {
     };
     fetch(apiUrl, requestOption)
       .then(handleResponse)
-      .then(response => {
-        console.log(response);
-      });
+      .then(response => {});
   };
 
   const save = () => {
     for (let i = 0; i < qdata.length; i++) {
-      console.log("Require" + i);
-      console.log(qdata[i].required);
       if (
         qdata[i].required &&
         (answers[i] === undefined || answers[i] === "")
@@ -124,16 +119,10 @@ function QuestionPage(props) {
       body: parseJson(postData)
     };
 
-    console.log(JSON.stringify(postData));
-    console.log("Bearer " + localStorage.getItem("user-token"));
-    console.log(qdata);
-    console.log(answers);
-    console.log(answerData);
-
     fetch(apiUrl, requestOption)
       .then(handleResponse)
       .then(response => {
-        if (response.code == 200) {
+        if (response.code === 200) {
           setMessage({ ...message, title: "保存成功" });
           updateMoney();
           setOpen(true);
@@ -240,7 +229,7 @@ function QuestionPage(props) {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={handleClose(message.title == "保存成功", props)}
+            onClick={handleClose(message.title === "保存成功", props)}
             color="primary"
           >
             确定

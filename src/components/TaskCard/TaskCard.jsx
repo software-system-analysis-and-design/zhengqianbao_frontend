@@ -5,8 +5,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import { Route, Link } from "react-router-dom";
-import QuestionPage from "../../views/QuestionPage/QuestionPage.jsx";
+import { Link } from "react-router-dom";
 
 const styles = {
   card: {
