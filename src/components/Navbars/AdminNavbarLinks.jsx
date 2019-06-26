@@ -6,13 +6,9 @@ import Hidden from "@material-ui/core/Hidden";
 import Person from "@material-ui/icons/Person";
 import Notifications from "@material-ui/icons/Notifications";
 import Dashboard from "@material-ui/icons/Dashboard";
-import Search from "@material-ui/icons/Search";
-// core components
-import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
-
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.jsx";
-
+import Tooltip from "@material-ui/core/Tooltip";
 import { handleResponse } from "variables/serverFunc.jsx";
 import { Link, Route } from "react-router-dom";
 
@@ -68,71 +64,63 @@ class HeaderLinks extends React.Component {
     const { open } = this.state;
     return (
       <div>
-        <div className={classes.searchWrapper}>
-          <CustomInput
-            formControlProps={{
-              className: classes.margin + " " + classes.search
-            }}
-            inputProps={{
-              placeholder: "Search",
-              inputProps: {
-                "aria-label": "Search"
-              }
-            }}
-          />
-          <Button color="white" aria-label="edit" justIcon round>
-            <Search />
-          </Button>
-        </div>
-        <Button
-          color={window.innerWidth > 959 ? "transparent" : "white"}
-          justIcon={window.innerWidth > 959}
-          simple={!(window.innerWidth > 959)}
-          aria-label="Dashboard"
-          className={classes.buttonLink}
-        >
-          <Dashboard className={classes.icons} />
-          <Hidden mdUp implementation="css">
-            <p className={classes.linkText}>Dashboard</p>
-          </Hidden>
-        </Button>
-        <div className={classes.manager}>
-          <Link to="/notifications">
+        <Link to="/taskboard">
+          <Tooltip title="任务面板">
             <Button
-              buttonRef={node => {
-                this.anchorEl = node;
-              }}
               color={window.innerWidth > 959 ? "transparent" : "white"}
               justIcon={window.innerWidth > 959}
               simple={!(window.innerWidth > 959)}
-              aria-owns={open ? "menu-list-grow" : null}
-              aria-haspopup="true"
-              onClick={this.handleToggle}
+              aria-label="Dashboard"
               className={classes.buttonLink}
             >
-              <Notifications className={classes.icons} />
-              {this.state.notReadNum !== "0" && (
-                <span className={classes.notifications}>
-                  {" "}
-                  {this.state.notReadNum}{" "}
-                </span>
-              )}
+              <Dashboard className={classes.icons} />
+              <Hidden mdUp implementation="css">
+                <p className={classes.linkText}>Dashboard</p>
+              </Hidden>
             </Button>
+          </Tooltip>
+        </Link>
+        <div className={classes.manager}>
+          <Link to="/notifications">
+            <Tooltip title="消息通知">
+              <Button
+                buttonRef={node => {
+                  this.anchorEl = node;
+                }}
+                color={window.innerWidth > 959 ? "transparent" : "white"}
+                justIcon={window.innerWidth > 959}
+                simple={!(window.innerWidth > 959)}
+                aria-owns={open ? "menu-list-grow" : null}
+                aria-haspopup="true"
+                onClick={this.handleToggle}
+                className={classes.buttonLink}
+              >
+                <Notifications className={classes.icons} />
+                {this.state.notReadNum !== "0" && (
+                  <span className={classes.notifications}>
+                    {" "}
+                    {this.state.notReadNum}{" "}
+                  </span>
+                )}
+              </Button>
+            </Tooltip>
           </Link>
         </div>
         <Link to="/user">
-          <Button
-            color={window.innerWidth > 959 ? "transparent" : "white"}
-            justIcon={window.innerWidth > 959}
-            simple={!(window.innerWidth > 959)}
-            aria-label="Person"
-            className={classes.buttonLink}
-          >
-            <Person className={classes.icons} />
-            <Hidden mdUp implementation="css">
-              <p className={classes.linkText}>Profile</p>
-            </Hidden>
-          </Button>
+          <Tooltip title="个人信息">
+            <Button
+              color={window.innerWidth > 959 ? "transparent" : "white"}
+              justIcon={window.innerWidth > 959}
+              simple={!(window.innerWidth > 959)}
+              aria-label="Person"
+              className={classes.buttonLink}
+            >
+              <Person className={classes.icons} />
+              <Hidden mdUp implementation="css">
+                <p className={classes.linkText}>Profile</p>
+              </Hidden>
+            </Button>
+          </Tooltip>
         </Link>
         <Route path="/notifications" />
         <Route path="/user" />

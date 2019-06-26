@@ -264,7 +264,11 @@ function Questionnaire(props) {
         .then(handleResponse)
         .then(response => {
           if (response.code === 200) {
-            alert("创建任务成功， 你被扣除" + );
+            alert(
+              "创建任务成功， 你被扣除" +
+                parseInt(values.money) * parseInt(values.number) +
+                "金币"
+            );
           } else {
             alert("创建任务失败");
           }
