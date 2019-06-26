@@ -237,7 +237,7 @@ class UserProfile extends React.Component {
                 </a>
               </CardAvatar>
               <CardBody profile>
-                <h6>CEO / {user.iscow ? "奶牛" : "学生"}</h6>
+                <h6>{user.iscow ? "奶牛" : "学生"}</h6>
                 <h4>{user.name}</h4>
                 <p style={{ fontSize: "11pt" }}>余额：{user.remain}</p>
 								<Button onClick={this.logout}>退出登录</Button>
