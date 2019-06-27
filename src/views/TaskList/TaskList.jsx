@@ -219,18 +219,12 @@ function TaskList(props) {
         fetch(apiUrl + "/record/getall", requestOptions2)
           .then(handleResponse)
           .then(responseData => {
-            console.log(responseInfo);
-            console.log(responseData);
-            let taskName = responseInfo.taskName;
-            
             let dataSource = []; // 存储回答的字段和数据
             let dataHeader = []; // 存储列表头部字段
 
-            let key = 0; // 起始的键名
-
-            let keyList = ["序号","回答者"]; // 存储每一个回答对应的键名
-            dataHeader.push({k: "序号", v: "序号"})
-            dataHeader.push({k: "回答者", v: "回答者"})
+            let keyList = ["序号", "回答者"]; // 存储每一个回答对应的键名
+            dataHeader.push({ k: "序号", v: "序号" });
+            dataHeader.push({ k: "回答者", v: "回答者" });
             // 填充 header
             let chooseData = responseInfo.chooseData;
             for (let i = 0; i < chooseData.length; i++) {
@@ -243,21 +237,15 @@ function TaskList(props) {
             for (let i = 0; i < responseData.length; i++) {
               let data = responseData[i].data;
               let source = {};
-              source[keyList[0]] = i + 1;                    // 序号
-              source[keyList[1]] =  responseData[i].userID;  // 回答者
+              source[keyList[0]] = i + 1; // 序号
+              source[keyList[1]] = responseData[i].userID; // 回答者
 
               for (let j = 0; j < data.length; j++) {
                 source[keyList[j + 2]] = data[j].content;
-                console.log(data[j].content)
               }
-              console.log("source")
-              console.log(source);
               dataSource.push(source);
             }
             exportExcel(dataHeader, dataSource);
-            console.log(dataHeader)
-            console.log(dataSource)
-            console.log("expor excel");
           });
       });
   }

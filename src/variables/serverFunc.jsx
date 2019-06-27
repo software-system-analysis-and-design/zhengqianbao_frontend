@@ -3,7 +3,7 @@ export function handleResponse(response) {
     const data = text && JSON.parse(text);
     if (!response.ok) {
       if (response.status === 401) {
-        alert("状态码: " + response.status + "退出登录" );
+        alert("状态码: " + response.status + "退出登录");
       }
       const error = (data && data.message) || response.statusText;
       return Promise.reject(error);

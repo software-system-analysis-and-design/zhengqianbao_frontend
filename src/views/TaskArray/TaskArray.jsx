@@ -53,6 +53,9 @@ function TaskArray(props) {
   }
   const { classes, match } = props;
 
+  console.log("task array match");
+  console.log(match);
+
   const [tasks, setTasks] = useState([]);
   const [filtedTask, setFiltedTask] = useState([]);
   const [values, setValues] = useState({});
@@ -69,7 +72,6 @@ function TaskArray(props) {
     fetch(apiUrl, requestOption)
       .then(handleResponse)
       .then(response => {
-        console.log(response);
         let ret = [];
         if (response !== null) {
           for (let i = 0; i < response.length; i++) {
@@ -137,10 +139,8 @@ function TaskArray(props) {
   };
 
   const stateFilter = (arr, func, param) => {
-    console.log("state filter");
     let ret = [];
     for (let task of arr) {
-      console.log(task);
       if (func(task, param)) ret.push(task);
     }
     return ret;
@@ -148,8 +148,8 @@ function TaskArray(props) {
 
   const searchFilter = (task, param) => {
     return (
-      param.keyWord == null ||
-      param.keyWord == "" ||
+      param.keyWord === null ||
+      param.keyWord === "" ||
       task.title.indexOf(param.keyWord) !== -1
     );
   };
@@ -162,35 +162,6 @@ function TaskArray(props) {
     );
   };
 
-  // function stringToDate(time) {
-  //   // 一个字符串  2019-06-12T12:00 转为 Date对象
-  //   // let time = _time.toString();
-  //   console.log("stringToDate");
-  //   if (time.length !== 16) return null;
-  //   console.log("stringToDate valid");
-  //   let year = time.slice(0, 4);
-  //   let month = time.slice(5, 7);
-  //   let day = time.slice(8, 10);
-  //   let min = time.slice(11, 13);
-  //   let sec = time.slice(14, 16);
-  //   let date = new Date(year, month - 1, day, min, sec);
-  //   return date;
-  // }
-  // const timeFilter = (task, param) => {
-  //   let taskBegin = stringToDate(task.details.startTime);
-  //   let taskEnd = stringToDate(task.details.endTime);
-  //   let paramBegin = stringToDate(param.begin);
-  //   let paramEnd = stringToDate(param.end);
-  //
-  //   console.log(taskBegin);
-  //   console.log(taskEnd);
-  //   console.log(paramBegin);
-  //   console.log(paramEnd);
-  //   return (
-  //     (paramBegin === null || taskBegin >= paramBegin) &&
-  //     (paramEnd === null || (taskEnd !== null && taskEnd <= paramEnd))
-  //   );
-  // };
 
   return (
     <div>

@@ -1,19 +1,21 @@
 {
-  "main.css": "/static/css/main.fa635872.chunk.css",
-  "main.js": "/static/js/main.3ef54b7b.chunk.js",
-  "main.js.map": "/static/js/main.3ef54b7b.chunk.js.map",
-  "runtime~main.js": "/static/js/runtime~main.a5147737.js",
-  "runtime~main.js.map": "/static/js/runtime~main.a5147737.js.map",
-  "static/css/2.3c3fb313.chunk.css": "/static/css/2.3c3fb313.chunk.css",
-  "static/js/2.f455ffef.chunk.js": "/static/js/2.f455ffef.chunk.js",
-  "static/js/2.f455ffef.chunk.js.map": "/static/js/2.f455ffef.chunk.js.map",
-  "index.html": "/index.html",
-  "precache-manifest.7184ba08f0f7e893f87aa4fd720433b6.js": "/precache-manifest.7184ba08f0f7e893f87aa4fd720433b6.js",
-  "service-worker.js": "/service-worker.js",
-  "static/css/2.3c3fb313.chunk.css.map": "/static/css/2.3c3fb313.chunk.css.map",
-  "static/css/main.fa635872.chunk.css.map": "/static/css/main.fa635872.chunk.css.map",
-  "static/media/apple-icon.png": "/static/media/apple-icon.25d1b1f2.png",
-  "static/media/logo.jpg": "/static/media/logo.47c4da26.jpg",
-  "static/media/marc.jpg": "/static/media/marc.47c4da26.jpg",
-  "static/media/sidebar-2.jpg": "/static/media/sidebar-2.310509c9.jpg"
+  "files": {
+    "main.css": "/static/css/main.a19d7424.chunk.css",
+    "main.js": "/static/js/main.8257db9e.chunk.js",
+    "main.js.map": "/static/js/main.8257db9e.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
+    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
+    "static/css/2.d0176e96.chunk.css": "/static/css/2.d0176e96.chunk.css",
+    "static/js/2.0c7ad155.chunk.js": "/static/js/2.0c7ad155.chunk.js",
+    "static/js/2.0c7ad155.chunk.js.map": "/static/js/2.0c7ad155.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.8c8cffe122bc29cbb87eb56a54025ab5.js": "/precache-manifest.8c8cffe122bc29cbb87eb56a54025ab5.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.d0176e96.chunk.css.map": "/static/css/2.d0176e96.chunk.css.map",
+    "static/css/main.a19d7424.chunk.css.map": "/static/css/main.a19d7424.chunk.css.map",
+    "static/media/apple-icon.png": "/static/media/apple-icon.25d1b1f2.png",
+    "static/media/logo.jpg": "/static/media/logo.47c4da26.jpg",
+    "static/media/marc.jpg": "/static/media/marc.47c4da26.jpg",
+    "static/media/sidebar-2.jpg": "/static/media/sidebar-2.4e690501.jpg"
+  }
 }
