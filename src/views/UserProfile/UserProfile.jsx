@@ -210,7 +210,7 @@ class UserProfile extends React.Component {
 
   logout(){
     localStorage.setItem("user-token", "");
-    this.props.history.push("\\login");
+    this.props.history.push("/login");
   }
 
   render() {
