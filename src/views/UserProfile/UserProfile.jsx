@@ -98,7 +98,7 @@ class UserProfile extends React.Component {
   }
 
   ensureUpdateMooney() {
-    var money = parseInt(this.state.user.remain + this.state.money);
+    var money = parseInt(parseInt(this.state.user.remain) + parseInt(this.state.money));
     console.log(money);
     var data = new FormData();
     data.append("money", money);
